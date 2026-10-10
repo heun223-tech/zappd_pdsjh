@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+</head>
+<body>
+<title>NS 재핑 보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: control-room board. A thin on-air bar, tabbed views; the timeline is one scroll box with sticky channel headers and a sticky timecode rail. */
+:root{
+  --bg:#eef1f3; --surface:#ffffff; --surface-2:#f6f8f9; --ink:#15202a; --muted:#5b6976; --line:#d6dde2;
+  --accent:#0a7564; --accent-ink:#ffffff; --accent-soft:#dcefea;
+  --warn:#b8430b; --warn-soft:#fbe7da; --caution:#8a6a00; --caution-soft:#f6eecb;
+  --now:#d1291b; --shadow:0 1px 2px rgba(21,32,42,.06),0 4px 14px rgba(21,32,42,.06);
+  --ch-nsmall:#0a7564; --ch-gsshop:#4a7d1e; --ch-cjmall:#7b3fa8; --ch-lotteimall:#c0262f; --ch-hmall:#1f6a5c; --ch-hnsmall:#d1661a; --ch-immall:#2b5ea7;
+  --f-body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ppm:2px; /* timeline pixels per minute */
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e1418; --surface:#161f25; --surface-2:#1b262d; --ink:#e4ebef; --muted:#93a2ad; --line:#2a3741;
+  --accent:#3bbfa8; --accent-ink:#06201b; --accent-soft:#123029;
+  --warn:#f5894a; --warn-soft:#3a2216; --caution:#e2c15a; --caution-soft:#332b10;
+  --now:#ff6b5e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  --ch-nsmall:#3bbfa8; --ch-gsshop:#8cc35a; --ch-cjmall:#b88ae0; --ch-lotteimall:#f07178; --ch-hmall:#5cc2ad; --ch-hnsmall:#f3a15e; --ch-immall:#7fa8ec;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0e1418; --surface:#161f25; --surface-2:#1b262d; --ink:#e4ebef; --muted:#93a2ad; --line:#2a3741;
+  --accent:#3bbfa8; --accent-ink:#06201b; --accent-soft:#123029;
+  --warn:#f5894a; --warn-soft:#3a2216; --caution:#e2c15a; --caution-soft:#332b10;
+  --now:#ff6b5e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  --ch-nsmall:#3bbfa8; --ch-gsshop:#8cc35a; --ch-cjmall:#b88ae0; --ch-lotteimall:#f07178; --ch-hmall:#5cc2ad; --ch-hnsmall:#f3a15e; --ch-immall:#7fa8ec;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;padding-inline:16px;padding-block:0 32px}
+.wrap{max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* on-air bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);padding-block:12px 10px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;border-bottom:1px solid var(--line)}
+@media (max-width:700px){.bar{position:static}}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.onair{font-family:var(--f-mono);font-weight:600;font-size:11px;letter-spacing:.12em;padding:3px 7px;border-radius:3px;background:var(--now);color:#fff}
+.onair.off{background:var(--muted)}
+h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.clock{font-family:var(--f-mono);font-size:15px;font-weight:600;color:var(--ink)}
+.spacer{flex:1}
+.datepick{display:flex;align-items:center;gap:8px}
+.datepick select{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.meta{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:999px;font-weight:500;font-size:13px;display:flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab .count{font-family:var(--f-mono);font-size:11px;padding:0 6px;border-radius:999px;background:var(--warn);color:#fff}
+
+/* summary strip */
+.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+@media (max-width:900px){.strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:520px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.chcard{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.chcard.own{border-color:var(--accent);background:var(--accent-soft)}
+.chname{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--c)}
+.chcard .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.chcard .top{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* timeline */
+.tl-legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:12px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.sw.clash{background:var(--warn-soft);border:2px solid var(--warn)}
+.sw.near{background:var(--caution-soft);border:2px dashed var(--caution)}
+.sw.own{background:var(--accent-soft);border:2px solid var(--accent)}
+.tl-scroll{overflow:auto;height:min(76vh,1100px);background:var(--surface);border:1px solid var(--line);border-radius:10px;position:relative;overscroll-behavior:contain}
+.tl{display:grid;grid-template-columns:52px repeat(7,minmax(150px,1fr));min-width:calc(52px + 7*150px);position:relative}
+.tl-head{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);padding:8px;display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px;min-width:0}
+.tl-head.corner{left:0;z-index:7;font-family:var(--f-mono);font-size:10px;color:var(--muted);font-weight:500}
+.tl-head.own{background:var(--accent-soft)}
+.tl-head .tag{font-size:10px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:0 4px}
+.rail{position:sticky;left:0;z-index:4;background:var(--surface);border-right:1px solid var(--line)}
+.rail .h{position:absolute;left:0;right:0;font-family:var(--f-mono);font-size:11px;color:var(--muted);text-align:right;padding-right:6px;transform:translateY(-7px)}
+.col{position:relative;border-right:1px solid var(--line)}
+.col.own{background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
+.gridline{position:absolute;left:0;right:0;border-top:1px solid var(--line);opacity:.6}
+.gridline.half{border-top-style:dotted;opacity:.35}
+.blk{position:absolute;left:4px;right:4px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--c);padding:4px 6px;overflow:hidden;text-align:left;display:flex;flex-direction:column;gap:1px;font-size:12px;line-height:1.3;transition:box-shadow .15s}
+.blk:hover{box-shadow:var(--shadow);z-index:2}
+.blk.own{background:var(--accent-soft)}
+.blk.clash{background:var(--warn-soft);border-color:var(--warn);border-left-color:var(--warn);border-width:2px 2px 2px 3px}
+.blk.near{background:var(--caution-soft);border-color:var(--caution);border-style:dashed;border-left-style:solid;border-left-color:var(--caution)}
+.blk .t{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.blk .nm{font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere}
+.blk .cat{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blk.short .nm{-webkit-line-clamp:1}
+.blk.short .chips,.blk.short .cat{display:none}
+.blk.tiny .pline{display:none}
+.blk .chips{max-height:17px;overflow:hidden}
+.blk .pline{font-size:11.5px}
+.badge{font-family:var(--f-body);font-size:10px;font-weight:700;padding:0 5px;border-radius:3px;line-height:16px;white-space:nowrap}
+.badge.clash{background:var(--warn);color:#fff}
+.badge.near{background:var(--caution);color:var(--surface)}
+.badge.brand{background:var(--ink);color:var(--surface)}
+.nowline{position:absolute;left:52px;right:0;border-top:2px solid var(--now);z-index:3;pointer-events:none}
+.nowline span{position:absolute;left:0;top:-10px;background:var(--now);color:#fff;font-family:var(--f-mono);font-size:10px;font-weight:600;padding:1px 5px;border-radius:3px}
+
+/* price + composition atoms */
+.chips{display:flex;flex-wrap:wrap;gap:3px}
+.cpc{font-size:10.5px;line-height:16px;padding:0 5px;border-radius:3px;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);white-space:nowrap;font-weight:500}
+.pline{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.pline .big{font-weight:600}
+.off{color:var(--warn);font-weight:600;font-family:var(--f-mono);font-size:.92em}
+.was{color:var(--muted);text-decoration:line-through;font-family:var(--f-mono);font-size:.88em;font-weight:400}
+.more{font-family:var(--f-body);font-size:10.5px;color:var(--muted);font-weight:500}
+.unit{font-size:11.5px;color:var(--muted);font-family:var(--f-mono)}
+.delta{font-family:var(--f-mono);font-size:11px;font-weight:600}
+.delta.up{color:var(--warn)} .delta.down{color:var(--accent)}
+
+/* alerts: one comparison table per NS broadcast */
+.alerts{display:flex;flex-direction:column;gap:14px}
+.vsbox{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.vs-h{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.vs-h .mono{font-weight:600}
+.vs-h .cat{color:var(--muted);font-size:12.5px}
+.vsbox .tbl-wrap{border:0;border-radius:0}
+table.vs td{vertical-align:middle}
+table.vs td.who{white-space:nowrap;font-size:12px}
+table.vs td.who b{display:flex;gap:5px;align-items:center;font-size:12.5px}
+table.vs td.nm{min-width:240px}
+table.vs td.nm .n{font-weight:500;overflow-wrap:anywhere;display:block;margin-bottom:3px}
+table.vs td.price b{font-size:13.5px}
+table.vs td.ben{font-size:11.5px;color:var(--muted);min-width:120px}
+table.vs td.rel{font-size:11.5px;color:var(--muted);white-space:nowrap}
+table.vs tr.own td{background:var(--accent-soft)}
+table.vs tr.own td.nm .n{font-weight:700}
+
+/* competitor cards */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:5px 12px;font-size:12.5px;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.chsecs{display:flex;flex-direction:column;gap:18px}
+.chsec{display:flex;flex-direction:column;gap:8px}
+.chsec-h{display:flex;align-items:baseline;gap:8px}
+.chsec-h h3{margin:0;font-size:15px;display:flex;align-items:center;gap:7px}
+.chsec-h span{color:var(--muted);font-size:12px;font-family:var(--f-mono)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.pcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--c);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.pcard:hover{box-shadow:var(--shadow)}
+.pcard.own{background:color-mix(in srgb,var(--accent-soft) 55%,var(--surface))}
+.pc-top{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.pc-name{font-weight:500;line-height:1.4;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pc-price{display:flex;flex-direction:column;gap:2px}
+.pc-price .row{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.pc-price .big{font-family:var(--f-mono);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.pc-price .lbl{font-size:11px;color:var(--muted)}
+.pc-sub{font-size:11.5px;color:var(--muted);font-family:var(--f-mono)}
+.pc-ben{font-size:11.5px;color:var(--muted);line-height:1.45}
+.pc-ops{list-style:none;margin:0;padding:7px 0 0;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:3px;font-size:11.5px}
+.pc-ops li{display:flex;justify-content:space-between;gap:8px}
+.pc-ops li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--muted)}
+.pc-ops li span:last-child{font-family:var(--f-mono);white-space:nowrap}
+.pc-ops .tail{color:var(--muted)}
+.oplist{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.oplist li{display:flex;justify-content:space-between;gap:10px;padding:7px 12px;border-bottom:1px solid var(--line);font-size:12.5px}
+.oplist li:last-child{border-bottom:0}
+.oplist li span:first-child{overflow-wrap:anywhere;min-width:0}
+.oplist li span:last-child{font-family:var(--f-mono);white-space:nowrap;text-align:right}
+.rv{display:grid;grid-template-columns:80px minmax(0,1fr) auto;gap:4px 12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;align-items:start;text-align:left;background:var(--surface);width:100%}
+.rv:hover{background:var(--surface-2)}
+.rv .who{display:flex;flex-direction:column;gap:2px;font-size:12px}
+.rv .who b{display:flex;gap:5px;align-items:center;font-size:12.5px}
+.rv .nm{font-weight:500;min-width:0;overflow-wrap:anywhere}
+.rv .sub{font-size:12px;color:var(--muted)}
+.rv .px{text-align:right;font-family:var(--f-mono);font-size:12.5px;font-weight:600;white-space:nowrap}
+.section-h{display:flex;align-items:baseline;gap:10px;margin:8px 0 0}
+.section-h h2{font-size:15px;margin:0}
+.section-h p{margin:0;color:var(--muted);font-size:12.5px}
+.quiet{color:var(--muted);font-size:13px}
+details.calm{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+details.calm summary{cursor:pointer;font-weight:500}
+details.calm ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
+
+/* compare */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:12.5px;display:flex;gap:6px;align-items:center}
+.chip[aria-pressed="false"]{opacity:.45}
+.filters select,.filters input[type="search"]{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;min-width:0}
+.filters input[type="search"]{flex:1 1 180px}
+.filters label{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--muted)}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{position:sticky;top:0;background:var(--surface-2);font-weight:700;font-size:12px;white-space:nowrap;user-select:none}
+th[data-k]{cursor:pointer}
+th[data-k]::after{content:"";margin-left:4px;color:var(--muted)}
+th.asc::after{content:"▲"} th.desc::after{content:"▼"}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.nm{min-width:240px;max-width:420px}
+tr.own td{background:color-mix(in srgb,var(--accent-soft) 60%,transparent)}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--surface-2)}
+.strike{color:var(--muted);text-decoration:line-through;font-weight:400}
+.heat{font-family:var(--f-mono)}
+.heat td{text-align:center;padding:6px 8px}
+.heat td:first-child,.heat th:first-child{text-align:left;font-family:var(--f-body)}
+
+/* detail sheet */
+.sheet{position:fixed;inset:0;z-index:50;display:flex;justify-content:flex-end;background:color-mix(in srgb,var(--ink) 30%,transparent)}
+.sheet .panel{width:min(440px,100%);height:100%;background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);overflow:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 18px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.panel .x{align-self:flex-end;border:1px solid var(--line);background:var(--surface-2);border-radius:6px;padding:3px 10px}
+.panel h3{margin:0;font-size:17px;line-height:1.4;overflow-wrap:anywhere}
+.ladder{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.ladder div{display:flex;justify-content:space-between;gap:12px;padding:7px 12px;border-bottom:1px solid var(--line);font-size:13px}
+.ladder div:last-child{border-bottom:0;background:var(--accent-soft);font-weight:700}
+.ladder span:last-child{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:88px minmax(0,1fr);gap:6px 10px;font-size:13px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;overflow-wrap:anywhere}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:6px;background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:9px 14px;font-weight:700;text-decoration:none;border:0}
+.same{display:flex;flex-direction:column;gap:6px}
+
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:28px 22px;display:flex;flex-direction:column;gap:8px;max-width:640px}
+.empty h2{margin:0;font-size:16px}
+.empty p{margin:0;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <header class="bar">
+    <div class="brand"><span class="onair off" id="onair">OFF AIR</span><h1>NS 재핑 보드</h1></div>
+    <span class="clock" id="clock">--:--</span>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-timeline" aria-selected="true" data-view="timeline">재핑 타임라인</button>
+      <button class="tab" role="tab" id="tab-alerts" aria-selected="false" data-view="alerts">동일 상품군 알림 <span class="count" id="alertCount" hidden>0</span></button>
+      <button class="tab" role="tab" id="tab-compare" aria-selected="false" data-view="compare">채널별 상품·가격</button>
+    </div>
+    <span class="spacer"></span>
+    <div class="datepick"><label for="dateSel" class="meta">방송일</label><select id="dateSel"></select></div>
+    <span class="meta" id="collected"></span>
+  </header>
+
+  <div id="emptyState" class="empty">
+    <h2>편성 데이터를 불러오는 중</h2>
+    <p>매일 아침 자동 수집이 NS홈쇼핑·GS샵·CJ온스타일·롯데·현대·홈앤쇼핑·공영쇼핑 7개 TV 채널의 오늘 편성과 상품·가격을 여기에 채웁니다.</p>
+  </div>
+
+  <div id="app" hidden>
+    <section class="strip" id="strip" aria-label="채널별 오늘 편성 요약"></section>
+
+    <section id="view-timeline" data-view-panel="timeline" style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+      <div class="tl-legend">
+        <span><i class="sw own"></i>NS 방송</span>
+        <span><i class="sw clash"></i>NS와 같은 시간·같은 상품군</span>
+        <span><i class="sw near"></i>NS 방송 앞뒤 2시간 내 같은 상품군</span>
+        <span>가격은 최대혜택가, 회색 칩은 구성입니다. 방송을 누르면 상세가 열립니다.</span>
+      </div>
+      <div class="tl-scroll" id="tlScroll"><div class="tl" id="tl"></div></div>
+    </section>
+
+    <section id="view-alerts" data-view-panel="alerts" hidden style="margin-top:14px">
+      <div class="alerts" id="alerts"></div>
+    </section>
+
+    <section id="view-compare" data-view-panel="compare" hidden style="display:flex;flex-direction:column;gap:12px;margin-top:14px">
+      <div class="filters" id="chFilters"></div>
+      <div class="filters">
+        <div class="seg" role="group" aria-label="보기 방식"><button id="modeCards" aria-pressed="true">카드</button><button id="modeTable" aria-pressed="false">표</button></div>
+        <select id="c1Sel" aria-label="대분류"></select>
+        <input type="search" id="q" placeholder="상품명·브랜드·카테고리 검색" aria-label="검색">
+        <label><input type="checkbox" id="hideNoPrice" checked> 가격 미표기(여행·렌탈·보험) 제외</label>
+      </div>
+      <div class="chsecs" id="cards"></div>
+      <div class="tbl-wrap" id="tblWrap" hidden><table id="cmp"><thead></thead><tbody></tbody></table></div>
+      <div class="section-h"><h2>대분류별 편성 수</h2><p>방송 건수 기준. 칸이 진할수록 많이 편성.</p></div>
+      <div class="tbl-wrap"><table class="heat" id="heat"></table></div>
+    </section>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" hidden><div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pTitle"></div></div>
+
+<script>
+(() => {
+const CH = [
+  {id:'nsmall', name:'NS홈쇼핑', own:true},
+  {id:'gsshop', name:'GS샵'},
+  {id:'cjmall', name:'CJ온스타일'},
+  {id:'lotteimall', name:'롯데홈쇼핑'},
+  {id:'hmall', name:'현대홈쇼핑'},
+  {id:'hnsmall', name:'홈앤쇼핑'},
+  {id:'immall', name:'공영쇼핑'},
+];
+const CHMAP = Object.fromEntries(CH.map(c => [c.id, c]));
+const CHORD = Object.fromEntries(CH.map((c, i) => [c.id, i]));
+const OWN = 'nsmall';
+const NEAR_MIN = 120;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const won = n => n ? Math.round(n).toLocaleString('ko-KR') + '원' : '—';
+const toMin = hm => { const [h, m] = (hm || '0:0').split(':').map(Number); return h * 60 + m; };
+const kstNow = () => { const d = new Date(Date.now() + 9 * 3600e3); return {date: d.toISOString().slice(0, 10), min: d.getUTCHours() * 60 + d.getUTCMinutes(), hm: d.toISOString().slice(11, 16)}; };
+const best = it => it.mx || it.cp || it.sp || it.p || 0;
+const chDot = id => `<i class="dot" style="--c:var(--ch-${id})"></i>`;
+
+// ---------- composition parsed from the product name ----------
+const UNIT='박스|팩|통|병|포|봉|개|세트|종|마리|미|켤레|장|캡슐|정|매|입|구';
+const PACK=new Set(['박스','팩','통','병','포','봉','마리','미','개']);
+const compCache=new Map();
+function comp(name){
+  if(compCache.has(name)) return compCache.get(name);
+  const t=String(name||'').replace(/[xX\*]/g,'×').replace(/\s+/g,' ');
+  const chips=[]; const add=s=>{ if(s && !chips.includes(s) && chips.length<4) chips.push(s); };
+  const total=t.match(new RegExp('총\\s*(\\d+)\\s*(개월|'+UNIT+')'));
+  const plus=t.match(new RegExp('(\\d+)\\s*\\+\\s*(\\d+)\\s*('+UNIT+')(?![가-힣])'));
+  const months=[...t.matchAll(/(\d+)\s*개월분?/g)].map(x=>+x[1]);
+  const spec=t.match(/(\d+(?:\.\d+)?)\s*(ml|mL|ML|g|kg|L|매|정|캡슐|포|미)\s*×\s*(\d+)\s*([가-힣]{0,2})/);
+  const single=t.match(new RegExp('(?:^|[^\\d.+])(\\d+)\\s*('+UNIT+')(?![가-힣A-Za-z])'));
+  if(plus) add(plus[1]+'+'+plus[2]+plus[3]);
+  if(total) add('총 '+total[1]+total[2]);
+  if(!plus && !total && single && +single[1]>1 && !(spec && (spec[3]===single[1]||spec[1]===single[1]))) add(single[1]+single[2]);
+  if(spec) add(spec[1]+spec[2]+'×'+spec[3]+(spec[4]||''));
+  const mo=months.length?Math.max(...months):0;
+  if(mo>=2 && !(total && total[2]==='개월')) add(mo+'개월분');
+  let unit=null;
+  if(mo>=2) unit={l:'월',n:mo};
+  else if(total && PACK.has(total[2]) && +total[1]>=2) unit={l:total[2]+'당',n:+total[1]};
+  else if(plus && PACK.has(plus[3])) unit={l:plus[3]+'당',n:+plus[1]+ +plus[2]};
+  else if(spec && PACK.has(spec[4]) && +spec[3]>=2) unit={l:spec[4]+'당',n:+spec[3]};
+  else if(single && PACK.has(single[2]) && +single[1]>=2) unit={l:single[2]+'당',n:+single[1]};
+  const r={chips,unit}; compCache.set(name,r); return r;
+}
+const unitPrice = it => { const u = comp(it.n).unit; const b = best(it); return u && b ? Math.round(b / u.n / 10) * 10 : 0; };
+const unitTxt = it => { const u = comp(it.n).unit; const v = unitPrice(it); return v ? `≈ ${u.l} ${won(v)}` : ''; };
+const chipsHtml = it => { const c = comp(it.n).chips; return c.length ? `<span class="chips">${c.map(x => `<span class="cpc">${esc(x)}</span>`).join('')}</span>` : ''; };
+const offPct = it => { const b = best(it); return it.p && b && b < it.p ? Math.round((1 - b / it.p) * 100) : 0; };
+const benefits = it => [it.ifm ? `무이자 ${it.ifm}개월` : '', it.cd ? `카드 ${it.cd}` : '', it.lp ? `런칭가 ${won(it.lp)}` : ''].filter(Boolean);
+const opPrice = o => o.mx || o.cp || o.sp || o.p || 0;
+const opCount = it => Math.max(it.opn || 0, (it.op || []).length);
+
+let state = {dates: [], date: null, day: null, items: [], view: 'timeline', mode: 'cards', sort: {k: 's', dir: 1}, chOn: new Set(CH.map(c => c.id))};
+try { const m = localStorage.getItem('zap.mode'); if (m === 'table' || m === 'cards') state.mode = m; } catch (e) {}
+let unsubDay = null;
+
+// ---------- data prep ----------
+function prep(items) {
+  const list = items.filter(i => CHMAP[i.ch]).map((i, idx) => {
+    const s = toMin(i.s); let e = toMin(i.e); if (!i.e || e <= s) e += 1440; if (e - s > 360) e = s + 60;
+    return {...i, idx, sm: s, em: e};
+  });
+  const own = list.filter(i => i.ch === OWN);
+  for (const it of list) { it.rel = []; it.flag = null; }
+  const rank = {clash: 3, near: 2, brand: 1, loose: 0};
+  for (const n of own) {
+    for (const c of list) {
+      if (c.ch === OWN) continue;
+      const ov = Math.min(n.em, c.em) - Math.max(n.sm, c.sm);
+      const gap = ov > 0 ? 0 : Math.max(c.sm - n.em, n.sm - c.em);
+      let kind = null;
+      if (n.c2 && c.c2 === n.c2) kind = ov > 0 ? 'clash' : (gap <= NEAR_MIN ? 'near' : null);
+      else if (n.c1 && c.c1 === n.c1 && ov > 0 && !['여행', '서비스/금융'].includes(n.c1)) kind = 'loose';
+      const brand = n.b && c.b && n.b.replace(/\s/g, '') === c.b.replace(/\s/g, '');
+      if (!kind && brand) kind = 'brand';
+      if (!kind) continue;
+      const rel = {own: n, rival: c, kind, ov, gap, brand};
+      n.rel.push(rel); c.rel.push(rel);
+      if (kind !== 'loose' && (!c.flag || rank[kind] > rank[c.flag])) c.flag = kind;
+    }
+  }
+  return list;
+}
+
+// ---------- shell ----------
+function setView(v) {
+  state.view = v;
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === v)));
+  document.querySelectorAll('[data-view-panel]').forEach(p => p.hidden = p.dataset.viewPanel !== v);
+  try { history.replaceState(null, '', '#' + v); } catch (e) {}
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setView(t.dataset.view)));
+const h0 = (location.hash || '').slice(1); if (['timeline', 'alerts', 'compare'].includes(h0)) setView(h0);
+
+function tick() {
+  const n = kstNow(); $('#clock').textContent = n.hm + ' KST';
+  const live = state.date === n.date; const oa = $('#onair');
+  oa.textContent = live ? 'ON AIR' : 'OFF AIR'; oa.classList.toggle('off', !live);
+  const line = document.getElementById('nowline');
+  if (line) { line.hidden = !live; line.style.top = `calc(37px + ${n.min} * var(--ppm))`; line.querySelector('span').textContent = n.hm; }
+}
+setInterval(tick, 30000); tick();
+
+function render() {
+  const items = state.items;
+  $('#emptyState').hidden = true; $('#app').hidden = false;
+  const ca = state.day && state.day.collectedAt;
+  $('#collected').textContent = ca ? '수집 ' + new Date(ca).toLocaleString('ko-KR', {timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : '';
+  renderStrip(items); renderTimeline(items); renderAlerts(items); renderCompare(); tick();
+}
+
+function renderStrip(items) {
+  $('#strip').innerHTML = CH.map(c => {
+    const l = items.filter(i => i.ch === c.id);
+    const cnt = {}; l.forEach(i => { if (i.c1) cnt[i.c1] = (cnt[i.c1] || 0) + 1; });
+    const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([k, v]) => `${k} ${v}`).join(' · ');
+    return `<div class="chcard ${c.own ? 'own' : ''}"><span class="chname">${chDot(c.id)}${esc(c.name)}</span><span class="n">방송 ${l.length}건</span><span class="top" title="${esc(top)}">${esc(top || '—')}</span></div>`;
+  }).join('');
+}
+
+// ---------- timeline ----------
+function renderTimeline(items) {
+  const H = 24 * 60;
+  let html = `<div class="tl-head corner">KST</div>` + CH.map(c => `<div class="tl-head ${c.own ? 'own' : ''}">${chDot(c.id)}${esc(c.name)}${c.own ? '<span class="tag">자사</span>' : ''}</div>`).join('');
+  let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
+  for (let hr = 0; hr <= 24; hr++) rail += `<span class="h" style="top:calc(${hr * 60} * var(--ppm))">${String(hr).padStart(2, '0')}:00</span>`;
+  html += rail + '</div>';
+  for (const c of CH) {
+    let col = `<div class="col ${c.own ? 'own' : ''}" style="height:calc(${H} * var(--ppm))">`;
+    for (let hr = 1; hr < 24; hr++) col += `<div class="gridline" style="top:calc(${hr * 60} * var(--ppm))"></div><div class="gridline half" style="top:calc(${hr * 60 - 30} * var(--ppm))"></div>`;
+    for (const it of items.filter(i => i.ch === c.id)) {
+      const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
+      const own = c.own; const nClash = own ? it.rel.filter(r => r.kind === 'clash').length : 0; const nNear = own ? it.rel.filter(r => r.kind === 'near').length : 0;
+      const cls = ['blk', own ? 'own' : (it.flag === 'clash' ? 'clash' : it.flag === 'near' ? 'near' : ''), px < 96 ? 'short' : '', px < 50 ? 'tiny' : ''].join(' ');
+      const badges = own ? (nClash ? `<span class="badge clash">동시간 ${nClash}</span>` : '') + (nNear ? `<span class="badge near">앞뒤 ${nNear}</span>` : '')
+        : (it.flag === 'clash' ? '<span class="badge clash">NS 동시간</span>' : it.flag === 'near' ? '<span class="badge near">NS 인접</span>' : it.flag === 'brand' ? '<span class="badge brand">NS 동일브랜드</span>' : '');
+      const off = offPct(it); const oc = opCount(it);
+      const price = it.p ? `<span class="pline"><span class="big">${won(best(it))}</span>${off ? `<span class="off">-${off}%</span>` : ''}${oc ? `<span class="more">+${oc}구성</span>` : ''}</span>` : `<span class="pline"><span class="more">가격 미표기</span></span>`;
+      col += `<button class="${cls}" style="--c:var(--ch-${c.id});top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}">
+        <span class="t">${esc(it.s)}–${esc(it.e)} ${badges}</span><span class="nm">${esc(it.n)}</span>${chipsHtml(it)}${price}<span class="cat">${esc([it.c2, it.c3].filter(Boolean).join(' › '))}</span></button>`;
+    }
+    html += col + '</div>';
+  }
+  html += `<div class="nowline" id="nowline" hidden><span></span></div>`;
+  $('#tl').innerHTML = html;
+  const n = kstNow(); const sc = $('#tlScroll');
+  const target = state.date === n.date ? Math.max(0, n.min - 60) : 6 * 60;
+  requestAnimationFrame(() => { sc.scrollTop = target * 2; });
+}
+$('#tl').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx); });
+
+// ---------- alerts: comparison table per NS broadcast ----------
+function vsRow(it, base, rel) {
+  const own = it.ch === OWN; const off = offPct(it); const b = best(it), nb = best(base);
+  let delta = '';
+  if (!own && b && nb) { const d = Math.round((b - nb) / nb * 100); delta = `<br><span class="delta ${d > 0 ? 'up' : 'down'}">NS 대비 ${d > 0 ? '+' : ''}${d}%</span>`; }
+  let relTxt = '';
+  if (rel) {
+    const k = {clash: '<span class="badge clash">동시간 동일군</span>', near: '<span class="badge near">인접 동일군</span>', brand: '<span class="badge brand">동일 브랜드</span>', loose: '<span class="more">같은 대분류</span>'}[rel.kind];
+    const when = rel.ov > 0 ? `${rel.ov}분 겹침` : (it.sm >= rel.own.em ? `NS 끝나고 ${rel.gap}분 뒤` : `NS 시작 ${rel.gap}분 전`);
+    relTxt = `${k}<br>${when}${rel.brand && rel.kind !== 'brand' ? ' · 동일 브랜드' : ''}`;
+  } else relTxt = '<b>자사</b>';
+  const oc = opCount(it);
+  return `<tr class="${own ? 'own' : ''}" data-idx="${it.idx}">
+    <td class="who"><b>${chDot(it.ch)}${esc(CHMAP[it.ch].name)}</b><span class="mono">${esc(it.s)}–${esc(it.e)}</span></td>
+    <td class="nm"><span class="n">${esc(it.n)}</span>${chipsHtml(it)}${oc ? `<span class="more">함께 판매 ${oc}개</span>` : ''}</td>
+    <td class="num">${it.p ? won(it.p) : '—'}${off ? `<br><span class="off">-${off}%</span>` : ''}</td>
+    <td class="num price">${it.p ? `<b>${won(b)}</b>` : '가격 미표기'}${delta}</td>
+    <td class="num">${unitTxt(it) ? `<span class="unit">${esc(unitTxt(it))}</span>` : '—'}</td>
+    <td class="ben">${esc(benefits(it).join(' · ') || '—')}</td>
+    <td class="rel">${relTxt}</td></tr>`;
+}
+function renderAlerts(items) {
+  const own = items.filter(i => i.ch === OWN);
+  const hit = own.filter(n => n.rel.some(r => r.kind !== 'loose'));
+  const calm = own.filter(n => !n.rel.some(r => r.kind !== 'loose'));
+  const nClash = own.reduce((a, n) => a + n.rel.filter(r => r.kind === 'clash').length, 0);
+  const ac = $('#alertCount'); ac.hidden = !nClash; ac.textContent = nClash;
+  const order = {clash: 0, near: 1, brand: 2, loose: 3};
+  let html = `<div class="section-h"><h2>NS 방송 ${own.length}건 중 ${hit.length}건이 경쟁사와 겹칩니다</h2><p>소분류가 같은 방송이 같은 시간이면 동시간, NS 방송 앞뒤 ${NEAR_MIN}분 안이면 인접. 가격은 카드할인까지 반영한 최대혜택가, 단가는 상품명 구성 기준 추정치입니다.</p></div>`;
+  if (!own.length) html += `<p class="quiet">이 날짜에는 NS홈쇼핑 편성이 수집되지 않았습니다.</p>`;
+  const head = `<thead><tr><th>채널 · 시간</th><th>상품 · 구성</th><th class="num">정상가</th><th class="num">최대혜택가</th><th class="num">단가</th><th>혜택</th><th>관계</th></tr></thead>`;
+  for (const n of hit) {
+    const rels = n.rel.filter(r => r.kind !== 'loose').sort((a, b) => order[a.kind] - order[b.kind] || a.rival.sm - b.rival.sm);
+    const loose = n.rel.filter(r => r.kind === 'loose').length;
+    const cc = rels.filter(r => r.kind === 'clash').length, nn = rels.filter(r => r.kind === 'near').length;
+    html += `<article class="vsbox"><header class="vs-h"><span class="mono">${esc(n.s)}–${esc(n.e)}</span><b>${esc(n.c2 || n.c1)}</b><span class="cat">${esc([n.c1, n.c3].filter(Boolean).join(' › '))}</span>${cc ? `<span class="badge clash">동시간 ${cc}</span>` : ''}${nn ? `<span class="badge near">인접 ${nn}</span>` : ''}${loose ? `<span class="more">같은 대분류 동시간 ${loose}건은 상세에서</span>` : ''}</header>
+      <div class="tbl-wrap"><table class="vs">${head}<tbody>${vsRow(n, n, null)}${rels.map(r => vsRow(r.rival, n, r)).join('')}</tbody></table></div></article>`;
+  }
+  if (calm.length) html += `<details class="calm"><summary>겹치는 경쟁 방송 없음 ${calm.length}건</summary><ul>${calm.map(n => `<li><span class="mono">${esc(n.s)}</span> ${esc(n.n)} <span>(${esc(n.c2)})</span></li>`).join('')}</ul></details>`;
+  $('#alerts').innerHTML = html;
+}
+$('#alerts').addEventListener('click', e => { const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx); });
+
+// ---------- channel cards / table ----------
+const COLS = [
+  {k: 's', l: '시간'}, {k: 'ch', l: '채널'}, {k: 'n', l: '상품 · 구성'}, {k: 'c2', l: '상품군'},
+  {k: 'p', l: '정상가', num: 1}, {k: 'sp', l: '판매가', num: 1}, {k: 'best', l: '최대혜택가', num: 1},
+  {k: 'off', l: '할인', num: 1}, {k: 'unit', l: '단가', num: 1}, {k: 'ifm', l: '무이자', num: 1}, {k: 'cd', l: '카드할인'}
+];
+const sortVal = (it, k) => k === 's' ? it.sm : k === 'ch' ? CHORD[it.ch] : k === 'best' ? best(it) : k === 'off' ? offPct(it) : k === 'unit' ? unitPrice(it) : it[k];
+function filtered() {
+  const c1 = $('#c1Sel').value, q = $('#q').value.trim().toLowerCase(), hide = $('#hideNoPrice').checked;
+  const rows = state.items.filter(i => state.chOn.has(i.ch) && (!c1 || i.c1 === c1) && (!hide || i.p > 0) && (!q || [i.n, i.b, i.c1, i.c2, i.c3, i.pg, ...(i.op || []).map(o => o.n)].join(' ').toLowerCase().includes(q)));
+  const {k, dir} = state.sort;
+  rows.sort((a, b) => { const va = sortVal(a, k), vb = sortVal(b, k); if (typeof va === 'string') return dir * va.localeCompare(vb, 'ko'); return dir * ((va || 0) - (vb || 0)) || a.sm - b.sm; });
+  return rows;
+}
+function renderCompare() {
+  $('#chFilters').innerHTML = CH.map(c => `<button class="chip" data-ch="${c.id}" aria-pressed="${state.chOn.has(c.id)}">${chDot(c.id)}${esc(c.name)}</button>`).join('');
+  const c1s = [...new Set(state.items.map(i => i.c1).filter(Boolean))].sort();
+  const cur = $('#c1Sel').value;
+  $('#c1Sel').innerHTML = `<option value="">전체 대분류</option>` + c1s.map(c => `<option ${c === cur ? 'selected' : ''}>${esc(c)}</option>`).join('');
+  $('#modeCards').setAttribute('aria-pressed', String(state.mode === 'cards'));
+  $('#modeTable').setAttribute('aria-pressed', String(state.mode === 'table'));
+  $('#cards').hidden = state.mode !== 'cards'; $('#tblWrap').hidden = state.mode !== 'table';
+  $('#cmp thead').innerHTML = '<tr>' + COLS.map(c => `<th data-k="${c.k}" class="${c.num ? 'num' : ''} ${state.sort.k === c.k ? (state.sort.dir > 0 ? 'asc' : 'desc') : ''}">${c.l}</th>`).join('') + '</tr>';
+  renderRows(); renderHeat();
+}
+function card(it) {
+  const off = offPct(it); const b = best(it); const ops = it.op || []; const oc = opCount(it);
+  const flag = it.ch !== OWN && it.flag ? ({clash: '<span class="badge clash">NS 동시간</span>', near: '<span class="badge near">NS 인접</span>', brand: '<span class="badge brand">NS 동일브랜드</span>'}[it.flag] || '') : '';
+  const sub = [it.sp && it.sp !== it.p ? `판매가 ${won(it.sp)}` : '', it.cp && it.cp !== it.sp ? `${it.cpw || '쿠폰'} ${won(it.cp)}` : ''].filter(Boolean).join(' · ');
+  const price = it.p ? `<div class="pc-price"><div class="row">${off ? `<span class="was">${won(it.p)}</span><span class="off">-${off}%</span>` : ''}</div>
+      <div class="row"><span class="big">${won(b)}</span><span class="lbl">${b !== it.p ? '최대혜택가' : '판매가'}</span></div>
+      ${sub ? `<span class="pc-sub">${esc(sub)}</span>` : ''}${unitTxt(it) ? `<span class="unit">${esc(unitTxt(it))}</span>` : ''}</div>`
+    : `<div class="pc-price"><span class="quiet">가격 미표기 (상담·렌탈·여행)</span></div>`;
+  const ben = benefits(it);
+  const opl = ops.length ? `<ul class="pc-ops">${ops.slice(0, 3).map(o => `<li><span title="${esc(o.n)}">${esc(o.n)}</span><span>${won(opPrice(o))}</span></li>`).join('')}${oc > 3 ? `<li class="tail"><span>함께 판매 ${oc}개 중 3개 표시</span><span></span></li>` : ''}</ul>` : '';
+  return `<button class="pcard ${it.ch === OWN ? 'own' : ''}" style="--c:var(--ch-${it.ch})" data-idx="${it.idx}">
+    <span class="pc-top"><span class="mono">${esc(it.s)}–${esc(it.e)}</span>${flag || `<span>${esc(it.c2)}</span>`}</span>
+    <span class="pc-name">${esc(it.n)}</span>${chipsHtml(it)}${price}
+    ${ben.length ? `<span class="pc-ben">${esc(ben.join(' · '))}</span>` : ''}${opl}</button>`;
+}
+function renderRows() {
+  const rows = filtered();
+  if (state.mode === 'cards') {
+    const secs = CH.filter(c => state.chOn.has(c.id)).map(c => {
+      const l = rows.filter(i => i.ch === c.id); if (!l.length) return '';
+      return `<section class="chsec"><div class="chsec-h"><h3>${chDot(c.id)}${esc(c.name)}</h3><span>${l.length}건</span></div><div class="cards">${l.map(card).join('')}</div></section>`;
+    }).join('');
+    $('#cards').innerHTML = secs || '<p class="quiet">조건에 맞는 방송이 없습니다. 필터를 줄여 보세요.</p>';
+  } else {
+    $('#cmp tbody').innerHTML = rows.map(i => { const off = offPct(i); return `<tr class="${i.ch === OWN ? 'own' : ''}" data-idx="${i.idx}">
+      <td class="mono">${esc(i.s)}–${esc(i.e)}</td><td style="white-space:nowrap">${chDot(i.ch)} ${esc(CHMAP[i.ch].name)}</td>
+      <td class="nm">${esc(i.n)}${chipsHtml(i)}${opCount(i) ? `<span class="more">함께 판매 ${opCount(i)}개</span>` : ''}</td><td>${esc(i.c2)}</td>
+      <td class="num">${won(i.p)}</td><td class="num">${won(i.sp)}</td><td class="num"><b>${i.p ? won(best(i)) : '—'}</b></td>
+      <td class="num">${off ? `<span class="off">-${off}%</span>` : '—'}</td><td class="num"><span class="unit">${esc(unitTxt(i) || '—')}</span></td>
+      <td class="num">${i.ifm ? i.ifm + '개월' : '—'}</td><td>${esc(i.cd || '—')}</td></tr>`; }).join('')
+      || `<tr><td colspan="${COLS.length}" class="quiet">조건에 맞는 방송이 없습니다. 필터를 줄여 보세요.</td></tr>`;
+  }
+}
+function renderHeat() {
+  const c1s = [...new Set(state.items.map(i => i.c1).filter(Boolean))];
+  const cnt = {}; let max = 1;
+  state.items.forEach(i => { const key = i.c1 + '|' + i.ch; cnt[key] = (cnt[key] || 0) + 1; max = Math.max(max, cnt[key]); });
+  const tot = k => CH.reduce((s, c) => s + (cnt[k + '|' + c.id] || 0), 0);
+  c1s.sort((a, b) => tot(b) - tot(a));
+  $('#heat').innerHTML = `<thead><tr><th>대분류</th>${CH.map(c => `<th style="text-align:center">${esc(c.name)}</th>`).join('')}</tr></thead><tbody>` +
+    c1s.map(k => `<tr><td>${esc(k)}</td>${CH.map(c => { const v = cnt[k + '|' + c.id] || 0; const a = Math.round(v / max * 70); return `<td style="background:color-mix(in srgb,var(--ch-${c.id}) ${a}%,transparent);${a > 40 ? 'color:var(--surface);font-weight:600' : ''}">${v || '·'}</td>`; }).join('')}</tr>`).join('') + '</tbody>';
+}
+$('#cmp thead').addEventListener('click', e => { const th = e.target.closest('th[data-k]'); if (!th) return; const k = th.dataset.k; state.sort = {k, dir: state.sort.k === k ? -state.sort.dir : (['p', 'sp', 'best', 'off', 'unit', 'ifm'].includes(k) ? -1 : 1)}; renderCompare(); });
+$('#cmp tbody').addEventListener('click', e => { const tr = e.target.closest('tr[data-idx]'); if (tr) openDetail(+tr.dataset.idx); });
+$('#cards').addEventListener('click', e => { const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx); });
+$('#chFilters').addEventListener('click', e => { const b = e.target.closest('[data-ch]'); if (!b) return; const id = b.dataset.ch; state.chOn.has(id) ? state.chOn.delete(id) : state.chOn.add(id); renderCompare(); });
+['#c1Sel', '#hideNoPrice'].forEach(s => $(s).addEventListener('change', renderRows));
+$('#q').addEventListener('input', renderRows);
+const setMode = m => { state.mode = m; try { localStorage.setItem('zap.mode', m); } catch (e) {} renderCompare(); };
+$('#modeCards').addEventListener('click', () => setMode('cards'));
+$('#modeTable').addEventListener('click', () => setMode('table'));
+
+// ---------- detail ----------
+function openDetail(idx) {
+  const it = state.items.find(i => i.idx === idx); if (!it) return;
+  const ch = CHMAP[it.ch];
+  const steps = [['정상가', it.p]];
+  if (it.sp && it.sp !== it.p) steps.push(['판매가', it.sp]);
+  if (it.cp && it.cp !== it.sp) steps.push([it.cpw || '쿠폰적용가', it.cp]);
+  if (it.mx && it.mx !== (it.cp || it.sp)) steps.push(['카드할인 적용 최대혜택가', it.mx]);
+  const ladder = it.p ? `<div class="ladder">${steps.map(([l, v]) => `<div><span>${esc(l)}</span><span>${won(v)}</span></div>`).join('')}</div>` : `<p class="quiet">가격이 공개되지 않은 방송입니다 (상담·렌탈·여행·보험 등).</p>`;
+  const ops = it.op || []; const oc = opCount(it);
+  const opsHtml = ops.length ? `<div class="section-h"><h2>이 방송 판매 구성</h2><p>본상품 외 함께 판매 ${oc}개</p></div>
+    <ul class="oplist"><li><span><b>${esc(it.n)}</b></span><span><b>${it.p ? won(best(it)) : '—'}</b></span></li>${ops.map(o => `<li><span>${esc(o.n)}</span><span>${won(opPrice(o))}${o.p && opPrice(o) < o.p ? `<br><span class="was">${won(o.p)}</span>` : ''}</span></li>`).join('')}${oc > ops.length ? `<li><span class="quiet">외 ${oc - ops.length}개</span><span></span></li>` : ''}</ul>` : '';
+  const overlap = state.items.filter(o => o.ch !== it.ch && Math.min(o.em, it.em) - Math.max(o.sm, it.sm) > 0).sort((a, b) => CHORD[a.ch] - CHORD[b.ch]);
+  $('#panel').innerHTML = `<button class="x" id="closeSheet">닫기</button>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="chname">${chDot(it.ch)}${esc(ch.name)} · <span class="mono">${esc(it.s)}–${esc(it.e)}</span></span><h3 id="pTitle">${esc(it.n)}</h3>${chipsHtml(it)}</div>
+    ${ladder}
+    <dl class="kv">
+      ${offPct(it) ? `<dt>할인</dt><dd>정상가 대비 ${offPct(it)}%</dd>` : ''}
+      ${unitTxt(it) ? `<dt>단가</dt><dd class="mono">${esc(unitTxt(it))} <span class="quiet">(상품명 구성 기준 추정)</span></dd>` : ''}
+      ${it.lp ? `<dt>런칭가</dt><dd class="mono">${won(it.lp)}</dd>` : ''}
+      <dt>무이자</dt><dd>${it.ifm ? `최대 ${it.ifm}개월` : '—'}</dd>
+      <dt>카드할인</dt><dd>${esc(it.cd || '—')}</dd>
+      <dt>브랜드</dt><dd>${esc(it.b || '—')}</dd>
+      <dt>카테고리</dt><dd>${esc([it.c1, it.c2, it.c3].filter(Boolean).join(' › '))}</dd>
+      ${it.pg ? `<dt>프로그램</dt><dd>${esc(it.pg)}</dd>` : ''}
+    </dl>
+    ${it.u ? `<a class="btn" href="${esc(it.u)}" target="_blank" rel="noopener">상품 페이지 열기 ↗</a>` : ''}
+    ${opsHtml}
+    <div class="section-h"><h2>같은 시간대 다른 채널</h2></div>
+    <div class="same">${overlap.map(o => `<button class="rv" data-idx="${o.idx}"><span class="who"><b>${chDot(o.ch)}${esc(CHMAP[o.ch].name)}</b><span class="mono">${esc(o.s)}–${esc(o.e)}</span></span><span><span class="nm">${esc(o.n)}</span><br><span class="sub">${esc(o.c2)}${o.c2 && o.c2 === it.c2 ? ' · <b>동일 상품군</b>' : ''}${comp(o.n).chips.length ? ' · ' + esc(comp(o.n).chips.join(' ')) : ''}</span></span><span class="px">${o.p ? won(best(o)) : '—'}</span></button>`).join('') || '<p class="quiet">겹치는 방송이 없습니다.</p>'}</div>`;
+  $('#sheet').hidden = false; $('#closeSheet').focus();
+}
+function closeDetail() { $('#sheet').hidden = true; }
+$('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet' || e.target.id === 'closeSheet') return closeDetail(); const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+// ---------- data from db ----------
+function showEmpty(title, body) {
+  $('#app').hidden = true; const el = $('#emptyState'); el.hidden = false;
+  el.innerHTML = `<h2>${esc(title)}</h2><p>${esc(body)}</p>`;
+}
+function fillDates() {
+  $('#dateSel').innerHTML = state.dates.map(d => { const w = '일월화수목금토'[new Date(d + 'T12:00:00Z').getUTCDay()]; return `<option value="${d}" ${d === state.date ? 'selected' : ''}>${d.slice(5).replace('-', '.')} (${w})</option>`; }).join('');
+}
+// Static hosting (GitHub Pages 등): data/index.json + data/<date>.json 을 읽는다.
+async function bootStatic() {
+  const get = async p => { const r = await fetch(p + '?t=' + Date.now(), {cache: 'no-store'}); if (!r.ok) throw new Error(r.status); return r.json(); };
+  let idx;
+  try { idx = await get('data/index.json'); } catch (e) { return false; }
+  state.dates = (idx.dates || []).slice().sort().reverse();
+  if (!state.dates.length) { showEmpty('아직 수집된 편성이 없습니다', '매일 아침 자동 수집이 끝나면 이곳에 표시됩니다.'); return true; }
+  const load = async d => {
+    state.date = d; fillDates();
+    try { state.day = await get('data/' + d + '.json'); state.items = prep(state.day.items || []); render(); }
+    catch (e) { showEmpty(d + ' 편성을 불러오지 못했습니다', '잠시 후 새로 고쳐 주세요.'); }
+  };
+  $('#dateSel').addEventListener('change', e => load(e.target.value));
+  const today = kstNow().date;
+  await load(state.dates.includes(today) ? today : state.dates[0]);
+  return true;
+}
+async function boot() {
+  const inClaude = !!(window.claude && window.claude.use);
+  if (!inClaude && await bootStatic()) return;
+  const db = inClaude ? await window.claude.use('db').catch(() => null) : null;
+  if (!db) { if (await bootStatic()) return; showEmpty('편성 데이터에 연결할 수 없습니다', 'claude.ai에 로그인한 상태로 이 페이지를 열면 매일 수집된 편성표가 표시됩니다.'); return; }
+  const subscribeDay = d => {
+    if (unsubDay) unsubDay();
+    state.date = d; fillDates();
+    unsubDay = db.doc('days/' + d).onSnapshot(snap => {
+      if (!snap.exists) { showEmpty(d + ' 편성이 아직 없습니다', '이 날짜의 수집이 끝나면 자동으로 나타납니다.'); return; }
+      state.day = snap.data(); state.items = prep(state.day.items || []); render();
+    }, () => showEmpty('편성 데이터를 읽지 못했습니다', '잠시 후 페이지를 새로 고쳐 주세요.'));
+  };
+  $('#dateSel').addEventListener('change', e => subscribeDay(e.target.value));
+  db.doc('meta/index').onSnapshot(snap => {
+    const dates = (snap.exists && snap.data().dates) || [];
+    state.dates = dates.slice().sort().reverse();
+    if (!state.dates.length) { showEmpty('아직 수집된 편성이 없습니다', '매일 아침 자동 수집이 7개 TV 홈쇼핑 채널의 편성과 상품·가격을 이곳에 채웁니다. 첫 수집이 끝나면 바로 표시됩니다.'); return; }
+    const today = kstNow().date;
+    if (!state.date || !state.dates.includes(state.date)) subscribeDay(state.dates.includes(today) ? today : state.dates[0]);
+    else fillDates();
+  }, () => showEmpty('편성 데이터를 읽지 못했습니다', '잠시 후 페이지를 새로 고쳐 주세요.'));
+}
+boot();
+})();
+</script>
+
+</body>
+</html>
