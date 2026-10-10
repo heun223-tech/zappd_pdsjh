@@ -216,6 +216,7 @@ tbody tr:hover td{background:var(--surface-2)}
 /* detail sheet */
 .sheet{position:fixed;inset:0;z-index:50;display:flex;justify-content:flex-end;background:color-mix(in srgb,var(--ink) 30%,transparent)}
 .sheet .panel{width:min(440px,100%);height:100%;background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);overflow:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 18px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.sheet .panel > *{flex-shrink:0}
 .panel .x{align-self:flex-end;border:1px solid var(--line);background:var(--surface-2);border-radius:6px;padding:3px 10px}
 .panel h3{margin:0;font-size:17px;line-height:1.4;overflow-wrap:anywhere}
 .ladder{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:8px;overflow:hidden}
@@ -227,6 +228,23 @@ tbody tr:hover td{background:var(--surface-2)}
 .btn{display:inline-flex;justify-content:center;align-items:center;gap:6px;background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:9px 14px;font-weight:700;text-decoration:none;border:0}
 .same{display:flex;flex-direction:column;gap:6px}
 
+/* broadcast schedule (EPG) */
+.ep{position:absolute;left:3px;right:3px;border-radius:5px;background:color-mix(in srgb,var(--g) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--g) 30%,var(--line));border-left:3px solid var(--g);padding:3px 6px;overflow:hidden;display:flex;flex-direction:column;gap:1px;font-size:12px;line-height:1.3}
+.ep .t{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.ep .nm{font-weight:500;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere}
+.ep .gn{font-size:10.5px;color:var(--muted)}
+.ep.off{background:repeating-linear-gradient(45deg,var(--surface-2),var(--surface-2) 6px,var(--surface) 6px,var(--surface) 12px);border-color:var(--line);border-left-color:var(--line);color:var(--muted)}
+.ep.short .gn{display:none}
+.ep.tiny .nm{-webkit-line-clamp:1}
+.tl-head .kt{font-family:var(--f-mono);font-size:10px;font-weight:500;color:var(--muted)}
+.tl-head .grp{font-size:10px;font-weight:500;color:var(--muted)}
+.tl-head.adj{box-shadow:inset 0 -3px 0 var(--accent)}
+.sw.g{background:color-mix(in srgb,var(--g) 18%,var(--surface));border-left:3px solid var(--g)}
+.epgnow{display:flex;flex-direction:column;gap:4px}
+.epgnow div{display:grid;grid-template-columns:88px 48px minmax(0,1fr);gap:8px;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.epgnow div:last-child{border-bottom:0}
+.epgnow b{font-weight:600}
+.epgnow span{overflow-wrap:anywhere}
 .empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:28px 22px;display:flex;flex-direction:column;gap:8px;max-width:640px}
 .empty h2{margin:0;font-size:16px}
 .empty p{margin:0;color:var(--muted)}
@@ -241,6 +259,7 @@ tbody tr:hover td{background:var(--surface-2)}
       <button class="tab" role="tab" id="tab-timeline" aria-selected="true" data-view="timeline">재핑 타임라인</button>
       <button class="tab" role="tab" id="tab-alerts" aria-selected="false" data-view="alerts">동일 상품군 알림 <span class="count" id="alertCount" hidden>0</span></button>
       <button class="tab" role="tab" id="tab-compare" aria-selected="false" data-view="compare">채널별 상품·가격</button>
+      <button class="tab" role="tab" id="tab-epg" aria-selected="false" data-view="epg">방송 편성표</button>
     </div>
     <span class="spacer"></span>
     <div class="datepick"><label for="dateSel" class="meta">방송일</label><select id="dateSel"></select></div>
@@ -281,6 +300,11 @@ tbody tr:hover td{background:var(--surface-2)}
       <div class="tbl-wrap" id="tblWrap" hidden><table id="cmp"><thead></thead><tbody></tbody></table></div>
       <div class="section-h"><h2>대분류별 편성 수</h2><p>방송 건수 기준. 칸이 진할수록 많이 편성.</p></div>
       <div class="tbl-wrap"><table class="heat" id="heat"></table></div>
+    </section>
+
+    <section id="view-epg" data-view-panel="epg" hidden style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+      <div class="tl-legend" id="epgLegend"></div>
+      <div class="tl-scroll" id="epgScroll"><div class="tl" id="epg"></div></div>
     </section>
   </div>
 </div>
@@ -385,14 +409,13 @@ function setView(v) {
   try { history.replaceState(null, '', '#' + v); } catch (e) {}
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setView(t.dataset.view)));
-const h0 = (location.hash || '').slice(1); if (['timeline', 'alerts', 'compare'].includes(h0)) setView(h0);
+const h0 = (location.hash || '').slice(1); if (['timeline', 'alerts', 'compare', 'epg'].includes(h0)) setView(h0);
 
 function tick() {
   const n = kstNow(); $('#clock').textContent = n.hm + ' KST';
   const live = state.date === n.date; const oa = $('#onair');
   oa.textContent = live ? 'ON AIR' : 'OFF AIR'; oa.classList.toggle('off', !live);
-  const line = document.getElementById('nowline');
-  if (line) { line.hidden = !live; line.style.top = `calc(37px + ${n.min} * var(--ppm))`; line.querySelector('span').textContent = n.hm; }
+  document.querySelectorAll('.nowline').forEach(line => { const hd = line.parentElement && line.parentElement.querySelector('.tl-head'); line.hidden = !live; line.style.top = `calc(${(hd && hd.offsetHeight) || 37}px + ${n.min} * var(--ppm))`; line.querySelector('span').textContent = n.hm; });
 }
 setInterval(tick, 30000); tick();
 
@@ -401,7 +424,7 @@ function render() {
   $('#emptyState').hidden = true; $('#app').hidden = false;
   const ca = state.day && state.day.collectedAt;
   $('#collected').textContent = ca ? '수집 ' + new Date(ca).toLocaleString('ko-KR', {timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : '';
-  renderStrip(items); renderTimeline(items); renderAlerts(items); renderCompare(); tick();
+  renderStrip(items); renderTimeline(items); renderAlerts(items); renderCompare(); renderEpg(items); tick();
 }
 
 function renderStrip(items) {
@@ -564,6 +587,58 @@ const setMode = m => { state.mode = m; try { localStorage.setItem('zap.mode', m)
 $('#modeCards').addEventListener('click', () => setMode('cards'));
 $('#modeTable').addEventListener('click', () => setMode('table'));
 
+// ---------- broadcast schedule (EPG) ----------
+const GEN = {'뉴스':'--ch-immall','드라마':'--ch-cjmall','연예/오락':'--ch-hnsmall','스포츠':'--ch-gsshop','시사/다큐':'--ch-hmall','음악':'--ch-lotteimall','영화':'--ch-lotteimall','교양/정보':'--muted','어린이':'--ch-gsshop'};
+const genVar = g => `var(${GEN[g] || '--muted'})`;
+const isOff = t => /방송\s*시간이\s*아닙니다|정파/.test(t);
+function epgRows() {
+  const epg = (state.day && state.day.epg) || [];
+  return epg.map(c => {
+    const rows = c.items.map(([s, t, g]) => ({s, t, g, sm: toMin(s)})).sort((a, b) => a.sm - b.sm);
+    rows.forEach((r, i) => { r.em = i + 1 < rows.length ? rows[i + 1].sm : 1440; if (r.em <= r.sm) r.em = r.sm + 30; });
+    return {...c, rows};
+  });
+}
+function renderEpg(items) {
+  const chans = epgRows();
+  const sec = $('#view-epg');
+  if (!chans.length) { $('#epg').innerHTML = ''; $('#epgLegend').innerHTML = '<span>이 날짜의 방송 편성표는 아직 수집되지 않았습니다. 다음 자동 수집부터 함께 표시됩니다.</span>'; $('#tab-epg').hidden = false; return; }
+  const gens = ['뉴스', '드라마', '연예/오락', '시사/다큐', '교양/정보', '스포츠', '음악'];
+  $('#epgLegend').innerHTML = gens.map(g => `<span><i class="sw g" style="--g:${genVar(g)}"></i>${g}</span>`).join('') + `<span>숫자는 KT 지니TV 채널번호. NS홈쇼핑(2번) 양옆은 ENA(1)·tvN(3)이라 밑줄로 표시했습니다.</span>`;
+  const H = 24 * 60; const cols = 1 + chans.length;
+  const tl = $('#epg'); tl.style.gridTemplateColumns = `52px repeat(${cols}, minmax(128px,1fr))`; tl.style.minWidth = `calc(52px + ${cols} * 128px)`;
+  let html = `<div class="tl-head corner">KST</div><div class="tl-head own">${chDot('nsmall')}NS홈쇼핑 <span class="kt">2</span></div>` +
+    chans.map(c => `<div class="tl-head ${c.no === 1 || c.no === 3 ? 'adj' : ''}"><span style="display:flex;flex-direction:column;min-width:0"><span class="grp">${esc(c.grp)}</span><span>${esc(c.name)} <span class="kt">${c.no}</span></span></span></div>`).join('');
+  let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
+  for (let hr = 0; hr <= 24; hr++) rail += `<span class="h" style="top:calc(${hr * 60} * var(--ppm))">${String(hr).padStart(2, '0')}:00</span>`;
+  html += rail + '</div>';
+  const grid = () => { let g = ''; for (let hr = 1; hr < 24; hr++) g += `<div class="gridline" style="top:calc(${hr * 60} * var(--ppm))"></div>`; return g; };
+  // NS column (compact)
+  let ns = `<div class="col own" style="height:calc(${H} * var(--ppm))">${grid()}`;
+  for (const it of items.filter(i => i.ch === OWN)) {
+    const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
+    ns += `<button class="blk own ${px < 96 ? 'short' : ''} ${px < 50 ? 'tiny' : ''}" style="--c:var(--ch-nsmall);top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}"><span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span><span class="pline">${it.p ? `<span class="big">${won(best(it))}</span>` : '<span class="more">가격 미표기</span>'}</span><span class="cat">${esc(it.c2)}</span></button>`;
+  }
+  html += ns + '</div>';
+  for (const c of chans) {
+    let col = `<div class="col" style="height:calc(${H} * var(--ppm))">${grid()}`;
+    for (const r of c.rows) {
+      const dur = Math.min(r.em, H) - r.sm; if (dur <= 0) continue; const px = dur * 2; const off = isOff(r.t);
+      col += `<div class="ep ${off ? 'off' : ''} ${px < 60 ? 'short' : ''} ${px < 36 ? 'tiny' : ''}" style="--g:${genVar(r.g)};top:calc(${r.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" title="${esc(r.s + ' ' + r.t + (r.g ? ' · ' + r.g : ''))}"><span class="t">${esc(r.s)}</span><span class="nm">${off ? '정파' : esc(r.t)}</span>${off ? '' : `<span class="gn">${esc(r.g)}</span>`}</div>`;
+    }
+    html += col + '</div>';
+  }
+  html += `<div class="nowline" hidden><span></span></div>`;
+  tl.innerHTML = html;
+  const n = kstNow(); const sc = $('#epgScroll');
+  const target = state.date === n.date ? Math.max(0, n.min - 60) : 18 * 60;
+  requestAnimationFrame(() => { sc.scrollTop = target * 2; });
+}
+$('#epg').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx); });
+function epgAt(min) {
+  return epgRows().map(c => { const r = c.rows.find(x => x.sm <= min && min < x.em); return r && !isOff(r.t) ? {c, r} : null; }).filter(Boolean);
+}
+
 // ---------- detail ----------
 function openDetail(idx) {
   const it = state.items.find(i => i.idx === idx); if (!it) return;
@@ -592,7 +667,8 @@ function openDetail(idx) {
     </dl>
     ${it.u ? `<a class="btn" href="${esc(it.u)}" target="_blank" rel="noopener">상품 페이지 열기 ↗</a>` : ''}
     ${opsHtml}
-    <div class="section-h"><h2>같은 시간대 다른 채널</h2></div>
+    ${(() => { const at = epgAt(it.sm); return at.length ? `<div class="section-h"><h2>방송 시작 시각(${esc(it.s)}) 주요 채널</h2></div><div class="epgnow">${at.map(({c, r}) => `<div><b>${esc(c.name)} <span class="quiet mono">${c.no}</span></b><span class="mono quiet">${esc(r.s)}</span><span>${esc(r.t)} <span class="quiet">· ${esc(r.g)}</span></span></div>`).join('')}</div>` : ''; })()}
+    <div class="section-h"><h2>같은 시간대 다른 홈쇼핑</h2></div>
     <div class="same">${overlap.map(o => `<button class="rv" data-idx="${o.idx}"><span class="who"><b>${chDot(o.ch)}${esc(CHMAP[o.ch].name)}</b><span class="mono">${esc(o.s)}–${esc(o.e)}</span></span><span><span class="nm">${esc(o.n)}</span><br><span class="sub">${esc(o.c2)}${o.c2 && o.c2 === it.c2 ? ' · <b>동일 상품군</b>' : ''}${comp(o.n).chips.length ? ' · ' + esc(comp(o.n).chips.join(' ')) : ''}</span></span><span class="px">${o.p ? won(best(o)) : '—'}</span></button>`).join('') || '<p class="quiet">겹치는 방송이 없습니다.</p>'}</div>`;
   $('#sheet').hidden = false; $('#closeSheet').focus();
 }
