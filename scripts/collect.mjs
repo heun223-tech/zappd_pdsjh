@@ -108,16 +108,6 @@ const EPG_LOG = [];
 // Broadcast EPG from Daum search's weekly channel schedule (reachable from overseas runners).
 const DAUM_Q = {KBS1: 'KBS1', KBS2: 'KBS2', MBC: 'MBC', SBS: 'SBS', EBS: 'EBS1', JTBC: 'JTBC', MBN: 'MBN', '채널A': '채널A', 'TV조선': 'TV조선', ENA: 'ENA', tvN: 'tvN', '연합뉴스TV': '연합뉴스TV', YTN: 'YTN'};
 const decodeHtml = t => t.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
-function guessGenre(title, ch) {
-  if (/뉴스|NEWS|브리핑|뉴스특보/i.test(title) || ch === 'YTN' || ch === '연합뉴스TV') return /다큐|스페셜/.test(title) ? '시사/다큐' : '뉴스';
-  if (/드라마|미니시리즈|일일|주말극|연속극|시즌\s?\d+\s?\d+회/.test(title)) return '드라마';
-  if (/다큐|시사|탐사|추적|스페셜|PD수첩|그것이 알고|인간극장/.test(title)) return '시사/다큐';
-  if (/중계|야구|축구|배구|농구|골프|스포츠|씨름|당구/.test(title)) return '스포츠';
-  if (/가요|뮤직|음악|노래|트롯|콘서트|열린음악회/.test(title)) return '음악';
-  if (/영화|시네마|무비/.test(title)) return '영화';
-  if (/방송\s*시간이\s*아닙니다|정파/.test(title)) return '';
-  return '';
-}
 async function daumChannel(name, year) {
   const url = 'https://search.daum.net/search?w=tot&q=' + encodeURIComponent(DAUM_Q[name] + ' 편성표');
   const r = await fetch(url, {headers: {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36', 'Accept-Language': 'ko-KR,ko;q=0.9'}, signal: AbortSignal.timeout(30000)});
@@ -135,7 +125,7 @@ async function daumChannel(name, year) {
     for (const e of m[3].matchAll(/<dt class="tit">\s*(\d+)\s*<\/dt>\s*<dd class="cont">([\s\S]*?)<\/dd>/g)) {
       const title = decodeHtml(e[2].replace(/<span class="img_tv[^"]*">[\s\S]*?<\/span>/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
       if (!title) continue;
-      (out[d] = out[d] || []).push([hh + ':' + String(+e[1]).padStart(2, '0'), title, guessGenre(title, name)]);
+      (out[d] = out[d] || []).push([hh + ':' + String(+e[1]).padStart(2, '0'), title, '']);
     }
   }
   for (const d in out) out[d].sort((a, b) => a[0].localeCompare(b[0]));

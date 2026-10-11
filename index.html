@@ -73,7 +73,8 @@ h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balan
 .setseg button{font-weight:600}
 .setnote{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:14px 16px;color:var(--muted)}
 .chcard{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.chcard.own{border-color:var(--accent);background:var(--accent-soft)}
+.chcard.own{border:2px solid var(--accent);background:var(--accent-soft)}
+.chcard.own .chname{font-size:15px}
 .chname{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px}
 .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--c)}
 .chcard .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
@@ -89,17 +90,24 @@ h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balan
 .tl{display:grid;grid-template-columns:52px repeat(7,minmax(150px,1fr));min-width:calc(52px + 7*150px);position:relative}
 .tl-head{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);padding:8px;display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px;min-width:0}
 .tl-head.corner{left:0;z-index:7;font-family:var(--f-mono);font-size:10px;color:var(--muted);font-weight:500}
-.tl-head.own{background:var(--accent-soft)}
+.tl-head.own{background:var(--accent);color:var(--accent-ink);left:52px;z-index:6;font-size:14px}
+.tl-head.own .tag{color:var(--accent-ink);border-color:var(--accent-ink)}
+.tl-head.own .kt{color:var(--accent-ink)}
 .tl-head .tag{font-size:10px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:0 4px}
 .rail{position:sticky;left:0;z-index:4;background:var(--surface);border-right:1px solid var(--line)}
 .rail .h{position:absolute;left:0;right:0;font-family:var(--f-mono);font-size:11px;color:var(--muted);text-align:right;padding-right:6px;transform:translateY(-7px)}
 .col{position:relative;border-right:1px solid var(--line)}
-.col.own{background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
+.col.own{position:sticky;left:52px;z-index:3;background:color-mix(in srgb,var(--accent-soft) 75%,var(--surface));box-shadow:2px 0 0 var(--accent)}
 .gridline{position:absolute;left:0;right:0;border-top:1px solid var(--line);opacity:.6}
 .gridline.half{border-top-style:dotted;opacity:.35}
 .blk{position:absolute;left:4px;right:4px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--c);padding:4px 6px;overflow:hidden;text-align:left;display:flex;flex-direction:column;gap:1px;font-size:12px;line-height:1.3;transition:box-shadow .15s}
 .blk:hover{box-shadow:var(--shadow);z-index:2}
-.blk.own{background:var(--accent-soft)}
+.blk.own{background:var(--surface);border:2px solid var(--accent);border-left:6px solid var(--accent);padding:6px 9px;gap:2px;font-size:13px}
+.blk.own .t{font-size:11.5px;color:var(--accent);font-weight:600}
+.blk.own .nm{font-size:14.5px;font-weight:700;-webkit-line-clamp:3;line-height:1.35}
+.blk.own .pline{font-size:13px}
+.blk.own .pline .big{font-size:16px;font-weight:700}
+.blk.own.short .nm{-webkit-line-clamp:2}
 .blk.clash{background:var(--warn-soft);border-color:var(--warn);border-left-color:var(--warn);border-width:2px 2px 2px 3px}
 .blk.near{background:var(--caution-soft);border-color:var(--caution);border-style:dashed;border-left-style:solid;border-left-color:var(--caution)}
 .blk .t{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
@@ -114,7 +122,7 @@ h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balan
 .badge.clash{background:var(--warn);color:#fff}
 .badge.near{background:var(--caution);color:var(--surface)}
 .badge.brand{background:var(--ink);color:var(--surface)}
-.nowline{position:absolute;left:52px;right:0;border-top:2px solid var(--now);z-index:3;pointer-events:none}
+.nowline{position:absolute;left:52px;right:0;border-top:2px solid var(--now);z-index:4;pointer-events:none}
 .nowline span{position:absolute;left:0;top:-10px;background:var(--now);color:#fff;font-family:var(--f-mono);font-size:10px;font-weight:600;padding:1px 5px;border-radius:3px}
 
 /* price + composition atoms */
@@ -460,7 +468,7 @@ function renderStrip(items) {
 // ---------- timeline ----------
 function renderTimeline(items) {
   const H = 24 * 60;
-  const tlEl = $('#tl'); tlEl.style.gridTemplateColumns = `52px repeat(${CH.length}, minmax(150px,1fr))`; tlEl.style.minWidth = `calc(52px + ${CH.length} * 150px)`;
+  const tlEl = $('#tl'); tlEl.style.gridTemplateColumns = '52px ' + CH.map(c => c.own ? 'minmax(240px,1.6fr)' : 'minmax(150px,1fr)').join(' '); tlEl.style.minWidth = `calc(52px + 240px + ${CH.length - 1} * 150px)`;
   let html = `<div class="tl-head corner">KST</div>` + CH.map(c => `<div class="tl-head ${c.own ? 'own' : ''}">${chDot(c.id)}${esc(c.name)}${c.own ? '<span class="tag">자사</span>' : ''}</div>`).join('');
   let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
   for (let hr = 0; hr <= 24; hr++) rail += `<span class="h" style="top:calc(${hr * 60} * var(--ppm))">${String(hr).padStart(2, '0')}:00</span>`;
@@ -610,8 +618,6 @@ $('#modeCards').addEventListener('click', () => setMode('cards'));
 $('#modeTable').addEventListener('click', () => setMode('table'));
 
 // ---------- broadcast schedule (EPG) ----------
-const GEN = {'뉴스':'--ch-immall','드라마':'--ch-cjmall','연예/오락':'--ch-hnsmall','스포츠':'--ch-gsshop','시사/다큐':'--ch-hmall','음악':'--ch-lotteimall','영화':'--ch-lotteimall','교양/정보':'--muted','어린이':'--ch-gsshop'};
-const genVar = g => `var(${GEN[g] || '--muted'})`;
 const isOff = t => /방송\s*시간이\s*아닙니다|정파/.test(t);
 function epgRows() {
   const epg = (state.docs.tv && state.docs.tv.epg) || [];
@@ -625,10 +631,9 @@ function renderEpg(items) {
   const chans = epgRows();
   const sec = $('#view-epg');
   if (!chans.length) { $('#epg').innerHTML = ''; $('#epgLegend').innerHTML = '<span>이 날짜의 방송 편성표는 아직 수집되지 않았습니다. 다음 자동 수집부터 함께 표시됩니다.</span>'; $('#tab-epg').hidden = false; return; }
-  const gens = ['뉴스', '드라마', '연예/오락', '시사/다큐', '교양/정보', '스포츠', '음악'];
-  $('#epgLegend').innerHTML = gens.map(g => `<span><i class="sw g" style="--g:${genVar(g)}"></i>${g}</span>`).join('') + `<span>숫자는 KT 지니TV 채널번호. NS홈쇼핑(2번) 양옆은 ENA(1)·tvN(3)이라 밑줄로 표시했습니다.</span>`;
+  $('#epgLegend').innerHTML = `<span>숫자는 KT 지니TV 채널번호. NS홈쇼핑(2번) 양옆은 ENA(1)·tvN(3)이라 밑줄로 표시했습니다.</span>`;
   const H = 24 * 60; const cols = 1 + chans.length;
-  const tl = $('#epg'); tl.style.gridTemplateColumns = `52px repeat(${cols}, minmax(128px,1fr))`; tl.style.minWidth = `calc(52px + ${cols} * 128px)`;
+  const tl = $('#epg'); tl.style.gridTemplateColumns = `52px minmax(220px,1.5fr) repeat(${cols - 1}, minmax(128px,1fr))`; tl.style.minWidth = `calc(52px + 220px + ${cols - 1} * 128px)`;
   let html = `<div class="tl-head corner">KST</div><div class="tl-head own">${chDot('nsmall')}NS홈쇼핑 <span class="kt">2</span></div>` +
     chans.map(c => `<div class="tl-head ${c.no === 1 || c.no === 3 ? 'adj' : ''}"><span style="display:flex;flex-direction:column;min-width:0"><span class="grp">${esc(c.grp)}</span><span>${esc(c.name)} <span class="kt">${c.no}</span></span></span></div>`).join('');
   let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
@@ -646,7 +651,7 @@ function renderEpg(items) {
     let col = `<div class="col" style="height:calc(${H} * var(--ppm))">${grid()}`;
     for (const r of c.rows) {
       const dur = Math.min(r.em, H) - r.sm; if (dur <= 0) continue; const px = dur * 2; const off = isOff(r.t);
-      col += `<div class="ep ${off ? 'off' : ''} ${px < 60 ? 'short' : ''} ${px < 36 ? 'tiny' : ''}" style="--g:${genVar(r.g)};top:calc(${r.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" title="${esc(r.s + ' ' + r.t + (r.g ? ' · ' + r.g : ''))}"><span class="t">${esc(r.s)}</span><span class="nm">${off ? '정파' : esc(r.t)}</span>${off ? '' : `<span class="gn">${esc(r.g)}</span>`}</div>`;
+      col += `<div class="ep ${off ? 'off' : ''} ${px < 60 ? 'short' : ''} ${px < 36 ? 'tiny' : ''}" style="--g:var(--muted);top:calc(${r.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" title="${esc(r.s + ' ' + r.t)}"><span class="t">${esc(r.s)}</span><span class="nm">${off ? '정파' : esc(r.t)}</span></div>`;
     }
     html += col + '</div>';
   }
@@ -692,7 +697,7 @@ function openDetail(idx, pool) {
     </dl>
     ${it.u ? `<a class="btn" href="${esc(it.u)}" target="_blank" rel="noopener">상품 페이지 열기 ↗</a>` : ''}
     ${opsHtml}
-    ${(() => { const at = epgAt(it.sm); return at.length ? `<div class="section-h"><h2>방송 시작 시각(${esc(it.s)}) 주요 채널</h2></div><div class="epgnow">${at.map(({c, r}) => `<div><b>${esc(c.name)} <span class="quiet mono">${c.no}</span></b><span class="mono quiet">${esc(r.s)}</span><span>${esc(r.t)} <span class="quiet">· ${esc(r.g)}</span></span></div>`).join('')}</div>` : ''; })()}
+    ${(() => { const at = epgAt(it.sm); return at.length ? `<div class="section-h"><h2>방송 시작 시각(${esc(it.s)}) 주요 채널</h2></div><div class="epgnow">${at.map(({c, r}) => `<div><b>${esc(c.name)} <span class="quiet mono">${c.no}</span></b><span class="mono quiet">${esc(r.s)}</span><span>${esc(r.t)}</span></div>`).join('')}</div>` : ''; })()}
     <div class="section-h"><h2>같은 시간대 다른 홈쇼핑</h2></div>
     <div class="same">${overlap.map(o => `<button class="rv" data-idx="${o.idx}"><span class="who"><b>${chDot(o.ch)}${esc(CHMAP[o.ch].name)}</b><span class="mono">${esc(o.s)}–${esc(o.e)}</span></span><span><span class="nm">${esc(o.n)}</span><br><span class="sub">${esc(o.c2)}${o.c2 && o.c2 === it.c2 ? ' · <b>동일 상품군</b>' : ''}${comp(o.n).chips.length ? ' · ' + esc(comp(o.n).chips.join(' ')) : ''}</span></span><span class="px">${o.p ? won(best(o)) : '—'}</span></button>`).join('') || '<p class="quiet">겹치는 방송이 없습니다.</p>'}</div>`;
   $('#sheet').hidden = false; $('#closeSheet').focus();
