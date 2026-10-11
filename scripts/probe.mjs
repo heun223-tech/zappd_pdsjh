@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 const tries = [
+  ['naver2', 'https://search.naver.com/search.naver?where=nexearch&query=KBS1+%ED%8E%B8%EC%84%B1%ED%91%9C', {}],
   ['kt', 'https://tv.kt.com/tv/channel/pSchedule.asp', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'ch_type=1&service_ch_no=9&view_type=1&seldate=20261012'}],
   ['daum', 'https://search.daum.net/search?w=tot&q=KBS1%20%ED%8E%B8%EC%84%B1%ED%91%9C', {}],
   ['naver', 'https://search.naver.com/search.naver?query=KBS1+%ED%8E%B8%EC%84%B1%ED%91%9C', {}],
@@ -13,6 +14,7 @@ for (const [k, url, opt] of tries) {
   try {
     const r = await fetch(url, {...opt, headers: {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36', 'Accept-Language': 'ko-KR,ko;q=0.9', ...(opt.headers || {})}, signal: AbortSignal.timeout(20000)});
     const t = await r.text();
+    if (k === 'naver2' || k === 'daum') { fs.mkdirSync('probe', {recursive: true}); fs.writeFileSync('probe/' + k + '.html', t); }
     out[k] = {status: r.status, len: t.length, url: r.url.slice(0, 200), head: t.replace(/\s+/g, ' ').slice(0, 300), hasKBS: /뉴스|KBS|드라마/.test(t), hasTable: t.includes('tb_schedule')};
   } catch (e) { out[k] = {error: String(e).slice(0, 200)}; }
 }
