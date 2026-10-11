@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+</head>
+<body>
+<title>NS 재핑 보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: control-room board. A thin on-air bar, tabbed views; the timeline is one scroll box with sticky channel headers and a sticky timecode rail. */
+:root{
+  --bg:#eef1f3; --surface:#ffffff; --surface-2:#f6f8f9; --ink:#15202a; --muted:#5b6976; --line:#d6dde2;
+  --accent:#0a7564; --accent-ink:#ffffff; --accent-soft:#dcefea;
+  --warn:#b8430b; --warn-soft:#fbe7da; --caution:#8a6a00; --caution-soft:#f6eecb;
+  --now:#d1291b; --shadow:0 1px 2px rgba(21,32,42,.06),0 4px 14px rgba(21,32,42,.06);
+  --ch-nsmall:#0a7564; --ch-gsshop:#4a7d1e; --ch-cjmall:#7b3fa8; --ch-lotteimall:#c0262f; --ch-hmall:#1f6a5c; --ch-hnsmall:#d1661a; --ch-immall:#2b5ea7;
+  --ch-nsmallplus:#0a7564; --ch-gsmyshop:#4a7d1e; --ch-cjmallplus:#7b3fa8; --ch-lotteonetv:#c0262f; --ch-hmallplus:#1f6a5c; --ch-kshop:#b3261e; --ch-kshopplus:#8a3b12; --ch-bshop:#d4442a; --ch-ssgshop:#a8326e; --ch-shopnt:#5b4bb5; --ch-wshop:#2f7f9e;
+  --f-body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ppm:2px; /* timeline pixels per minute */
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e1418; --surface:#161f25; --surface-2:#1b262d; --ink:#e4ebef; --muted:#93a2ad; --line:#2a3741;
+  --accent:#3bbfa8; --accent-ink:#06201b; --accent-soft:#123029;
+  --warn:#f5894a; --warn-soft:#3a2216; --caution:#e2c15a; --caution-soft:#332b10;
+  --now:#ff6b5e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  --ch-nsmall:#3bbfa8; --ch-gsshop:#8cc35a; --ch-cjmall:#b88ae0; --ch-lotteimall:#f07178; --ch-hmall:#5cc2ad; --ch-hnsmall:#f3a15e; --ch-immall:#7fa8ec;
+  --ch-nsmallplus:#3bbfa8; --ch-gsmyshop:#8cc35a; --ch-cjmallplus:#b88ae0; --ch-lotteonetv:#f07178; --ch-hmallplus:#5cc2ad; --ch-kshop:#f28b82; --ch-kshopplus:#e2a36b; --ch-bshop:#ff8a65; --ch-ssgshop:#f48fb1; --ch-shopnt:#a99cf0; --ch-wshop:#6cc3e0;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0e1418; --surface:#161f25; --surface-2:#1b262d; --ink:#e4ebef; --muted:#93a2ad; --line:#2a3741;
+  --accent:#3bbfa8; --accent-ink:#06201b; --accent-soft:#123029;
+  --warn:#f5894a; --warn-soft:#3a2216; --caution:#e2c15a; --caution-soft:#332b10;
+  --now:#ff6b5e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  --ch-nsmall:#3bbfa8; --ch-gsshop:#8cc35a; --ch-cjmall:#b88ae0; --ch-lotteimall:#f07178; --ch-hmall:#5cc2ad; --ch-hnsmall:#f3a15e; --ch-immall:#7fa8ec;
+  --ch-nsmallplus:#3bbfa8; --ch-gsmyshop:#8cc35a; --ch-cjmallplus:#b88ae0; --ch-lotteonetv:#f07178; --ch-hmallplus:#5cc2ad; --ch-kshop:#f28b82; --ch-kshopplus:#e2a36b; --ch-bshop:#ff8a65; --ch-ssgshop:#f48fb1; --ch-shopnt:#a99cf0; --ch-wshop:#6cc3e0;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;padding-inline:16px;padding-block:0 32px}
+.wrap{max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* on-air bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);padding-block:12px 10px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;border-bottom:1px solid var(--line)}
+@media (max-width:700px){.bar{position:static}}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.onair{font-family:var(--f-mono);font-weight:600;font-size:11px;letter-spacing:.12em;padding:3px 7px;border-radius:3px;background:var(--now);color:#fff}
+.onair.off{background:var(--muted)}
+h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.clock{font-family:var(--f-mono);font-size:15px;font-weight:600;color:var(--ink)}
+.spacer{flex:1}
+.datepick{display:flex;align-items:center;gap:8px}
+.datepick select{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.meta{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:999px;font-weight:500;font-size:13px;display:flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab .count{font-family:var(--f-mono);font-size:11px;padding:0 6px;border-radius:999px;background:var(--warn);color:#fff}
+
+/* summary strip */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+@media (max-width:520px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.setseg button{font-weight:600}
+.setnote{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:14px 16px;color:var(--muted)}
+.chcard{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.chcard.own{border:2px solid var(--accent);background:var(--accent-soft)}
+.chcard.own .chname{font-size:15px}
+.chname{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--c)}
+.chcard .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.chcard .top{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* lineup: one row per NS broadcast, competitors on the same clock to the right */
+.lineup{display:flex;flex-direction:column;gap:10px}
+.lu-row{display:grid;grid-template-columns:minmax(250px,330px) minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;scroll-margin-top:120px}
+.lu-row.now{border-color:var(--now);box-shadow:0 0 0 1px var(--now)}
+.lu-row.past{opacity:.62}
+.lu-ns{text-align:left;border:0;border-right:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.lu-ns .t{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);display:flex;gap:8px;align-items:center}
+.lu-ns .t .live{font-family:var(--f-mono);font-size:10px;font-weight:600;letter-spacing:.08em;background:var(--now);color:#fff;border-radius:3px;padding:0 5px}
+.lu-ns .nm{font-size:15.5px;font-weight:700;line-height:1.4;overflow-wrap:anywhere;word-break:keep-all}
+.lu-ns .px{font-family:var(--f-mono);font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.lu-ns .px .off{font-size:13px}
+.lu-ns .sub{font-size:12px;color:var(--muted)}
+.lu-rv{display:flex;flex-direction:column;min-width:0}
+.lu-ch{display:grid;grid-template-columns:104px minmax(0,1fr);border-bottom:1px solid var(--line);min-width:0}
+.lu-ch:last-child{border-bottom:0}
+.lu-ch .who{display:flex;align-items:center;gap:6px;padding:7px 10px;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface-2)}
+.lu-ch .progs{display:flex;flex-direction:column;min-width:0}
+.lu-it{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:10px;align-items:baseline;text-align:left;border:0;background:transparent;padding:7px 12px;font-size:13px;min-width:0}
+.lu-it + .lu-it{border-top:1px dashed var(--line)}
+.lu-it:hover{background:var(--surface-2)}
+.lu-it .tm{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.lu-it .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.lu-it .pr{font-family:var(--f-mono);font-size:12.5px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.lu-it .pr.na{font-family:var(--f-body);font-weight:400;color:var(--muted);font-size:11.5px}
+.lu-none{padding:7px 12px;font-size:12px;color:var(--muted)}
+@media (max-width:760px){
+  .lu-row{grid-template-columns:1fr}
+  .lu-ns{border-right:0;border-bottom:3px solid var(--accent)}
+  .lu-ch{grid-template-columns:1fr}
+  .lu-ch .who{padding:6px 12px}
+  .lu-it{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}
+  .lu-it .tm{grid-column:1 / -1}
+}
+
+/* timeline */
+.tl-legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:12px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.sw.clash{background:var(--warn-soft);border:2px solid var(--warn)}
+.sw.near{background:var(--caution-soft);border:2px dashed var(--caution)}
+.sw.own{background:var(--accent-soft);border:2px solid var(--accent)}
+.tl-scroll{overflow:auto;height:min(76vh,1100px);background:var(--surface);border:1px solid var(--line);border-radius:10px;position:relative;overscroll-behavior:contain}
+.tl{display:grid;grid-template-columns:52px repeat(7,minmax(150px,1fr));min-width:calc(52px + 7*150px);position:relative}
+.tl-head{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);padding:8px;display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px;min-width:0}
+.tl-head.corner{left:0;z-index:7;font-family:var(--f-mono);font-size:10px;color:var(--muted);font-weight:500}
+.tl-head.own{background:var(--accent);color:var(--accent-ink);left:52px;z-index:6;font-size:14px}
+.tl-head.own .tag{color:var(--accent-ink);border-color:var(--accent-ink)}
+.tl-head.own .kt{color:var(--accent-ink)}
+.tl-head .tag{font-size:10px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:0 4px}
+.rail{position:sticky;left:0;z-index:4;background:var(--surface);border-right:1px solid var(--line)}
+.rail .h{position:absolute;left:0;right:0;font-family:var(--f-mono);font-size:11px;color:var(--muted);text-align:right;padding-right:6px;transform:translateY(-7px)}
+.col{position:relative;border-right:1px solid var(--line)}
+.col.own{position:sticky;left:52px;z-index:3;background:color-mix(in srgb,var(--accent-soft) 75%,var(--surface));box-shadow:2px 0 0 var(--accent)}
+.gridline{position:absolute;left:0;right:0;border-top:1px solid var(--line);opacity:.6}
+.gridline.half{border-top-style:dotted;opacity:.35}
+.blk{position:absolute;left:4px;right:4px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--c);padding:4px 6px;overflow:hidden;text-align:left;display:flex;flex-direction:column;gap:1px;font-size:12px;line-height:1.3;transition:box-shadow .15s}
+.blk:hover{box-shadow:var(--shadow);z-index:2}
+.blk.own{background:var(--surface);border:2px solid var(--accent);border-left:6px solid var(--accent);padding:6px 9px;gap:2px;font-size:13px}
+.blk.own .t{font-size:11.5px;color:var(--accent);font-weight:600}
+.blk.own .nm{font-size:14.5px;font-weight:700;-webkit-line-clamp:3;line-height:1.35}
+.blk.own .pline{font-size:13px}
+.blk.own .pline .big{font-size:16px;font-weight:700}
+.blk.own.short .nm{-webkit-line-clamp:2}
+.blk.clash{background:var(--warn-soft);border-color:var(--warn);border-left-color:var(--warn);border-width:2px 2px 2px 3px}
+.blk.near{background:var(--caution-soft);border-color:var(--caution);border-style:dashed;border-left-style:solid;border-left-color:var(--caution)}
+.blk .t{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.blk .nm{font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere}
+.blk .cat{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blk.short .nm{-webkit-line-clamp:1}
+.blk.short .chips,.blk.short .cat{display:none}
+.blk.tiny .pline{display:none}
+.blk .chips{max-height:17px;overflow:hidden}
+.blk .pline{font-size:11.5px}
+.badge{font-family:var(--f-body);font-size:10px;font-weight:700;padding:0 5px;border-radius:3px;line-height:16px;white-space:nowrap}
+.badge.clash{background:var(--warn);color:#fff}
+.badge.near{background:var(--caution);color:var(--surface)}
+.badge.brand{background:var(--ink);color:var(--surface)}
+.nowline{position:absolute;left:52px;right:0;border-top:2px solid var(--now);z-index:4;pointer-events:none}
+.nowline span{position:absolute;left:0;top:-10px;background:var(--now);color:#fff;font-family:var(--f-mono);font-size:10px;font-weight:600;padding:1px 5px;border-radius:3px}
+
+/* price + composition atoms */
+.chips{display:flex;flex-wrap:wrap;gap:3px}
+.cpc{font-size:10.5px;line-height:16px;padding:0 5px;border-radius:3px;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);white-space:nowrap;font-weight:500}
+.pline{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.pline .big{font-weight:600}
+.off{color:var(--warn);font-weight:600;font-family:var(--f-mono);font-size:.92em}
+.was{color:var(--muted);text-decoration:line-through;font-family:var(--f-mono);font-size:.88em;font-weight:400}
+.more{font-family:var(--f-body);font-size:10.5px;color:var(--muted);font-weight:500}
+.unit{font-size:11.5px;color:var(--muted);font-family:var(--f-mono)}
+.delta{font-family:var(--f-mono);font-size:11px;font-weight:600}
+.delta.up{color:var(--warn)} .delta.down{color:var(--accent)}
+
+/* alerts: one comparison table per NS broadcast */
+.alerts{display:flex;flex-direction:column;gap:14px}
+.vsbox{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.vs-h{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.vs-h .mono{font-weight:600}
+.vs-h .cat{color:var(--muted);font-size:12.5px}
+.vsbox .tbl-wrap{border:0;border-radius:0}
+table.vs td{vertical-align:middle}
+table.vs td.who{white-space:nowrap;font-size:12px}
+table.vs td.who b{display:flex;gap:5px;align-items:center;font-size:12.5px}
+table.vs td.nm{min-width:240px}
+table.vs td.nm .n{font-weight:500;overflow-wrap:anywhere;display:block;margin-bottom:3px}
+table.vs td.price b{font-size:13.5px}
+table.vs td.ben{font-size:11.5px;color:var(--muted);min-width:120px}
+table.vs td.rel{font-size:11.5px;color:var(--muted);white-space:nowrap}
+table.vs tr.own td{background:var(--accent-soft)}
+table.vs tr.own td.nm .n{font-weight:700}
+
+/* competitor cards */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:5px 12px;font-size:12.5px;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.chsecs{display:flex;flex-direction:column;gap:18px}
+.chsec{display:flex;flex-direction:column;gap:8px}
+.chsec-h{display:flex;align-items:baseline;gap:8px}
+.chsec-h h3{margin:0;font-size:15px;display:flex;align-items:center;gap:7px}
+.chsec-h span{color:var(--muted);font-size:12px;font-family:var(--f-mono)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.pcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--c);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.pcard:hover{box-shadow:var(--shadow)}
+.pcard.own{background:color-mix(in srgb,var(--accent-soft) 55%,var(--surface))}
+.pc-top{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.pc-name{font-weight:500;line-height:1.4;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pc-price{display:flex;flex-direction:column;gap:2px}
+.pc-price .row{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.pc-price .big{font-family:var(--f-mono);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.pc-price .lbl{font-size:11px;color:var(--muted)}
+.pc-sub{font-size:11.5px;color:var(--muted);font-family:var(--f-mono)}
+.pc-ben{font-size:11.5px;color:var(--muted);line-height:1.45}
+.pc-ops{list-style:none;margin:0;padding:7px 0 0;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:3px;font-size:11.5px}
+.pc-ops li{display:flex;justify-content:space-between;gap:8px}
+.pc-ops li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--muted)}
+.pc-ops li span:last-child{font-family:var(--f-mono);white-space:nowrap}
+.pc-ops .tail{color:var(--muted)}
+.oplist{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.oplist li{display:flex;justify-content:space-between;gap:10px;padding:7px 12px;border-bottom:1px solid var(--line);font-size:12.5px}
+.oplist li:last-child{border-bottom:0}
+.oplist li span:first-child{overflow-wrap:anywhere;min-width:0}
+.oplist li span:last-child{font-family:var(--f-mono);white-space:nowrap;text-align:right}
+.rv{display:grid;grid-template-columns:80px minmax(0,1fr) auto;gap:4px 12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;align-items:start;text-align:left;background:var(--surface);width:100%}
+.rv:hover{background:var(--surface-2)}
+.rv .who{display:flex;flex-direction:column;gap:2px;font-size:12px}
+.rv .who b{display:flex;gap:5px;align-items:center;font-size:12.5px}
+.rv .nm{font-weight:500;min-width:0;overflow-wrap:anywhere}
+.rv .sub{font-size:12px;color:var(--muted)}
+.rv .px{text-align:right;font-family:var(--f-mono);font-size:12.5px;font-weight:600;white-space:nowrap}
+.section-h{display:flex;align-items:baseline;gap:10px;margin:8px 0 0}
+.section-h h2{font-size:15px;margin:0}
+.section-h p{margin:0;color:var(--muted);font-size:12.5px}
+.quiet{color:var(--muted);font-size:13px}
+details.calm{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+details.calm summary{cursor:pointer;font-weight:500}
+details.calm ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
+
+/* compare */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:12.5px;display:flex;gap:6px;align-items:center}
+.chip[aria-pressed="false"]{opacity:.45}
+.filters select,.filters input[type="search"]{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;min-width:0}
+.filters input[type="search"]{flex:1 1 180px}
+.filters label{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--muted)}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{position:sticky;top:0;background:var(--surface-2);font-weight:700;font-size:12px;white-space:nowrap;user-select:none}
+th[data-k]{cursor:pointer}
+th[data-k]::after{content:"";margin-left:4px;color:var(--muted)}
+th.asc::after{content:"▲"} th.desc::after{content:"▼"}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.nm{min-width:240px;max-width:420px}
+tr.own td{background:color-mix(in srgb,var(--accent-soft) 60%,transparent)}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--surface-2)}
+.strike{color:var(--muted);text-decoration:line-through;font-weight:400}
+.heat{font-family:var(--f-mono)}
+.heat td{text-align:center;padding:6px 8px}
+.heat td:first-child,.heat th:first-child{text-align:left;font-family:var(--f-body)}
+
+/* detail sheet */
+.sheet{position:fixed;inset:0;z-index:50;display:flex;justify-content:flex-end;background:color-mix(in srgb,var(--ink) 30%,transparent)}
+.sheet .panel{width:min(440px,100%);height:100%;background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);overflow:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 18px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.sheet .panel > *{flex-shrink:0}
+.panel .x{align-self:flex-end;border:1px solid var(--line);background:var(--surface-2);border-radius:6px;padding:3px 10px}
+.panel h3{margin:0;font-size:17px;line-height:1.4;overflow-wrap:anywhere}
+.ladder{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.ladder div{display:flex;justify-content:space-between;gap:12px;padding:7px 12px;border-bottom:1px solid var(--line);font-size:13px}
+.ladder div:last-child{border-bottom:0;background:var(--accent-soft);font-weight:700}
+.ladder span:last-child{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:88px minmax(0,1fr);gap:6px 10px;font-size:13px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;overflow-wrap:anywhere}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:6px;background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:9px 14px;font-weight:700;text-decoration:none;border:0}
+.same{display:flex;flex-direction:column;gap:6px}
+
+/* broadcast schedule (EPG) */
+.ep{position:absolute;left:3px;right:3px;border-radius:5px;background:color-mix(in srgb,var(--g) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--g) 30%,var(--line));border-left:3px solid var(--g);padding:3px 6px;overflow:hidden;display:flex;flex-direction:column;gap:1px;font-size:12px;line-height:1.3}
+.ep .t{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.ep .nm{font-weight:500;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere}
+.ep .gn{font-size:10.5px;color:var(--muted)}
+.ep.off{background:repeating-linear-gradient(45deg,var(--surface-2),var(--surface-2) 6px,var(--surface) 6px,var(--surface) 12px);border-color:var(--line);border-left-color:var(--line);color:var(--muted)}
+.ep.short .gn{display:none}
+.ep.tiny .nm{-webkit-line-clamp:1}
+.tl-head .kt{font-family:var(--f-mono);font-size:10px;font-weight:500;color:var(--muted)}
+.tl-head .grp{font-size:10px;font-weight:500;color:var(--muted)}
+.tl-head.adj{box-shadow:inset 0 -3px 0 var(--accent)}
+.sw.g{background:color-mix(in srgb,var(--g) 18%,var(--surface));border-left:3px solid var(--g)}
+.epgnow{display:flex;flex-direction:column;gap:4px}
+.epgnow div{display:grid;grid-template-columns:88px 48px minmax(0,1fr);gap:8px;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.epgnow div:last-child{border-bottom:0}
+.epgnow b{font-weight:600}
+.epgnow span{overflow-wrap:anywhere}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:28px 22px;display:flex;flex-direction:column;gap:8px;max-width:640px}
+.empty h2{margin:0;font-size:16px}
+.empty p{margin:0;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <header class="bar">
+    <div class="brand"><span class="onair off" id="onair">OFF AIR</span><h1>NS 재핑 보드</h1></div>
+    <span class="clock" id="clock">--:--</span>
+    <div class="seg setseg" id="setSeg" role="group" aria-label="편성 구분"><button data-set="tv" aria-pressed="true">TV홈쇼핑</button><button data-set="tc" aria-pressed="false">데이터홈쇼핑</button></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-lineup" aria-selected="true" data-view="lineup">NS 기준 비교</button>
+      <button class="tab" role="tab" id="tab-timeline" aria-selected="false" data-view="timeline">전체 편성표</button>
+      <button class="tab" role="tab" id="tab-compare" aria-selected="false" data-view="compare">상품·가격 검색</button>
+      <button class="tab" role="tab" id="tab-epg" aria-selected="false" data-view="epg">TV 편성표</button>
+    </div>
+    <span class="spacer"></span>
+    <div class="datepick"><label for="dateSel" class="meta">방송일</label><select id="dateSel"></select></div>
+    <span class="meta" id="collected"></span>
+  </header>
+
+  <div id="emptyState" class="empty">
+    <h2>편성 데이터를 불러오는 중</h2>
+    <p>자동 수집된 TV홈쇼핑·데이터홈쇼핑 편성과 상품·가격을 불러옵니다.</p>
+  </div>
+
+  <div id="app" hidden>
+    <p class="setnote" id="setNote" hidden></p>
+    <section id="view-lineup" data-view-panel="lineup" style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+      <div class="tl-legend"><span id="lineupNote"></span><span>가격은 최대혜택가. 방송을 누르면 가격·구성 상세가 열립니다.</span></div>
+      <div class="lineup" id="lineup"></div>
+    </section>
+
+    <section id="view-timeline" data-view-panel="timeline" hidden style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+      <div class="tl-legend"><span>가격은 최대혜택가. 방송을 누르면 상세가 열립니다.</span></div>
+      <div class="tl-scroll" id="tlScroll"><div class="tl" id="tl"></div></div>
+    </section>
+
+    <section id="view-compare" data-view-panel="compare" hidden style="display:flex;flex-direction:column;gap:12px;margin-top:6px">
+      <div class="filters" id="chFilters"></div>
+      <div class="filters">
+        <div class="seg" role="group" aria-label="보기 방식"><button id="modeCards" aria-pressed="true">카드</button><button id="modeTable" aria-pressed="false">표</button></div>
+        <input type="search" id="q" placeholder="상품명·브랜드 검색" aria-label="검색">
+        <label><input type="checkbox" id="hideNoPrice" checked> 가격 미표기(여행·렌탈·보험) 제외</label>
+      </div>
+      <div class="chsecs" id="cards"></div>
+      <div class="tbl-wrap" id="tblWrap" hidden><table id="cmp"><thead></thead><tbody></tbody></table></div>
+    </section>
+
+    <section id="view-epg" data-view-panel="epg" hidden style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+      <div class="tl-legend" id="epgLegend"></div>
+      <div class="tl-scroll" id="epgScroll"><div class="tl" id="epg"></div></div>
+    </section>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" hidden><div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pTitle"></div></div>
+
+<script>
+(() => {
+const SETS = {
+  tv: {label: 'TV홈쇼핑', own: 'nsmall', ch: [
+    {id:'nsmall', name:'NS홈쇼핑', own:true}, {id:'gsshop', name:'GS샵'}, {id:'cjmall', name:'CJ온스타일'}, {id:'lotteimall', name:'롯데홈쇼핑'},
+    {id:'hmall', name:'현대홈쇼핑'}, {id:'hnsmall', name:'홈앤쇼핑'}, {id:'immall', name:'공영쇼핑'}]},
+  tc: {label: '데이터홈쇼핑', own: 'nsmallplus', ch: [
+    {id:'nsmallplus', name:'NS Shop+', own:true}, {id:'gsmyshop', name:'GS마이샵'}, {id:'cjmallplus', name:'CJ온스타일+'}, {id:'lotteonetv', name:'롯데OneTV'},
+    {id:'hmallplus', name:'현대홈쇼핑+샵'}, {id:'bshop', name:'SK스토아'}, {id:'kshop', name:'KT알파쇼핑'}, {id:'kshopplus', name:'KT알파쇼핑+'},
+    {id:'ssgshop', name:'신세계쇼핑'}, {id:'shopnt', name:'쇼핑엔티'}, {id:'wshop', name:'W쇼핑'}]},
+};
+const CHMAP = Object.fromEntries([...SETS.tv.ch, ...SETS.tc.ch].map(c => [c.id, c]));
+let CH = SETS.tv.ch, CHORD = {}, OWN = 'nsmall';
+function useSet(k) {
+  state.set = SETS[k] ? k : 'tv'; const S = SETS[state.set];
+  CH = S.ch; OWN = S.own; CHORD = Object.fromEntries(CH.map((c, i) => [c.id, i]));
+  state.chOn = new Set(CH.map(c => c.id));
+  document.querySelectorAll('#setSeg [data-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.set === state.set)));
+  try { localStorage.setItem('zap.set', state.set); } catch (e) {}
+}
+const NEAR_MIN = 120;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const won = n => n ? Math.round(n).toLocaleString('ko-KR') + '원' : '—';
+const toMin = hm => { const [h, m] = (hm || '0:0').split(':').map(Number); return h * 60 + m; };
+const kstNow = () => { const d = new Date(Date.now() + 9 * 3600e3); return {date: d.toISOString().slice(0, 10), min: d.getUTCHours() * 60 + d.getUTCMinutes(), hm: d.toISOString().slice(11, 16)}; };
+const best = it => it.mx || it.cp || it.sp || it.p || 0;
+const chDot = id => `<i class="dot" style="--c:var(--ch-${id})"></i>`;
+
+// ---------- composition parsed from the product name ----------
+const UNIT='박스|팩|통|병|포|봉|개|세트|종|마리|미|켤레|장|캡슐|정|매|입|구';
+const PACK=new Set(['박스','팩','통','병','포','봉','마리','미','개']);
+const compCache=new Map();
+function comp(name){
+  if(compCache.has(name)) return compCache.get(name);
+  const t=String(name||'').replace(/[xX\*]/g,'×').replace(/\s+/g,' ');
+  const chips=[]; const add=s=>{ if(s && !chips.includes(s) && chips.length<4) chips.push(s); };
+  const total=t.match(new RegExp('총\\s*(\\d+)\\s*(개월|'+UNIT+')'));
+  const plus=t.match(new RegExp('(\\d+)\\s*\\+\\s*(\\d+)\\s*('+UNIT+')(?![가-힣])'));
+  const months=[...t.matchAll(/(\d+)\s*개월분?/g)].map(x=>+x[1]);
+  const spec=t.match(/(\d+(?:\.\d+)?)\s*(ml|mL|ML|g|kg|L|매|정|캡슐|포|미)\s*×\s*(\d+)\s*([가-힣]{0,2})/);
+  const single=t.match(new RegExp('(?:^|[^\\d.+])(\\d+)\\s*('+UNIT+')(?![가-힣A-Za-z])'));
+  if(plus) add(plus[1]+'+'+plus[2]+plus[3]);
+  if(total) add('총 '+total[1]+total[2]);
+  if(!plus && !total && single && +single[1]>1 && !(spec && (spec[3]===single[1]||spec[1]===single[1]))) add(single[1]+single[2]);
+  if(spec) add(spec[1]+spec[2]+'×'+spec[3]+(spec[4]||''));
+  const mo=months.length?Math.max(...months):0;
+  if(mo>=2 && !(total && total[2]==='개월')) add(mo+'개월분');
+  let unit=null;
+  if(mo>=2) unit={l:'월',n:mo};
+  else if(total && PACK.has(total[2]) && +total[1]>=2) unit={l:total[2]+'당',n:+total[1]};
+  else if(plus && PACK.has(plus[3])) unit={l:plus[3]+'당',n:+plus[1]+ +plus[2]};
+  else if(spec && PACK.has(spec[4]) && +spec[3]>=2) unit={l:spec[4]+'당',n:+spec[3]};
+  else if(single && PACK.has(single[2]) && +single[1]>=2) unit={l:single[2]+'당',n:+single[1]};
+  const r={chips,unit}; compCache.set(name,r); return r;
+}
+const unitPrice = it => { const u = comp(it.n).unit; const b = best(it); return u && b ? Math.round(b / u.n / 10) * 10 : 0; };
+const unitTxt = it => { const u = comp(it.n).unit; const v = unitPrice(it); return v ? `≈ ${u.l} ${won(v)}` : ''; };
+const chipsHtml = it => { const c = comp(it.n).chips; return c.length ? `<span class="chips">${c.map(x => `<span class="cpc">${esc(x)}</span>`).join('')}</span>` : ''; };
+const offPct = it => { const b = best(it); return it.p && b && b < it.p ? Math.round((1 - b / it.p) * 100) : 0; };
+const benefits = it => [it.ifm ? `무이자 ${it.ifm}개월` : '', it.cd ? `카드 ${it.cd}` : '', it.lp ? `런칭가 ${won(it.lp)}` : ''].filter(Boolean);
+const opPrice = o => o.mx || o.cp || o.sp || o.p || 0;
+const opCount = it => Math.max(it.opn || 0, (it.op || []).length);
+
+let state = {dates: [], date: null, day: null, docs: {tv: null, tc: null}, items: [], tvItems: [], set: 'tv', view: 'timeline', mode: 'cards', sort: {k: 's', dir: 1}, chOn: new Set()};
+let savedSet = 'tv'; try { savedSet = localStorage.getItem('zap.set') || 'tv'; } catch (e) {}
+useSet(savedSet);
+try { const m = localStorage.getItem('zap.mode'); if (m === 'table' || m === 'cards') state.mode = m; } catch (e) {}
+let unsubDay = null;
+
+// ---------- data prep ----------
+function prep(items, OWN) {
+  const raw = items.filter(i => CHMAP[i.ch]).slice().sort((a, b) => a.ch.localeCompare(b.ch) || a.s.localeCompare(b.s));
+  // one broadcast split into consecutive slots of the same product counts once
+  const merged = [];
+  for (const i of raw) {
+    const last = merged[merged.length - 1];
+    if (last && last.ch === i.ch && last.n === i.n && last.e === i.s) { last.e = i.e; continue; }
+    merged.push({...i});
+  }
+  return merged.map((i, idx) => {
+    const s = toMin(i.s); let e = toMin(i.e); if (!i.e || e <= s) e += 1440; if (e - s > 360) e = s + 60;
+    return {...i, idx, sm: s, em: e};
+  });
+}
+
+// ---------- shell ----------
+function setView(v) {
+  state.view = v;
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === v)));
+  document.querySelectorAll('[data-view-panel]').forEach(p => p.hidden = p.dataset.viewPanel !== v);
+  try { history.replaceState(null, '', '#' + v); } catch (e) {}
+  const sc = v === 'timeline' ? $('#tlScroll') : v === 'epg' ? $('#epgScroll') : null;
+  if (sc && !sc.dataset.placed && state.date) { sc.dataset.placed = '1'; const n = kstNow(); sc.scrollTop = (state.date === n.date ? Math.max(0, n.min - 60) : (v === 'epg' ? 18 : 6) * 60) * 2; }
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setView(t.dataset.view)));
+const h0 = (location.hash || '').slice(1); setView(['lineup', 'timeline', 'compare', 'epg'].includes(h0) ? h0 : 'lineup');
+
+function tick() {
+  const n = kstNow(); $('#clock').textContent = n.hm + ' KST';
+  const live = state.date === n.date; const oa = $('#onair');
+  oa.textContent = live ? 'ON AIR' : 'OFF AIR'; oa.classList.toggle('off', !live);
+  document.querySelectorAll('.nowline').forEach(line => { const hd = line.parentElement && line.parentElement.querySelector('.tl-head'); line.hidden = !live; line.style.top = `calc(${(hd && hd.offsetHeight) || 37}px + ${n.min} * var(--ppm))`; line.querySelector('span').textContent = n.hm; });
+}
+setInterval(tick, 30000); tick();
+
+function render() {
+  const tvDoc = state.docs.tv, setDoc = state.docs[state.set];
+  state.tvItems = prep((tvDoc && tvDoc.items) || [], SETS.tv.own);
+  state.items = state.set === 'tv' ? state.tvItems : prep((setDoc && setDoc.items) || [], OWN);
+  state.day = setDoc || tvDoc;
+  const items = state.items;
+  $('#emptyState').hidden = true; $('#app').hidden = false;
+  const note = $('#setNote');
+  note.hidden = !!setDoc;
+  if (!setDoc) note.textContent = `${SETS[state.set].label} 편성이 이 날짜에는 아직 수집되지 않았습니다. 다음 자동 수집 후 표시됩니다.`;
+  const ca = setDoc && setDoc.collectedAt;
+  $('#collected').textContent = ca ? '수집 ' + new Date(ca).toLocaleString('ko-KR', {timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : '';
+  renderLineup(items); renderTimeline(items); renderCompare(); renderEpg(state.tvItems); tick();
+}
+
+const overlaps = (a, b) => Math.min(a.em, b.em) - Math.max(a.sm, b.sm) > 0;
+function renderLineup(items) {
+  const own = items.filter(i => i.ch === OWN).sort((a, b) => a.sm - b.sm);
+  const rivals = CH.filter(c => !c.own);
+  const n = kstNow(); const live = state.date === n.date;
+  $('#lineupNote').textContent = `${CHMAP[OWN].name} 방송 ${own.length}건마다 같은 시간에 방송한 경쟁 ${rivals.length}개 채널을 나란히 보여줍니다.`;
+  if (!own.length) { $('#lineup').innerHTML = `<p class="quiet">이 날짜에는 ${esc(CHMAP[OWN].name)} 편성이 수집되지 않았습니다.</p>`; return; }
+  $('#lineup').innerHTML = own.map(it => {
+    const isNow = live && it.sm <= n.min && n.min < it.em; const past = live && it.em <= n.min;
+    const off = offPct(it);
+    const nsPrice = it.p ? `<span class="px">${won(best(it))}${off ? ` <span class="off">-${off}%</span>` : ''}</span>` : `<span class="sub">가격 미표기 (상담·렌탈·보험 등)</span>`;
+    const rows = rivals.map(c => {
+      const l = items.filter(o => o.ch === c.id && overlaps(o, it)).sort((a, b) => a.sm - b.sm);
+      const progs = l.length ? l.map(o => `<button class="lu-it" data-idx="${o.idx}" title="${esc(o.s + '–' + o.e + ' ' + o.n)}"><span class="tm">${esc(o.s)}–${esc(o.e)}</span><span class="nm">${esc(o.n)}</span>${o.p ? `<span class="pr">${won(best(o))}</span>` : '<span class="pr na">가격 미표기</span>'}</button>`).join('') : '<span class="lu-none">편성 정보 없음</span>';
+      return `<div class="lu-ch"><span class="who">${chDot(c.id)}${esc(c.name)}</span><div class="progs">${progs}</div></div>`;
+    }).join('');
+    return `<article class="lu-row ${isNow ? 'now' : ''} ${past ? 'past' : ''}" ${isNow ? 'id="luNow"' : ''}>
+      <button class="lu-ns" data-idx="${it.idx}"><span class="t">${esc(it.s)}–${esc(it.e)}${isNow ? '<span class="live">지금</span>' : ''}</span><span class="nm">${esc(it.n)}</span>${nsPrice}</button>
+      <div class="lu-rv">${rows}</div></article>`;
+  }).join('');
+  const target = $('#luNow') || (live ? [...document.querySelectorAll('.lu-row')].find(r => !r.classList.contains('past')) : null);
+  if (target && state.view === 'lineup' && !state.luScrolled) { state.luScrolled = true; requestAnimationFrame(() => target.scrollIntoView({block: 'start'})); }
+}
+$('#lineup').addEventListener('click', e => { const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx); });
+
+// ---------- timeline ----------
+function renderTimeline(items) {
+  const H = 24 * 60;
+  const tlEl = $('#tl'); tlEl.style.gridTemplateColumns = '52px ' + CH.map(c => c.own ? 'minmax(240px,1.6fr)' : 'minmax(150px,1fr)').join(' '); tlEl.style.minWidth = `calc(52px + 240px + ${CH.length - 1} * 150px)`;
+  let html = `<div class="tl-head corner">KST</div>` + CH.map(c => `<div class="tl-head ${c.own ? 'own' : ''}">${chDot(c.id)}${esc(c.name)}${c.own ? '<span class="tag">자사</span>' : ''}</div>`).join('');
+  let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
+  for (let hr = 0; hr <= 24; hr++) rail += `<span class="h" style="top:calc(${hr * 60} * var(--ppm))">${String(hr).padStart(2, '0')}:00</span>`;
+  html += rail + '</div>';
+  for (const c of CH) {
+    let col = `<div class="col ${c.own ? 'own' : ''}" style="height:calc(${H} * var(--ppm))">`;
+    for (let hr = 1; hr < 24; hr++) col += `<div class="gridline" style="top:calc(${hr * 60} * var(--ppm))"></div><div class="gridline half" style="top:calc(${hr * 60 - 30} * var(--ppm))"></div>`;
+    for (const it of items.filter(i => i.ch === c.id)) {
+      const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
+      const own = c.own;
+      const cls = ['blk', own ? 'own' : '', px < 96 ? 'short' : '', px < 50 ? 'tiny' : ''].join(' ');
+      const price = it.p ? `<span class="pline"><span class="big">${won(best(it))}</span></span>` : `<span class="pline"><span class="more">가격 미표기</span></span>`;
+      col += `<button class="${cls}" style="--c:var(--ch-${c.id});top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}">
+        <span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span>${price}</button>`;
+    }
+    html += col + '</div>';
+  }
+  html += `<div class="nowline" id="nowline" hidden><span></span></div>`;
+  $('#tl').innerHTML = html;
+  const n = kstNow(); const sc = $('#tlScroll');
+  const target = state.date === n.date ? Math.max(0, n.min - 60) : 6 * 60;
+  requestAnimationFrame(() => { sc.scrollTop = target * 2; });
+}
+$('#tl').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx); });
+
+
+// ---------- channel cards / table ----------
+const COLS = [
+  {k: 's', l: '시간'}, {k: 'ch', l: '채널'}, {k: 'n', l: '상품 · 구성'},
+  {k: 'p', l: '정상가', num: 1}, {k: 'sp', l: '판매가', num: 1}, {k: 'best', l: '최대혜택가', num: 1},
+  {k: 'off', l: '할인', num: 1}, {k: 'unit', l: '단가', num: 1}, {k: 'ifm', l: '무이자', num: 1}, {k: 'cd', l: '카드할인'}
+];
+const sortVal = (it, k) => k === 's' ? it.sm : k === 'ch' ? CHORD[it.ch] : k === 'best' ? best(it) : k === 'off' ? offPct(it) : k === 'unit' ? unitPrice(it) : it[k];
+function filtered() {
+  const q = $('#q').value.trim().toLowerCase(), hide = $('#hideNoPrice').checked;
+  const rows = state.items.filter(i => state.chOn.has(i.ch) && (!hide || i.p > 0) && (!q || [i.n, i.b, i.pg, ...(i.op || []).map(o => o.n)].join(' ').toLowerCase().includes(q)));
+  const {k, dir} = state.sort;
+  rows.sort((a, b) => { const va = sortVal(a, k), vb = sortVal(b, k); if (typeof va === 'string') return dir * va.localeCompare(vb, 'ko'); return dir * ((va || 0) - (vb || 0)) || a.sm - b.sm; });
+  return rows;
+}
+function renderCompare() {
+  $('#chFilters').innerHTML = CH.map(c => `<button class="chip" data-ch="${c.id}" aria-pressed="${state.chOn.has(c.id)}">${chDot(c.id)}${esc(c.name)}</button>`).join('');
+  $('#modeCards').setAttribute('aria-pressed', String(state.mode === 'cards'));
+  $('#modeTable').setAttribute('aria-pressed', String(state.mode === 'table'));
+  $('#cards').hidden = state.mode !== 'cards'; $('#tblWrap').hidden = state.mode !== 'table';
+  $('#cmp thead').innerHTML = '<tr>' + COLS.map(c => `<th data-k="${c.k}" class="${c.num ? 'num' : ''} ${state.sort.k === c.k ? (state.sort.dir > 0 ? 'asc' : 'desc') : ''}">${c.l}</th>`).join('') + '</tr>';
+  renderRows();
+}
+function card(it) {
+  const off = offPct(it); const b = best(it); const ops = it.op || []; const oc = opCount(it);
+  
+  const sub = [it.sp && it.sp !== it.p ? `판매가 ${won(it.sp)}` : '', it.cp && it.cp !== it.sp ? `${it.cpw || '쿠폰'} ${won(it.cp)}` : ''].filter(Boolean).join(' · ');
+  const price = it.p ? `<div class="pc-price"><div class="row">${off ? `<span class="was">${won(it.p)}</span><span class="off">-${off}%</span>` : ''}</div>
+      <div class="row"><span class="big">${won(b)}</span><span class="lbl">${b !== it.p ? '최대혜택가' : '판매가'}</span></div>
+      ${sub ? `<span class="pc-sub">${esc(sub)}</span>` : ''}${unitTxt(it) ? `<span class="unit">${esc(unitTxt(it))}</span>` : ''}</div>`
+    : `<div class="pc-price"><span class="quiet">가격 미표기 (상담·렌탈·여행)</span></div>`;
+  const ben = benefits(it);
+  const opl = ops.length ? `<ul class="pc-ops">${ops.slice(0, 3).map(o => `<li><span title="${esc(o.n)}">${esc(o.n)}</span><span>${won(opPrice(o))}</span></li>`).join('')}${oc > 3 ? `<li class="tail"><span>함께 판매 ${oc}개 중 3개 표시</span><span></span></li>` : ''}</ul>` : '';
+  return `<button class="pcard ${it.ch === OWN ? 'own' : ''}" style="--c:var(--ch-${it.ch})" data-idx="${it.idx}">
+    <span class="pc-top"><span class="mono">${esc(it.s)}–${esc(it.e)}</span></span>
+    <span class="pc-name">${esc(it.n)}</span>${chipsHtml(it)}${price}
+    ${ben.length ? `<span class="pc-ben">${esc(ben.join(' · '))}</span>` : ''}${opl}</button>`;
+}
+function renderRows() {
+  const rows = filtered();
+  if (state.mode === 'cards') {
+    const secs = CH.filter(c => state.chOn.has(c.id)).map(c => {
+      const l = rows.filter(i => i.ch === c.id); if (!l.length) return '';
+      return `<section class="chsec"><div class="chsec-h"><h3>${chDot(c.id)}${esc(c.name)}</h3><span>${l.length}건</span></div><div class="cards">${l.map(card).join('')}</div></section>`;
+    }).join('');
+    $('#cards').innerHTML = secs || '<p class="quiet">조건에 맞는 방송이 없습니다. 필터를 줄여 보세요.</p>';
+  } else {
+    $('#cmp tbody').innerHTML = rows.map(i => { const off = offPct(i); return `<tr class="${i.ch === OWN ? 'own' : ''}" data-idx="${i.idx}">
+      <td class="mono">${esc(i.s)}–${esc(i.e)}</td><td style="white-space:nowrap">${chDot(i.ch)} ${esc(CHMAP[i.ch].name)}</td>
+      <td class="nm">${esc(i.n)}${chipsHtml(i)}${opCount(i) ? `<span class="more">함께 판매 ${opCount(i)}개</span>` : ''}</td>
+      <td class="num">${won(i.p)}</td><td class="num">${won(i.sp)}</td><td class="num"><b>${i.p ? won(best(i)) : '—'}</b></td>
+      <td class="num">${off ? `<span class="off">-${off}%</span>` : '—'}</td><td class="num"><span class="unit">${esc(unitTxt(i) || '—')}</span></td>
+      <td class="num">${i.ifm ? i.ifm + '개월' : '—'}</td><td>${esc(i.cd || '—')}</td></tr>`; }).join('')
+      || `<tr><td colspan="${COLS.length}" class="quiet">조건에 맞는 방송이 없습니다. 필터를 줄여 보세요.</td></tr>`;
+  }
+}
+$('#cmp thead').addEventListener('click', e => { const th = e.target.closest('th[data-k]'); if (!th) return; const k = th.dataset.k; state.sort = {k, dir: state.sort.k === k ? -state.sort.dir : (['p', 'sp', 'best', 'off', 'unit', 'ifm'].includes(k) ? -1 : 1)}; renderCompare(); });
+$('#cmp tbody').addEventListener('click', e => { const tr = e.target.closest('tr[data-idx]'); if (tr) openDetail(+tr.dataset.idx); });
+$('#cards').addEventListener('click', e => { const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx); });
+$('#chFilters').addEventListener('click', e => { const b = e.target.closest('[data-ch]'); if (!b) return; const id = b.dataset.ch; state.chOn.has(id) ? state.chOn.delete(id) : state.chOn.add(id); renderCompare(); });
+$('#hideNoPrice').addEventListener('change', renderRows);
+$('#q').addEventListener('input', renderRows);
+const setMode = m => { state.mode = m; try { localStorage.setItem('zap.mode', m); } catch (e) {} renderCompare(); };
+$('#modeCards').addEventListener('click', () => setMode('cards'));
+$('#modeTable').addEventListener('click', () => setMode('table'));
+
+// ---------- broadcast schedule (EPG) ----------
+const isOff = t => /방송\s*시간이\s*아닙니다|정파/.test(t);
+function epgRows() {
+  const epg = (state.docs.tv && state.docs.tv.epg) || [];
+  return epg.map(c => {
+    const rows = c.items.map(([s, t, g]) => ({s, t, g, sm: toMin(s)})).sort((a, b) => a.sm - b.sm);
+    rows.forEach((r, i) => { r.em = i + 1 < rows.length ? rows[i + 1].sm : 1440; if (r.em <= r.sm) r.em = r.sm + 30; });
+    return {...c, rows};
+  });
+}
+function renderEpg(items) {
+  const chans = epgRows();
+  const sec = $('#view-epg');
+  if (!chans.length) { $('#epg').innerHTML = ''; $('#epgLegend').innerHTML = '<span>이 날짜의 방송 편성표는 아직 수집되지 않았습니다. 다음 자동 수집부터 함께 표시됩니다.</span>'; $('#tab-epg').hidden = false; return; }
+  $('#epgLegend').innerHTML = `<span>숫자는 KT 지니TV 채널번호. NS홈쇼핑(2번) 양옆은 ENA(1)·tvN(3)이라 밑줄로 표시했습니다.</span>`;
+  const H = 24 * 60; const cols = 1 + chans.length;
+  const tl = $('#epg'); tl.style.gridTemplateColumns = `52px minmax(220px,1.5fr) repeat(${cols - 1}, minmax(128px,1fr))`; tl.style.minWidth = `calc(52px + 220px + ${cols - 1} * 128px)`;
+  let html = `<div class="tl-head corner">KST</div><div class="tl-head own">${chDot('nsmall')}NS홈쇼핑 <span class="kt">2</span></div>` +
+    chans.map(c => `<div class="tl-head ${c.no === 1 || c.no === 3 ? 'adj' : ''}"><span style="display:flex;flex-direction:column;min-width:0"><span class="grp">${esc(c.grp)}</span><span>${esc(c.name)} <span class="kt">${c.no}</span></span></span></div>`).join('');
+  let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
+  for (let hr = 0; hr <= 24; hr++) rail += `<span class="h" style="top:calc(${hr * 60} * var(--ppm))">${String(hr).padStart(2, '0')}:00</span>`;
+  html += rail + '</div>';
+  const grid = () => { let g = ''; for (let hr = 1; hr < 24; hr++) g += `<div class="gridline" style="top:calc(${hr * 60} * var(--ppm))"></div>`; return g; };
+  // NS column (compact)
+  let ns = `<div class="col own" style="height:calc(${H} * var(--ppm))">${grid()}`;
+  for (const it of items.filter(i => i.ch === SETS.tv.own)) {
+    const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
+    ns += `<button class="blk own ${px < 96 ? 'short' : ''} ${px < 50 ? 'tiny' : ''}" style="--c:var(--ch-nsmall);top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}"><span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span><span class="pline">${it.p ? `<span class="big">${won(best(it))}</span>` : '<span class="more">가격 미표기</span>'}</span></button>`;
+  }
+  html += ns + '</div>';
+  for (const c of chans) {
+    let col = `<div class="col" style="height:calc(${H} * var(--ppm))">${grid()}`;
+    for (const r of c.rows) {
+      const dur = Math.min(r.em, H) - r.sm; if (dur <= 0) continue; const px = dur * 2; const off = isOff(r.t);
+      col += `<div class="ep ${off ? 'off' : ''} ${px < 60 ? 'short' : ''} ${px < 36 ? 'tiny' : ''}" style="--g:var(--muted);top:calc(${r.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" title="${esc(r.s + ' ' + r.t)}"><span class="t">${esc(r.s)}</span><span class="nm">${off ? '정파' : esc(r.t)}</span></div>`;
+    }
+    html += col + '</div>';
+  }
+  html += `<div class="nowline" hidden><span></span></div>`;
+  tl.innerHTML = html;
+  const n = kstNow(); const sc = $('#epgScroll');
+  const target = state.date === n.date ? Math.max(0, n.min - 60) : 18 * 60;
+  requestAnimationFrame(() => { sc.scrollTop = target * 2; });
+}
+$('#epg').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx, state.tvItems); });
+function epgAt(min) {
+  return epgRows().map(c => { const r = c.rows.find(x => x.sm <= min && min < x.em); return r && !isOff(r.t) ? {c, r} : null; }).filter(Boolean);
+}
+
+// ---------- detail ----------
+let detailPool = null;
+function openDetail(idx, pool) {
+  pool = pool || state.items; detailPool = pool;
+  const it = pool.find(i => i.idx === idx); if (!it) return;
+  const ORD = Object.fromEntries([...SETS.tv.ch, ...SETS.tc.ch].map((c, i) => [c.id, i]));
+  const ch = CHMAP[it.ch];
+  const steps = [['정상가', it.p]];
+  if (it.sp && it.sp !== it.p) steps.push(['판매가', it.sp]);
+  if (it.cp && it.cp !== it.sp) steps.push([it.cpw || '쿠폰적용가', it.cp]);
+  if (it.mx && it.mx !== (it.cp || it.sp)) steps.push(['카드할인 적용 최대혜택가', it.mx]);
+  const ladder = it.p ? `<div class="ladder">${steps.map(([l, v]) => `<div><span>${esc(l)}</span><span>${won(v)}</span></div>`).join('')}</div>` : `<p class="quiet">가격이 공개되지 않은 방송입니다 (상담·렌탈·여행·보험 등).</p>`;
+  const ops = it.op || []; const oc = opCount(it);
+  const opsHtml = ops.length ? `<div class="section-h"><h2>이 방송 판매 구성</h2><p>본상품 외 함께 판매 ${oc}개</p></div>
+    <ul class="oplist"><li><span><b>${esc(it.n)}</b></span><span><b>${it.p ? won(best(it)) : '—'}</b></span></li>${ops.map(o => `<li><span>${esc(o.n)}</span><span>${won(opPrice(o))}${o.p && opPrice(o) < o.p ? `<br><span class="was">${won(o.p)}</span>` : ''}</span></li>`).join('')}${oc > ops.length ? `<li><span class="quiet">외 ${oc - ops.length}개</span><span></span></li>` : ''}</ul>` : '';
+  const overlap = pool.filter(o => o.ch !== it.ch && Math.min(o.em, it.em) - Math.max(o.sm, it.sm) > 0).sort((a, b) => ORD[a.ch] - ORD[b.ch]);
+  $('#panel').innerHTML = `<button class="x" id="closeSheet">닫기</button>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="chname">${chDot(it.ch)}${esc(ch.name)} · <span class="mono">${esc(it.s)}–${esc(it.e)}</span></span><h3 id="pTitle">${esc(it.n)}</h3>${chipsHtml(it)}</div>
+    ${ladder}
+    <dl class="kv">
+      ${offPct(it) ? `<dt>할인</dt><dd>정상가 대비 ${offPct(it)}%</dd>` : ''}
+      ${unitTxt(it) ? `<dt>단가</dt><dd class="mono">${esc(unitTxt(it))} <span class="quiet">(상품명 구성 기준 추정)</span></dd>` : ''}
+      ${it.lp ? `<dt>런칭가</dt><dd class="mono">${won(it.lp)}</dd>` : ''}
+      <dt>무이자</dt><dd>${it.ifm ? `최대 ${it.ifm}개월` : '—'}</dd>
+      <dt>카드할인</dt><dd>${esc(it.cd || '—')}</dd>
+      <dt>브랜드</dt><dd>${esc(it.b || '—')}</dd>
+      ${it.pg ? `<dt>프로그램</dt><dd>${esc(it.pg)}</dd>` : ''}
+    </dl>
+    ${it.u ? `<a class="btn" href="${esc(it.u)}" target="_blank" rel="noopener">상품 페이지 열기 ↗</a>` : ''}
+    ${opsHtml}
+    ${(() => { const at = epgAt(it.sm); return at.length ? `<div class="section-h"><h2>방송 시작 시각(${esc(it.s)}) 주요 채널</h2></div><div class="epgnow">${at.map(({c, r}) => `<div><b>${esc(c.name)} <span class="quiet mono">${c.no}</span></b><span class="mono quiet">${esc(r.s)}</span><span>${esc(r.t)}</span></div>`).join('')}</div>` : ''; })()}
+    <div class="section-h"><h2>같은 시간대 다른 홈쇼핑</h2></div>
+    <div class="same">${overlap.map(o => `<button class="rv" data-idx="${o.idx}"><span class="who"><b>${chDot(o.ch)}${esc(CHMAP[o.ch].name)}</b><span class="mono">${esc(o.s)}–${esc(o.e)}</span></span><span><span class="nm">${esc(o.n)}</span><br><span class="sub">${esc(comp(o.n).chips.join(' '))}</span></span><span class="px">${o.p ? won(best(o)) : '—'}</span></button>`).join('') || '<p class="quiet">겹치는 방송이 없습니다.</p>'}</div>`;
+  $('#sheet').hidden = false; $('#closeSheet').focus();
+}
+function closeDetail() { $('#sheet').hidden = true; }
+$('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet' || e.target.id === 'closeSheet') return closeDetail(); const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx, detailPool); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+$('#setSeg').addEventListener('click', e => { const b = e.target.closest('[data-set]'); if (!b || b.dataset.set === state.set) return; useSet(b.dataset.set); state.luScrolled = false; closeDetail(); if (state.docs.tv || state.docs.tc) render(); });
+
+// ---------- data from db ----------
+function showEmpty(title, body) {
+  $('#app').hidden = true; const el = $('#emptyState'); el.hidden = false;
+  el.innerHTML = `<h2>${esc(title)}</h2><p>${esc(body)}</p>`;
+}
+function fillDates() {
+  $('#dateSel').innerHTML = state.dates.map(d => { const w = '일월화수목금토'[new Date(d + 'T12:00:00Z').getUTCDay()]; return `<option value="${d}" ${d === state.date ? 'selected' : ''}>${d.slice(5).replace('-', '.')} (${w})</option>`; }).join('');
+}
+// Static hosting (GitHub Pages 등): data/index.json + data/<date>.json 을 읽는다.
+async function bootStatic() {
+  const get = async p => { const r = await fetch(p + '?t=' + Date.now(), {cache: 'no-store'}); if (!r.ok) throw new Error(r.status); return r.json(); };
+  let idx;
+  try { idx = await get('data/index.json'); } catch (e) { return false; }
+  const tset = new Set(idx.tdates || []);
+  state.dates = [...new Set([...(idx.dates || []), ...tset])].sort().reverse();
+  if (!state.dates.length) { showEmpty('아직 수집된 편성이 없습니다', '자동 수집이 끝나면 이곳에 표시됩니다.'); return true; }
+  const load = async d => {
+    state.date = d; fillDates();
+    const [tv, tc] = await Promise.all([get('data/' + d + '.json').catch(() => null), tset.has(d) ? get('data/t-' + d + '.json').catch(() => null) : null]);
+    state.docs = {tv, tc};
+    if (!tv && !tc) { showEmpty(d + ' 편성을 불러오지 못했습니다', '잠시 후 새로 고쳐 주세요.'); return; }
+    render();
+  };
+  $('#dateSel').addEventListener('change', e => { state.luScrolled = false; load(e.target.value); });
+  const today = kstNow().date;
+  await load(state.dates.includes(today) ? today : state.dates[0]);
+  return true;
+}
+async function boot() {
+  const inClaude = !!(window.claude && window.claude.use);
+  if (!inClaude && await bootStatic()) return;
+  const db = inClaude ? await window.claude.use('db').catch(() => null) : null;
+  if (!db) { if (await bootStatic()) return; showEmpty('편성 데이터에 연결할 수 없습니다', 'claude.ai에 로그인한 상태로 이 페이지를 열면 매일 수집된 편성표가 표시됩니다.'); return; }
+  let unsubT = null;
+  const subscribeDay = d => {
+    if (unsubDay) unsubDay(); if (unsubT) unsubT();
+    state.date = d; fillDates(); state.docs = {tv: null, tc: null};
+    let seen = {tv: false, tc: false};
+    const after = () => { if (!seen.tv || !seen.tc) return; if (!state.docs.tv && !state.docs.tc) { showEmpty(d + ' 편성이 아직 없습니다', '이 날짜의 수집이 끝나면 자동으로 나타납니다.'); return; } render(); };
+    const fail = () => showEmpty('편성 데이터를 읽지 못했습니다', '잠시 후 페이지를 새로 고쳐 주세요.');
+    unsubDay = db.doc('days/' + d).onSnapshot(snap => { seen.tv = true; state.docs.tv = snap.exists ? snap.data() : null; after(); }, fail);
+    unsubT = db.doc('tdays/' + d).onSnapshot(snap => { seen.tc = true; state.docs.tc = snap.exists ? snap.data() : null; after(); }, () => { seen.tc = true; after(); });
+  };
+  $('#dateSel').addEventListener('change', e => { state.luScrolled = false; subscribeDay(e.target.value); });
+  db.doc('meta/index').onSnapshot(snap => {
+    const m = snap.exists ? snap.data() : {};
+    state.dates = [...new Set([...(m.dates || []), ...(m.tdates || [])])].sort().reverse();
+    if (!state.dates.length) { showEmpty('아직 수집된 편성이 없습니다', '매일 아침 자동 수집이 7개 TV 홈쇼핑 채널의 편성과 상품·가격을 이곳에 채웁니다. 첫 수집이 끝나면 바로 표시됩니다.'); return; }
+    const today = kstNow().date;
+    if (!state.date || !state.dates.includes(state.date)) subscribeDay(state.dates.includes(today) ? today : state.dates[0]);
+    else fillDates();
+  }, () => showEmpty('편성 데이터를 읽지 못했습니다', '잠시 후 페이지를 새로 고쳐 주세요.'));
+}
+boot();
+})();
+</script>
+
+</body>
+</html>
