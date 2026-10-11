@@ -1,0 +1,48 @@
+name: collect
+
+on:
+  schedule:
+    # KST 03, 08, 11, 14, 17, 20시 (UTC = KST - 9)
+    - cron: '0 18,23,2,5,8,11 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/collect.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install playwright@1.47.2 --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Collect
+        env:
+          TZ: Asia/Seoul
+        run: node scripts/collect.mjs
+      - name: Commit data
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "Update schedule data $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push && exit 0; sleep 5; done
+          exit 1
