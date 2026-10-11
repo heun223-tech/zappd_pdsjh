@@ -86,9 +86,16 @@ async function hsmoaDay(page, d) {
     const url = urls[attempt % urls.length];
     try {
       await page.goto('about:blank');
-      await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
-      await page.waitForTimeout(4000 + 2000 * Math.floor(attempt / urls.length));
-      const items = (await page.evaluate(HSMOA_EXTRACT, [...TV, ...TC])).filter(i => i.d === d);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+      // poll the page until the decoded schedule is present and stable (max ~40s)
+      let items = [], last = -1;
+      for (let k = 0; k < 20; k++) {
+        await page.waitForTimeout(2000);
+        items = (await page.evaluate(HSMOA_EXTRACT, [...TV, ...TC]).catch(() => [])).filter(i => i.d === d);
+        const tvN = items.filter(i => TV.includes(i.ch)).length;
+        if (tvN >= MIN_TV && items.length === last) break;
+        last = items.length;
+      }
       HS_LOG.push(`${d} try${attempt + 1} ${items.length}`);
       if (items.filter(i => TV.includes(i.ch)).length >= MIN_TV) return items;
     } catch (e) { HS_LOG.push(`${d} try${attempt + 1} error ${String(e.message).slice(0, 120)}`); }
