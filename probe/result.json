@@ -1,4 +1,12 @@
 {
+ "naver2": {
+  "status": 200,
+  "len": 867576,
+  "url": "https://search.naver.com/search.naver?where=nexearch&query=KBS1+%ED%8E%B8%EC%84%B1%ED%91%9C",
+  "head": "<!doctype html> <html lang=\"ko\"><head> <meta charset=\"utf-8\"> <meta name=\"referrer\" content=\"strict-origin-when-cross-origin\"> <meta name=\"format-detection\" content=\"telephone=no,address=no,email=no\"> <meta property=\"og:title\" content=\"KBS1 편성표 : 네이버 검색\"/> <meta property=\"og:image\" content=\"https://",
+  "hasKBS": true,
+  "hasTable": false
+ },
  "kt": {
   "status": 403,
   "len": 581,
@@ -9,7 +17,7 @@
  },
  "daum": {
   "status": 200,
-  "len": 334670,
+  "len": 335351,
   "url": "https://search.daum.net/search?w=tot&q=KBS1%20%ED%8E%B8%EC%84%B1%ED%91%9C",
   "head": "<!doctype html> <html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"ko\"> <head profile=\"http://a9.com/-/spec/opensearch/1.1/\"> <meta http-equiv=\"content-Type\" content=\"text/html;charset=utf-8\" /> <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /> <meta name=\"autocomplete\" content=\"off\" /> <meta na",
   "hasKBS": true,
@@ -17,7 +25,7 @@
  },
  "naver": {
   "status": 200,
-  "len": 796810,
+  "len": 867551,
   "url": "https://search.naver.com/search.naver?query=KBS1+%ED%8E%B8%EC%84%B1%ED%91%9C",
   "head": "<!doctype html> <html lang=\"ko\"><head> <meta charset=\"utf-8\"> <meta name=\"referrer\" content=\"strict-origin-when-cross-origin\"> <meta name=\"format-detection\" content=\"telephone=no,address=no,email=no\"> <meta property=\"og:title\" content=\"KBS1 편성표 : 네이버 검색\"/> <meta property=\"og:image\" content=\"https://",
   "hasKBS": true,
@@ -25,7 +33,7 @@
  },
  "lgu": {
   "status": 403,
-  "len": 6054,
+  "len": 6075,
   "url": "https://www.lguplus.com/uhdc/fo/prdv/chnlgid/v1/tv-schedule-list?brdCntrTvChnlId=10&dt=20261012",
   "head": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"viewport\" content=\"width=device-width,initial-scal",
   "hasKBS": false,
