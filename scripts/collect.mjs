@@ -1,4 +1,4 @@
-// Collects home-shopping schedules (hsmoa.com) and broadcast EPG (tv.kt.com)
+// Collects home-shopping schedules (hsmoa.com) and broadcast EPG (Daum TV schedule)
 // for today and tomorrow (KST) and writes them to data/.
 //   data/<date>.json    TV home shopping 7 channels + broadcast EPG
 //   data/t-<date>.json  data home shopping (T-commerce) channels
@@ -59,25 +59,6 @@ const HSMOA_EXTRACT = (sites) => {
   });
 };
 
-// Runs inside tv.kt.com: fetches one channel's daily schedule.
-const KT_EXTRACT = async ({ chans, date }) => {
-  const get = async (no) => {
-    const fd = new URLSearchParams({ ch_type: '1', service_ch_no: String(no), view_type: '1', seldate: date });
-    const r = await fetch('/tv/channel/pSchedule.asp', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: fd.toString() });
-    const doc = new DOMParser().parseFromString(new TextDecoder('utf-8').decode(await r.arrayBuffer()), 'text/html');
-    const items = [];
-    doc.querySelectorAll('table.tb_schedule tbody tr').forEach(tr => {
-      const tds = tr.querySelectorAll('td'); if (tds.length < 4) return;
-      const hh = tds[0].textContent.trim().padStart(2, '0');
-      const mins = [...tds[1].querySelectorAll('p')].map(p => p.textContent.trim());
-      const progs = [...tds[2].querySelectorAll('p')].map(p => { const c = p.cloneNode(true); c.querySelectorAll('strong,b,img').forEach(x => x.remove()); return c.textContent.replace(/%26amp;/g, '&').replace(/%26/g, '&').replace(/\s+/g, ' ').trim(); });
-      const gens = [...tds[3].querySelectorAll('p')].map(p => p.textContent.trim());
-      mins.forEach((m, i) => items.push([hh + ':' + m.padStart(2, '0'), progs[i] || '', gens[i] || '']));
-    });
-    return items;
-  };
-  return Promise.all(chans.map(async ([no, name, grp]) => ({ no, name, grp, items: await get(no) })));
-};
 const EPG_CH = [[9, 'KBS1', '지상파'], [7, 'KBS2', '지상파'], [11, 'MBC', '지상파'], [5, 'SBS', '지상파'], [13, 'EBS', '지상파'],
   [15, 'JTBC', '종편'], [16, 'MBN', '종편'], [18, '채널A', '종편'], [20, 'TV조선', '종편'],
   [1, 'ENA', '케이블'], [3, 'tvN', '케이블'], [23, '연합뉴스TV', '뉴스'], [24, 'YTN', '뉴스']];
@@ -109,21 +90,58 @@ async function hsmoaDay(page, d) {
 }
 
 const EPG_LOG = [];
-async function epgDays(page, days) {
+// Broadcast EPG from Daum search's weekly channel schedule (reachable from overseas runners).
+const DAUM_Q = {KBS1: 'KBS1', KBS2: 'KBS2', MBC: 'MBC', SBS: 'SBS', EBS: 'EBS1', JTBC: 'JTBC', MBN: 'MBN', '채널A': '채널A', 'TV조선': 'TV조선', ENA: 'ENA', tvN: 'tvN', '연합뉴스TV': '연합뉴스TV', YTN: 'YTN'};
+const decodeHtml = t => t.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
+function guessGenre(title, ch) {
+  if (/뉴스|NEWS|브리핑|뉴스특보/i.test(title) || ch === 'YTN' || ch === '연합뉴스TV') return /다큐|스페셜/.test(title) ? '시사/다큐' : '뉴스';
+  if (/드라마|미니시리즈|일일|주말극|연속극|시즌\s?\d+\s?\d+회/.test(title)) return '드라마';
+  if (/다큐|시사|탐사|추적|스페셜|PD수첩|그것이 알고|인간극장/.test(title)) return '시사/다큐';
+  if (/중계|야구|축구|배구|농구|골프|스포츠|씨름|당구/.test(title)) return '스포츠';
+  if (/가요|뮤직|음악|노래|트롯|콘서트|열린음악회/.test(title)) return '음악';
+  if (/영화|시네마|무비/.test(title)) return '영화';
+  if (/방송\s*시간이\s*아닙니다|정파/.test(title)) return '';
+  return '';
+}
+async function daumChannel(name, year) {
+  const url = 'https://search.daum.net/search?w=tot&q=' + encodeURIComponent(DAUM_Q[name] + ' 편성표');
+  const r = await fetch(url, {headers: {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36', 'Accept-Language': 'ko-KR,ko;q=0.9'}, signal: AbortSignal.timeout(30000)});
+  const t = await r.text();
+  const days = {};
+  for (const m of t.matchAll(/id="channelTitle(\d+)"[^>]*>\s*<span class="date">(\d{1,2})\.(\d{1,2})<\/span>/g)) {
+    let y = year; const mo = +m[2];
+    const nowMo = +kst(0).slice(5, 7);
+    if (nowMo === 12 && mo === 1) y = year + 1; else if (nowMo === 1 && mo === 12) y = year - 1;
+    days[m[1]] = `${y}-${String(mo).padStart(2, '0')}-${String(+m[3]).padStart(2, '0')}`;
+  }
   const out = {};
-  try {
-    await page.goto('https://tv.kt.com/tv/channel/pSchedule.asp?ch_type=1&service_ch_no=9&view_type=1', { waitUntil: 'domcontentloaded', timeout: 60000 });
-    for (const d of days) {
-      for (let attempt = 1; attempt <= 2; attempt++) {
-        try {
-          const ch = await page.evaluate(KT_EXTRACT, { chans: EPG_CH, date: d.replaceAll('-', '') });
-          const n = ch.reduce((a, c) => a + c.items.length, 0);
-          log('epg', d, 'programs', n); EPG_LOG.push(d + ' programs ' + n);
-          if (n >= MIN_EPG) { out[d] = ch; break; }
-        } catch (e) { log('epg error', d, attempt, e.message); EPG_LOG.push(d + ' ' + attempt + ' ' + e.message.slice(0, 200)); }
-      }
+  for (const m of t.matchAll(/<td id="channelBody(\d+)_(\d+)"[^>]*>([\s\S]*?)<\/td>/g)) {
+    const hh = String(+m[1]).padStart(2, '0'); const d = days[m[2]]; if (!d) continue;
+    for (const e of m[3].matchAll(/<dt class="tit">\s*(\d+)\s*<\/dt>\s*<dd class="cont">([\s\S]*?)<\/dd>/g)) {
+      const title = decodeHtml(e[2].replace(/<span class="img_tv[^"]*">[\s\S]*?<\/span>/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+      if (!title) continue;
+      (out[d] = out[d] || []).push([hh + ':' + String(+e[1]).padStart(2, '0'), title, guessGenre(title, name)]);
     }
-  } catch (e) { log('epg page error', e.message); EPG_LOG.push('page ' + e.message.slice(0, 300)); }
+  }
+  for (const d in out) out[d].sort((a, b) => a[0].localeCompare(b[0]));
+  return out;
+}
+async function epgDays(days) {
+  const year = +kst(0).slice(0, 4);
+  const per = {};
+  await Promise.all(EPG_CH.map(async ([no, name, grp]) => {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try { per[name] = await daumChannel(name, year); break; }
+      catch (e) { EPG_LOG.push(name + ' ' + attempt + ' ' + String(e).slice(0, 120)); }
+    }
+  }));
+  const out = {};
+  for (const d of days) {
+    const ch = EPG_CH.map(([no, name, grp]) => ({no, name, grp, items: (per[name] && per[name][d]) || []}));
+    const n = ch.reduce((a, c) => a + c.items.length, 0);
+    EPG_LOG.push(d + ' programs ' + n + ' | ' + ch.map(c => c.name + ':' + c.items.length).join(' '));
+    if (n >= MIN_EPG) out[d] = ch;
+  }
   return out;
 }
 
@@ -137,8 +155,8 @@ async function main() {
 
   const hs = {};
   for (const d of days) hs[d] = await hsmoaDay(page, d);
-  const epg = await epgDays(page, days);
   await browser.close();
+  const epg = await epgDays(days);
 
   for (const d of days) {
     const items = hs[d].sort((a, b) => (a.s + a.ch).localeCompare(b.s + b.ch));
@@ -150,11 +168,11 @@ async function main() {
 
     if (tv.length >= MIN_TV) {
       const doc = capSize({ date: d, collectedAt: nowIso(), source: 'hsmoa.com', items: tv }, 200000);
-      if (epg[d]) { doc.epg = epg[d]; doc.epgSource = 'tv.kt.com'; doc.epgAt = nowIso(); }
+      if (epg[d]) { doc.epg = epg[d]; doc.epgSource = 'search.daum.net'; doc.epgAt = nowIso(); }
       else if (prevTv && prevTv.epg) { doc.epg = prevTv.epg; doc.epgSource = prevTv.epgSource; doc.epgAt = prevTv.epgAt; }
       writeJson(tvFile, doc); res.tvSaved = true;
     } else if (prevTv && epg[d]) {
-      prevTv.epg = epg[d]; prevTv.epgSource = 'tv.kt.com'; prevTv.epgAt = nowIso(); writeJson(tvFile, prevTv);
+      prevTv.epg = epg[d]; prevTv.epgSource = 'search.daum.net'; prevTv.epgAt = nowIso(); writeJson(tvFile, prevTv);
     }
     if (tc.length >= MIN_TC) {
       writeJson(tcFile, capSize({ date: d, collectedAt: nowIso(), source: 'hsmoa.com', set: 'tcommerce', items: tc }, 220000));
