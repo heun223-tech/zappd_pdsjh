@@ -73,18 +73,26 @@ function capSize(doc, limit) {
   return doc;
 }
 
+const HS_LOG = [];
 async function hsmoaDay(page, d) {
   const dd = String(+d.slice(8, 10));
-  const url = `https://hsmoa.com/?date=${dd}&time=${d}T03%3A00%3A00.000Z&time_size=24&direction=down&base_hour_datetime=${prevDay(d)}T23%3A59%3A00%2B09%3A00`;
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  const base = `date=${dd}&time_size=24&direction=down&base_hour_datetime=${prevDay(d)}T23%3A59%3A00%2B09%3A00`;
+  const urls = [
+    `https://hsmoa.com/?${base.replace('&time_size', `&time=${d}T03%3A00%3A00.000Z&time_size`)}`,
+    `https://hsmoa.com/?${base}`,
+    `https://hsmoa.com/?${base.replace('&time_size', `&time=${encodeURIComponent(new Date().toISOString())}&time_size`)}`,
+  ];
+  for (let attempt = 0; attempt < urls.length * 2; attempt++) {
+    const url = urls[attempt % urls.length];
     try {
+      await page.goto('about:blank');
       await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
-      await page.waitForTimeout(4000);
+      await page.waitForTimeout(4000 + 2000 * Math.floor(attempt / urls.length));
       const items = (await page.evaluate(HSMOA_EXTRACT, [...TV, ...TC])).filter(i => i.d === d);
-      log('hsmoa', d, 'attempt', attempt, 'items', items.length);
-      if (items.length) return items;
-    } catch (e) { log('hsmoa error', d, attempt, e.message); }
-    await page.waitForTimeout(5000 * attempt);
+      HS_LOG.push(`${d} try${attempt + 1} ${items.length}`);
+      if (items.filter(i => TV.includes(i.ch)).length >= MIN_TV) return items;
+    } catch (e) { HS_LOG.push(`${d} try${attempt + 1} error ${String(e.message).slice(0, 120)}`); }
+    await page.waitForTimeout(3000);
   }
   return [];
 }
@@ -151,7 +159,7 @@ async function main() {
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ locale: 'ko-KR', timezoneId: 'Asia/Seoul', userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
   const page = await ctx.newPage();
-  const summary = { at: nowIso(), days: {}, epgLog: EPG_LOG };
+  const summary = { at: nowIso(), days: {}, hsLog: HS_LOG, epgLog: EPG_LOG };
 
   const hs = {};
   for (const d of days) hs[d] = await hsmoaDay(page, d);
