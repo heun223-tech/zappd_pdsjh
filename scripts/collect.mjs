@@ -108,6 +108,7 @@ async function hsmoaDay(page, d) {
   return [];
 }
 
+const EPG_LOG = [];
 async function epgDays(page, days) {
   const out = {};
   try {
@@ -117,12 +118,12 @@ async function epgDays(page, days) {
         try {
           const ch = await page.evaluate(KT_EXTRACT, { chans: EPG_CH, date: d.replaceAll('-', '') });
           const n = ch.reduce((a, c) => a + c.items.length, 0);
-          log('epg', d, 'programs', n);
+          log('epg', d, 'programs', n); EPG_LOG.push(d + ' programs ' + n);
           if (n >= MIN_EPG) { out[d] = ch; break; }
-        } catch (e) { log('epg error', d, attempt, e.message); }
+        } catch (e) { log('epg error', d, attempt, e.message); EPG_LOG.push(d + ' ' + attempt + ' ' + e.message.slice(0, 200)); }
       }
     }
-  } catch (e) { log('epg page error', e.message); }
+  } catch (e) { log('epg page error', e.message); EPG_LOG.push('page ' + e.message.slice(0, 300)); }
   return out;
 }
 
@@ -132,7 +133,7 @@ async function main() {
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ locale: 'ko-KR', timezoneId: 'Asia/Seoul', userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
   const page = await ctx.newPage();
-  const summary = { at: nowIso(), days: {} };
+  const summary = { at: nowIso(), days: {}, epgLog: EPG_LOG };
 
   const hs = {};
   for (const d of days) hs[d] = await hsmoaDay(page, d);
