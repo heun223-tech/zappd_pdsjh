@@ -80,6 +80,44 @@ h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balan
 .chcard .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .chcard .top{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+/* lineup: one row per NS broadcast, competitors on the same clock to the right */
+.lineup{display:flex;flex-direction:column;gap:10px}
+.lu-row{display:grid;grid-template-columns:minmax(250px,330px) minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;scroll-margin-top:120px}
+.lu-row.now{border-color:var(--now);box-shadow:0 0 0 1px var(--now)}
+.lu-row.past{opacity:.62}
+.lu-ns{text-align:left;border:0;border-right:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.lu-ns .t{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);display:flex;gap:8px;align-items:center}
+.lu-ns .t .live{font-family:var(--f-mono);font-size:10px;font-weight:600;letter-spacing:.08em;background:var(--now);color:#fff;border-radius:3px;padding:0 5px}
+.lu-ns .nm{font-size:15.5px;font-weight:700;line-height:1.4;overflow-wrap:anywhere;word-break:keep-all}
+.lu-ns .px{font-family:var(--f-mono);font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.lu-ns .px .off{font-size:13px}
+.lu-ns .sub{font-size:12px;color:var(--muted)}
+.lu-rv{display:flex;flex-direction:column;min-width:0}
+.lu-ch{display:grid;grid-template-columns:136px minmax(0,1fr);border-bottom:1px solid var(--line);min-width:0}
+.lu-ch:last-child{border-bottom:0}
+.lu-ch .who{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:7px 10px;background:var(--surface-2);min-width:0}
+.lu-ch .wn{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.lu-ch .progs{display:flex;flex-direction:column;min-width:0}
+.lu-it{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:10px;align-items:baseline;text-align:left;border:0;background:transparent;padding:7px 12px;font-size:13px;min-width:0}
+.lu-it + .lu-it{border-top:1px dashed var(--line)}
+.lu-it:hover{background:var(--surface-2)}
+.lu-it .tm{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.lu-it .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.lu-it .pr{font-family:var(--f-mono);font-size:12.5px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.lu-it .pr.na{font-family:var(--f-body);font-weight:400;color:var(--muted);font-size:11.5px}
+.lu-none{padding:7px 12px;font-size:12px;color:var(--muted)}
+.lu-ch:not(.all) .lu-it.extra{display:none}
+.lu-more{border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font-size:11px;font-weight:600;padding:0 8px;line-height:18px;font-family:var(--f-mono)}
+.lu-more:hover{color:var(--ink)}
+@media (max-width:760px){
+  .lu-row{grid-template-columns:1fr}
+  .lu-ns{border-right:0;border-bottom:3px solid var(--accent)}
+  .lu-ch{grid-template-columns:1fr}
+  .lu-ch .who{padding:6px 12px;flex-direction:row;justify-content:space-between;align-items:center}
+  .lu-it{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}
+  .lu-it .tm{grid-column:1 / -1}
+}
+
 /* timeline */
 .tl-legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:12px;color:var(--muted)}
 .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
@@ -270,9 +308,9 @@ tbody tr:hover td{background:var(--surface-2)}
     <div class="seg setseg" id="setSeg" role="group" aria-label="편성 구분"><button data-set="tv" aria-pressed="true">TV홈쇼핑</button><button data-set="tc" aria-pressed="false">데이터홈쇼핑</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" id="tab-timeline" aria-selected="true" data-view="timeline">재핑 타임라인</button>
-      <button class="tab" role="tab" id="tab-alerts" aria-selected="false" data-view="alerts">동일 상품군 알림 <span class="count" id="alertCount" hidden>0</span></button>
-      <button class="tab" role="tab" id="tab-compare" aria-selected="false" data-view="compare">채널별 상품·가격</button>
-      <button class="tab" role="tab" id="tab-epg" aria-selected="false" data-view="epg">방송 편성표</button>
+      <button class="tab" role="tab" id="tab-lineup" aria-selected="false" data-view="lineup">NS 기준 비교</button>
+      <button class="tab" role="tab" id="tab-compare" aria-selected="false" data-view="compare">상품·가격 검색</button>
+      <button class="tab" role="tab" id="tab-epg" aria-selected="false" data-view="epg">TV 편성표</button>
     </div>
     <span class="spacer"></span>
     <div class="datepick"><label for="dateSel" class="meta">방송일</label><select id="dateSel"></select></div>
@@ -281,42 +319,33 @@ tbody tr:hover td{background:var(--surface-2)}
 
   <div id="emptyState" class="empty">
     <h2>편성 데이터를 불러오는 중</h2>
-    <p>매일 아침 자동 수집이 NS홈쇼핑·GS샵·CJ온스타일·롯데·현대·홈앤쇼핑·공영쇼핑 7개 TV 채널의 오늘 편성과 상품·가격을 여기에 채웁니다.</p>
+    <p>자동 수집된 TV홈쇼핑·데이터홈쇼핑 편성과 상품·가격을 불러옵니다.</p>
   </div>
 
   <div id="app" hidden>
     <p class="setnote" id="setNote" hidden></p>
-    <section class="strip" id="strip" aria-label="채널별 오늘 편성 요약"></section>
+    <section id="view-lineup" data-view-panel="lineup" hidden style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+      <div class="tl-legend"><span id="lineupNote"></span><span>가격은 최대혜택가. 방송을 누르면 가격·구성 상세가 열립니다.</span></div>
+      <div class="lineup" id="lineup"></div>
+    </section>
 
-    <section id="view-timeline" data-view-panel="timeline" style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
-      <div class="tl-legend">
-        <span><i class="sw own"></i>NS 방송</span>
-        <span><i class="sw clash"></i>NS와 같은 시간·같은 상품군</span>
-        <span><i class="sw near"></i>NS 방송 앞뒤 2시간 내 같은 상품군</span>
-        <span>가격은 최대혜택가, 회색 칩은 구성입니다. 방송을 누르면 상세가 열립니다.</span>
-      </div>
+    <section id="view-timeline" data-view-panel="timeline" style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+      <div class="tl-legend"><span>가격은 최대혜택가. 방송을 누르면 상세가 열립니다.</span></div>
       <div class="tl-scroll" id="tlScroll"><div class="tl" id="tl"></div></div>
     </section>
 
-    <section id="view-alerts" data-view-panel="alerts" hidden style="margin-top:14px">
-      <div class="alerts" id="alerts"></div>
-    </section>
-
-    <section id="view-compare" data-view-panel="compare" hidden style="display:flex;flex-direction:column;gap:12px;margin-top:14px">
+    <section id="view-compare" data-view-panel="compare" hidden style="display:flex;flex-direction:column;gap:12px;margin-top:6px">
       <div class="filters" id="chFilters"></div>
       <div class="filters">
         <div class="seg" role="group" aria-label="보기 방식"><button id="modeCards" aria-pressed="true">카드</button><button id="modeTable" aria-pressed="false">표</button></div>
-        <select id="c1Sel" aria-label="대분류"></select>
-        <input type="search" id="q" placeholder="상품명·브랜드·카테고리 검색" aria-label="검색">
+        <input type="search" id="q" placeholder="상품명·브랜드 검색" aria-label="검색">
         <label><input type="checkbox" id="hideNoPrice" checked> 가격 미표기(여행·렌탈·보험) 제외</label>
       </div>
       <div class="chsecs" id="cards"></div>
       <div class="tbl-wrap" id="tblWrap" hidden><table id="cmp"><thead></thead><tbody></tbody></table></div>
-      <div class="section-h"><h2>대분류별 편성 수</h2><p>방송 건수 기준. 칸이 진할수록 많이 편성.</p></div>
-      <div class="tbl-wrap"><table class="heat" id="heat"></table></div>
     </section>
 
-    <section id="view-epg" data-view-panel="epg" hidden style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+    <section id="view-epg" data-view-panel="epg" hidden style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
       <div class="tl-legend" id="epgLegend"></div>
       <div class="tl-scroll" id="epgScroll"><div class="tl" id="epg"></div></div>
     </section>
@@ -397,30 +426,18 @@ let unsubDay = null;
 
 // ---------- data prep ----------
 function prep(items, OWN) {
-  const list = items.filter(i => CHMAP[i.ch]).map((i, idx) => {
+  const raw = items.filter(i => CHMAP[i.ch]).slice().sort((a, b) => a.ch.localeCompare(b.ch) || a.s.localeCompare(b.s));
+  // one broadcast split into consecutive slots of the same product counts once
+  const merged = [];
+  for (const i of raw) {
+    const last = merged[merged.length - 1];
+    if (last && last.ch === i.ch && last.n === i.n && last.e === i.s) { last.e = i.e; continue; }
+    merged.push({...i});
+  }
+  return merged.map((i, idx) => {
     const s = toMin(i.s); let e = toMin(i.e); if (!i.e || e <= s) e += 1440; if (e - s > 360) e = s + 60;
     return {...i, idx, sm: s, em: e};
   });
-  const own = list.filter(i => i.ch === OWN);
-  for (const it of list) { it.rel = []; it.flag = null; }
-  const rank = {clash: 3, near: 2, brand: 1, loose: 0};
-  for (const n of own) {
-    for (const c of list) {
-      if (c.ch === OWN) continue;
-      const ov = Math.min(n.em, c.em) - Math.max(n.sm, c.sm);
-      const gap = ov > 0 ? 0 : Math.max(c.sm - n.em, n.sm - c.em);
-      let kind = null;
-      if (n.c2 && c.c2 === n.c2) kind = ov > 0 ? 'clash' : (gap <= NEAR_MIN ? 'near' : null);
-      else if (n.c1 && c.c1 === n.c1 && ov > 0 && !['여행', '서비스/금융'].includes(n.c1)) kind = 'loose';
-      const brand = n.b && c.b && n.b.replace(/\s/g, '') === c.b.replace(/\s/g, '');
-      if (!kind && brand) kind = 'brand';
-      if (!kind) continue;
-      const rel = {own: n, rival: c, kind, ov, gap, brand};
-      n.rel.push(rel); c.rel.push(rel);
-      if (kind !== 'loose' && (!c.flag || rank[kind] > rank[c.flag])) c.flag = kind;
-    }
-  }
-  return list;
 }
 
 // ---------- shell ----------
@@ -429,9 +446,12 @@ function setView(v) {
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === v)));
   document.querySelectorAll('[data-view-panel]').forEach(p => p.hidden = p.dataset.viewPanel !== v);
   try { history.replaceState(null, '', '#' + v); } catch (e) {}
+  const sc = v === 'timeline' ? $('#tlScroll') : v === 'epg' ? $('#epgScroll') : null;
+  if (sc && !sc.dataset.placed && state.date) { sc.dataset.placed = '1'; const n = kstNow(); sc.scrollTop = (state.date === n.date ? Math.max(0, n.min - 60) : (v === 'epg' ? 18 : 6) * 60) * 2; }
+  if (v === 'lineup') scrollLineup();
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setView(t.dataset.view)));
-const h0 = (location.hash || '').slice(1); if (['timeline', 'alerts', 'compare', 'epg'].includes(h0)) setView(h0);
+const h0 = (location.hash || '').slice(1); setView(['lineup', 'timeline', 'compare', 'epg'].includes(h0) ? h0 : (matchMedia('(max-width:760px)').matches ? 'lineup' : 'timeline'));
 
 function tick() {
   const n = kstNow(); $('#clock').textContent = n.hm + ' KST';
@@ -453,17 +473,45 @@ function render() {
   if (!setDoc) note.textContent = `${SETS[state.set].label} 편성이 이 날짜에는 아직 수집되지 않았습니다. 다음 자동 수집 후 표시됩니다.`;
   const ca = setDoc && setDoc.collectedAt;
   $('#collected').textContent = ca ? '수집 ' + new Date(ca).toLocaleString('ko-KR', {timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : '';
-  renderStrip(items); renderTimeline(items); renderAlerts(items); renderCompare(); renderEpg(state.tvItems); tick();
+  renderLineup(items); renderTimeline(items); renderCompare(); renderEpg(state.tvItems); tick();
 }
 
-function renderStrip(items) {
-  $('#strip').innerHTML = CH.map(c => {
-    const l = items.filter(i => i.ch === c.id);
-    const cnt = {}; l.forEach(i => { if (i.c1) cnt[i.c1] = (cnt[i.c1] || 0) + 1; });
-    const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([k, v]) => `${k} ${v}`).join(' · ');
-    return `<div class="chcard ${c.own ? 'own' : ''}"><span class="chname">${chDot(c.id)}${esc(c.name)}</span><span class="n">방송 ${l.length}건</span><span class="top" title="${esc(top)}">${esc(top || '—')}</span></div>`;
+const overlaps = (a, b) => Math.min(a.em, b.em) - Math.max(a.sm, b.sm) > 0;
+function renderLineup(items) {
+  const own = items.filter(i => i.ch === OWN).sort((a, b) => a.sm - b.sm);
+  const rivals = CH.filter(c => !c.own);
+  const n = kstNow(); const live = state.date === n.date;
+  $('#lineupNote').textContent = `${CHMAP[OWN].name} 방송 ${own.length}건마다 같은 시간에 방송한 경쟁 ${rivals.length}개 채널을 나란히 보여줍니다.`;
+  if (!own.length) { $('#lineup').innerHTML = `<p class="quiet">이 날짜에는 ${esc(CHMAP[OWN].name)} 편성이 수집되지 않았습니다.</p>`; return; }
+  $('#lineup').innerHTML = own.map(it => {
+    const isNow = live && it.sm <= n.min && n.min < it.em; const past = live && it.em <= n.min;
+    const off = offPct(it);
+    const nsPrice = it.p ? `<span class="px">${won(best(it))}${off ? ` <span class="off">-${off}%</span>` : ''}</span>` : `<span class="sub">가격 미표기 (상담·렌탈·보험 등)</span>`;
+    const rows = rivals.map(c => {
+      const l = items.filter(o => o.ch === c.id && overlaps(o, it)).sort((a, b) => a.sm - b.sm);
+      const ovl = o => Math.min(o.em, it.em) - Math.max(o.sm, it.sm);
+      const main = l.reduce((m, o) => (!m || ovl(o) > ovl(m) ? o : m), null);
+      const extra = l.length - 1;
+      const progs = l.length ? l.map(o => `<button class="lu-it ${o === main ? '' : 'extra'}" data-idx="${o.idx}" title="${esc(o.s + '–' + o.e + ' ' + o.n)}"><span class="tm">${esc(o.s)}–${esc(o.e)}</span><span class="nm">${esc(o.n)}</span>${o.p ? `<span class="pr">${won(best(o))}</span>` : '<span class="pr na">가격 미표기</span>'}</button>`).join('') : '<span class="lu-none">편성 정보 없음</span>';
+      const more = extra > 0 ? `<button class="lu-more" data-n="${extra}" title="이 시간에 걸친 앞뒤 방송 ${extra}개 더 보기">+${extra}</button>` : '';
+      return `<div class="lu-ch"><div class="who"><span class="wn">${chDot(c.id)}${esc(c.name)}</span>${more}</div><div class="progs">${progs}</div></div>`;
+    }).join('');
+    return `<article class="lu-row ${isNow ? 'now' : ''} ${past ? 'past' : ''}" ${isNow ? 'id="luNow"' : ''}>
+      <button class="lu-ns" data-idx="${it.idx}"><span class="t">${esc(it.s)}–${esc(it.e)}${isNow ? '<span class="live">지금</span>' : ''}</span><span class="nm">${esc(it.n)}</span>${nsPrice}</button>
+      <div class="lu-rv">${rows}</div></article>`;
   }).join('');
+  if (state.view === 'lineup') scrollLineup();
 }
+function scrollLineup() {
+  if (state.luScrolled || state.date !== kstNow().date) return;
+  const target = $('#luNow') || [...document.querySelectorAll('.lu-row')].find(r => !r.classList.contains('past'));
+  if (target) { state.luScrolled = true; requestAnimationFrame(() => target.scrollIntoView({block: 'start'})); }
+}
+$('#lineup').addEventListener('click', e => {
+  const m = e.target.closest('.lu-more');
+  if (m) { const ch = m.closest('.lu-ch'); const open = ch.classList.toggle('all'); m.textContent = open ? '접기' : `+${m.dataset.n}`; return; }
+  const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx);
+});
 
 // ---------- timeline ----------
 function renderTimeline(items) {
@@ -478,14 +526,11 @@ function renderTimeline(items) {
     for (let hr = 1; hr < 24; hr++) col += `<div class="gridline" style="top:calc(${hr * 60} * var(--ppm))"></div><div class="gridline half" style="top:calc(${hr * 60 - 30} * var(--ppm))"></div>`;
     for (const it of items.filter(i => i.ch === c.id)) {
       const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
-      const own = c.own; const nClash = own ? it.rel.filter(r => r.kind === 'clash').length : 0; const nNear = own ? it.rel.filter(r => r.kind === 'near').length : 0;
-      const cls = ['blk', own ? 'own' : (it.flag === 'clash' ? 'clash' : it.flag === 'near' ? 'near' : ''), px < 96 ? 'short' : '', px < 50 ? 'tiny' : ''].join(' ');
-      const badges = own ? (nClash ? `<span class="badge clash">동시간 ${nClash}</span>` : '') + (nNear ? `<span class="badge near">앞뒤 ${nNear}</span>` : '')
-        : (it.flag === 'clash' ? '<span class="badge clash">NS 동시간</span>' : it.flag === 'near' ? '<span class="badge near">NS 인접</span>' : it.flag === 'brand' ? '<span class="badge brand">NS 동일브랜드</span>' : '');
-      const off = offPct(it); const oc = opCount(it);
-      const price = it.p ? `<span class="pline"><span class="big">${won(best(it))}</span>${off ? `<span class="off">-${off}%</span>` : ''}${oc ? `<span class="more">+${oc}구성</span>` : ''}</span>` : `<span class="pline"><span class="more">가격 미표기</span></span>`;
+      const own = c.own;
+      const cls = ['blk', own ? 'own' : '', px < 96 ? 'short' : '', px < 50 ? 'tiny' : ''].join(' ');
+      const price = it.p ? `<span class="pline"><span class="big">${won(best(it))}</span></span>` : `<span class="pline"><span class="more">가격 미표기</span></span>`;
       col += `<button class="${cls}" style="--c:var(--ch-${c.id});top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}">
-        <span class="t">${esc(it.s)}–${esc(it.e)} ${badges}</span><span class="nm">${esc(it.n)}</span>${chipsHtml(it)}${price}<span class="cat">${esc([it.c2, it.c3].filter(Boolean).join(' › '))}</span></button>`;
+        <span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span>${price}</button>`;
     }
     html += col + '</div>';
   }
@@ -497,77 +542,32 @@ function renderTimeline(items) {
 }
 $('#tl').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx); });
 
-// ---------- alerts: comparison table per NS broadcast ----------
-function vsRow(it, base, rel) {
-  const own = it.ch === OWN; const off = offPct(it); const b = best(it), nb = best(base);
-  let delta = '';
-  if (!own && b && nb) { const d = Math.round((b - nb) / nb * 100); delta = `<br><span class="delta ${d > 0 ? 'up' : 'down'}">NS 대비 ${d > 0 ? '+' : ''}${d}%</span>`; }
-  let relTxt = '';
-  if (rel) {
-    const k = {clash: '<span class="badge clash">동시간 동일군</span>', near: '<span class="badge near">인접 동일군</span>', brand: '<span class="badge brand">동일 브랜드</span>', loose: '<span class="more">같은 대분류</span>'}[rel.kind];
-    const when = rel.ov > 0 ? `${rel.ov}분 겹침` : (it.sm >= rel.own.em ? `NS 끝나고 ${rel.gap}분 뒤` : `NS 시작 ${rel.gap}분 전`);
-    relTxt = `${k}<br>${when}${rel.brand && rel.kind !== 'brand' ? ' · 동일 브랜드' : ''}`;
-  } else relTxt = '<b>자사</b>';
-  const oc = opCount(it);
-  return `<tr class="${own ? 'own' : ''}" data-idx="${it.idx}">
-    <td class="who"><b>${chDot(it.ch)}${esc(CHMAP[it.ch].name)}</b><span class="mono">${esc(it.s)}–${esc(it.e)}</span></td>
-    <td class="nm"><span class="n">${esc(it.n)}</span>${chipsHtml(it)}${oc ? `<span class="more">함께 판매 ${oc}개</span>` : ''}</td>
-    <td class="num">${it.p ? won(it.p) : '—'}${off ? `<br><span class="off">-${off}%</span>` : ''}</td>
-    <td class="num price">${it.p ? `<b>${won(b)}</b>` : '가격 미표기'}${delta}</td>
-    <td class="num">${unitTxt(it) ? `<span class="unit">${esc(unitTxt(it))}</span>` : '—'}</td>
-    <td class="ben">${esc(benefits(it).join(' · ') || '—')}</td>
-    <td class="rel">${relTxt}</td></tr>`;
-}
-function renderAlerts(items) {
-  const own = items.filter(i => i.ch === OWN);
-  const hit = own.filter(n => n.rel.some(r => r.kind !== 'loose'));
-  const calm = own.filter(n => !n.rel.some(r => r.kind !== 'loose'));
-  const nClash = own.reduce((a, n) => a + n.rel.filter(r => r.kind === 'clash').length, 0);
-  const ac = $('#alertCount'); ac.hidden = !nClash; ac.textContent = nClash;
-  const order = {clash: 0, near: 1, brand: 2, loose: 3};
-  let html = `<div class="section-h"><h2>${esc(CHMAP[OWN].name)} 방송 ${own.length}건 중 ${hit.length}건이 경쟁사와 겹칩니다</h2><p>소분류가 같은 방송이 같은 시간이면 동시간, NS 방송 앞뒤 ${NEAR_MIN}분 안이면 인접. 가격은 카드할인까지 반영한 최대혜택가, 단가는 상품명 구성 기준 추정치입니다.</p></div>`;
-  if (!own.length) html += `<p class="quiet">이 날짜에는 NS홈쇼핑 편성이 수집되지 않았습니다.</p>`;
-  const head = `<thead><tr><th>채널 · 시간</th><th>상품 · 구성</th><th class="num">정상가</th><th class="num">최대혜택가</th><th class="num">단가</th><th>혜택</th><th>관계</th></tr></thead>`;
-  for (const n of hit) {
-    const rels = n.rel.filter(r => r.kind !== 'loose').sort((a, b) => order[a.kind] - order[b.kind] || a.rival.sm - b.rival.sm);
-    const loose = n.rel.filter(r => r.kind === 'loose').length;
-    const cc = rels.filter(r => r.kind === 'clash').length, nn = rels.filter(r => r.kind === 'near').length;
-    html += `<article class="vsbox"><header class="vs-h"><span class="mono">${esc(n.s)}–${esc(n.e)}</span><b>${esc(n.c2 || n.c1)}</b><span class="cat">${esc([n.c1, n.c3].filter(Boolean).join(' › '))}</span>${cc ? `<span class="badge clash">동시간 ${cc}</span>` : ''}${nn ? `<span class="badge near">인접 ${nn}</span>` : ''}${loose ? `<span class="more">같은 대분류 동시간 ${loose}건은 상세에서</span>` : ''}</header>
-      <div class="tbl-wrap"><table class="vs">${head}<tbody>${vsRow(n, n, null)}${rels.map(r => vsRow(r.rival, n, r)).join('')}</tbody></table></div></article>`;
-  }
-  if (calm.length) html += `<details class="calm"><summary>겹치는 경쟁 방송 없음 ${calm.length}건</summary><ul>${calm.map(n => `<li><span class="mono">${esc(n.s)}</span> ${esc(n.n)} <span>(${esc(n.c2)})</span></li>`).join('')}</ul></details>`;
-  $('#alerts').innerHTML = html;
-}
-$('#alerts').addEventListener('click', e => { const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx); });
 
 // ---------- channel cards / table ----------
 const COLS = [
-  {k: 's', l: '시간'}, {k: 'ch', l: '채널'}, {k: 'n', l: '상품 · 구성'}, {k: 'c2', l: '상품군'},
+  {k: 's', l: '시간'}, {k: 'ch', l: '채널'}, {k: 'n', l: '상품 · 구성'},
   {k: 'p', l: '정상가', num: 1}, {k: 'sp', l: '판매가', num: 1}, {k: 'best', l: '최대혜택가', num: 1},
   {k: 'off', l: '할인', num: 1}, {k: 'unit', l: '단가', num: 1}, {k: 'ifm', l: '무이자', num: 1}, {k: 'cd', l: '카드할인'}
 ];
 const sortVal = (it, k) => k === 's' ? it.sm : k === 'ch' ? CHORD[it.ch] : k === 'best' ? best(it) : k === 'off' ? offPct(it) : k === 'unit' ? unitPrice(it) : it[k];
 function filtered() {
-  const c1 = $('#c1Sel').value, q = $('#q').value.trim().toLowerCase(), hide = $('#hideNoPrice').checked;
-  const rows = state.items.filter(i => state.chOn.has(i.ch) && (!c1 || i.c1 === c1) && (!hide || i.p > 0) && (!q || [i.n, i.b, i.c1, i.c2, i.c3, i.pg, ...(i.op || []).map(o => o.n)].join(' ').toLowerCase().includes(q)));
+  const q = $('#q').value.trim().toLowerCase(), hide = $('#hideNoPrice').checked;
+  const rows = state.items.filter(i => state.chOn.has(i.ch) && (!hide || i.p > 0) && (!q || [i.n, i.b, i.pg, ...(i.op || []).map(o => o.n)].join(' ').toLowerCase().includes(q)));
   const {k, dir} = state.sort;
   rows.sort((a, b) => { const va = sortVal(a, k), vb = sortVal(b, k); if (typeof va === 'string') return dir * va.localeCompare(vb, 'ko'); return dir * ((va || 0) - (vb || 0)) || a.sm - b.sm; });
   return rows;
 }
 function renderCompare() {
   $('#chFilters').innerHTML = CH.map(c => `<button class="chip" data-ch="${c.id}" aria-pressed="${state.chOn.has(c.id)}">${chDot(c.id)}${esc(c.name)}</button>`).join('');
-  const c1s = [...new Set(state.items.map(i => i.c1).filter(Boolean))].sort();
-  const cur = $('#c1Sel').value;
-  $('#c1Sel').innerHTML = `<option value="">전체 대분류</option>` + c1s.map(c => `<option ${c === cur ? 'selected' : ''}>${esc(c)}</option>`).join('');
   $('#modeCards').setAttribute('aria-pressed', String(state.mode === 'cards'));
   $('#modeTable').setAttribute('aria-pressed', String(state.mode === 'table'));
   $('#cards').hidden = state.mode !== 'cards'; $('#tblWrap').hidden = state.mode !== 'table';
   $('#cmp thead').innerHTML = '<tr>' + COLS.map(c => `<th data-k="${c.k}" class="${c.num ? 'num' : ''} ${state.sort.k === c.k ? (state.sort.dir > 0 ? 'asc' : 'desc') : ''}">${c.l}</th>`).join('') + '</tr>';
-  renderRows(); renderHeat();
+  renderRows();
 }
 function card(it) {
   const off = offPct(it); const b = best(it); const ops = it.op || []; const oc = opCount(it);
-  const flag = it.ch !== OWN && it.flag ? ({clash: '<span class="badge clash">NS 동시간</span>', near: '<span class="badge near">NS 인접</span>', brand: '<span class="badge brand">NS 동일브랜드</span>'}[it.flag] || '') : '';
+  
   const sub = [it.sp && it.sp !== it.p ? `판매가 ${won(it.sp)}` : '', it.cp && it.cp !== it.sp ? `${it.cpw || '쿠폰'} ${won(it.cp)}` : ''].filter(Boolean).join(' · ');
   const price = it.p ? `<div class="pc-price"><div class="row">${off ? `<span class="was">${won(it.p)}</span><span class="off">-${off}%</span>` : ''}</div>
       <div class="row"><span class="big">${won(b)}</span><span class="lbl">${b !== it.p ? '최대혜택가' : '판매가'}</span></div>
@@ -576,7 +576,7 @@ function card(it) {
   const ben = benefits(it);
   const opl = ops.length ? `<ul class="pc-ops">${ops.slice(0, 3).map(o => `<li><span title="${esc(o.n)}">${esc(o.n)}</span><span>${won(opPrice(o))}</span></li>`).join('')}${oc > 3 ? `<li class="tail"><span>함께 판매 ${oc}개 중 3개 표시</span><span></span></li>` : ''}</ul>` : '';
   return `<button class="pcard ${it.ch === OWN ? 'own' : ''}" style="--c:var(--ch-${it.ch})" data-idx="${it.idx}">
-    <span class="pc-top"><span class="mono">${esc(it.s)}–${esc(it.e)}</span>${flag || `<span>${esc(it.c2)}</span>`}</span>
+    <span class="pc-top"><span class="mono">${esc(it.s)}–${esc(it.e)}</span></span>
     <span class="pc-name">${esc(it.n)}</span>${chipsHtml(it)}${price}
     ${ben.length ? `<span class="pc-ben">${esc(ben.join(' · '))}</span>` : ''}${opl}</button>`;
 }
@@ -591,27 +591,18 @@ function renderRows() {
   } else {
     $('#cmp tbody').innerHTML = rows.map(i => { const off = offPct(i); return `<tr class="${i.ch === OWN ? 'own' : ''}" data-idx="${i.idx}">
       <td class="mono">${esc(i.s)}–${esc(i.e)}</td><td style="white-space:nowrap">${chDot(i.ch)} ${esc(CHMAP[i.ch].name)}</td>
-      <td class="nm">${esc(i.n)}${chipsHtml(i)}${opCount(i) ? `<span class="more">함께 판매 ${opCount(i)}개</span>` : ''}</td><td>${esc(i.c2)}</td>
+      <td class="nm">${esc(i.n)}${chipsHtml(i)}${opCount(i) ? `<span class="more">함께 판매 ${opCount(i)}개</span>` : ''}</td>
       <td class="num">${won(i.p)}</td><td class="num">${won(i.sp)}</td><td class="num"><b>${i.p ? won(best(i)) : '—'}</b></td>
       <td class="num">${off ? `<span class="off">-${off}%</span>` : '—'}</td><td class="num"><span class="unit">${esc(unitTxt(i) || '—')}</span></td>
       <td class="num">${i.ifm ? i.ifm + '개월' : '—'}</td><td>${esc(i.cd || '—')}</td></tr>`; }).join('')
       || `<tr><td colspan="${COLS.length}" class="quiet">조건에 맞는 방송이 없습니다. 필터를 줄여 보세요.</td></tr>`;
   }
 }
-function renderHeat() {
-  const c1s = [...new Set(state.items.map(i => i.c1).filter(Boolean))];
-  const cnt = {}; let max = 1;
-  state.items.forEach(i => { const key = i.c1 + '|' + i.ch; cnt[key] = (cnt[key] || 0) + 1; max = Math.max(max, cnt[key]); });
-  const tot = k => CH.reduce((s, c) => s + (cnt[k + '|' + c.id] || 0), 0);
-  c1s.sort((a, b) => tot(b) - tot(a));
-  $('#heat').innerHTML = `<thead><tr><th>대분류</th>${CH.map(c => `<th style="text-align:center">${esc(c.name)}</th>`).join('')}</tr></thead><tbody>` +
-    c1s.map(k => `<tr><td>${esc(k)}</td>${CH.map(c => { const v = cnt[k + '|' + c.id] || 0; const a = Math.round(v / max * 70); return `<td style="background:color-mix(in srgb,var(--ch-${c.id}) ${a}%,transparent);${a > 40 ? 'color:var(--surface);font-weight:600' : ''}">${v || '·'}</td>`; }).join('')}</tr>`).join('') + '</tbody>';
-}
 $('#cmp thead').addEventListener('click', e => { const th = e.target.closest('th[data-k]'); if (!th) return; const k = th.dataset.k; state.sort = {k, dir: state.sort.k === k ? -state.sort.dir : (['p', 'sp', 'best', 'off', 'unit', 'ifm'].includes(k) ? -1 : 1)}; renderCompare(); });
 $('#cmp tbody').addEventListener('click', e => { const tr = e.target.closest('tr[data-idx]'); if (tr) openDetail(+tr.dataset.idx); });
 $('#cards').addEventListener('click', e => { const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx); });
 $('#chFilters').addEventListener('click', e => { const b = e.target.closest('[data-ch]'); if (!b) return; const id = b.dataset.ch; state.chOn.has(id) ? state.chOn.delete(id) : state.chOn.add(id); renderCompare(); });
-['#c1Sel', '#hideNoPrice'].forEach(s => $(s).addEventListener('change', renderRows));
+$('#hideNoPrice').addEventListener('change', renderRows);
 $('#q').addEventListener('input', renderRows);
 const setMode = m => { state.mode = m; try { localStorage.setItem('zap.mode', m); } catch (e) {} renderCompare(); };
 $('#modeCards').addEventListener('click', () => setMode('cards'));
@@ -644,7 +635,7 @@ function renderEpg(items) {
   let ns = `<div class="col own" style="height:calc(${H} * var(--ppm))">${grid()}`;
   for (const it of items.filter(i => i.ch === SETS.tv.own)) {
     const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
-    ns += `<button class="blk own ${px < 96 ? 'short' : ''} ${px < 50 ? 'tiny' : ''}" style="--c:var(--ch-nsmall);top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}"><span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span><span class="pline">${it.p ? `<span class="big">${won(best(it))}</span>` : '<span class="more">가격 미표기</span>'}</span><span class="cat">${esc(it.c2)}</span></button>`;
+    ns += `<button class="blk own ${px < 96 ? 'short' : ''} ${px < 50 ? 'tiny' : ''}" style="--c:var(--ch-nsmall);top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}"><span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span><span class="pline">${it.p ? `<span class="big">${won(best(it))}</span>` : '<span class="more">가격 미표기</span>'}</span></button>`;
   }
   html += ns + '</div>';
   for (const c of chans) {
@@ -692,21 +683,20 @@ function openDetail(idx, pool) {
       <dt>무이자</dt><dd>${it.ifm ? `최대 ${it.ifm}개월` : '—'}</dd>
       <dt>카드할인</dt><dd>${esc(it.cd || '—')}</dd>
       <dt>브랜드</dt><dd>${esc(it.b || '—')}</dd>
-      <dt>카테고리</dt><dd>${esc([it.c1, it.c2, it.c3].filter(Boolean).join(' › '))}</dd>
       ${it.pg ? `<dt>프로그램</dt><dd>${esc(it.pg)}</dd>` : ''}
     </dl>
     ${it.u ? `<a class="btn" href="${esc(it.u)}" target="_blank" rel="noopener">상품 페이지 열기 ↗</a>` : ''}
     ${opsHtml}
     ${(() => { const at = epgAt(it.sm); return at.length ? `<div class="section-h"><h2>방송 시작 시각(${esc(it.s)}) 주요 채널</h2></div><div class="epgnow">${at.map(({c, r}) => `<div><b>${esc(c.name)} <span class="quiet mono">${c.no}</span></b><span class="mono quiet">${esc(r.s)}</span><span>${esc(r.t)}</span></div>`).join('')}</div>` : ''; })()}
     <div class="section-h"><h2>같은 시간대 다른 홈쇼핑</h2></div>
-    <div class="same">${overlap.map(o => `<button class="rv" data-idx="${o.idx}"><span class="who"><b>${chDot(o.ch)}${esc(CHMAP[o.ch].name)}</b><span class="mono">${esc(o.s)}–${esc(o.e)}</span></span><span><span class="nm">${esc(o.n)}</span><br><span class="sub">${esc(o.c2)}${o.c2 && o.c2 === it.c2 ? ' · <b>동일 상품군</b>' : ''}${comp(o.n).chips.length ? ' · ' + esc(comp(o.n).chips.join(' ')) : ''}</span></span><span class="px">${o.p ? won(best(o)) : '—'}</span></button>`).join('') || '<p class="quiet">겹치는 방송이 없습니다.</p>'}</div>`;
+    <div class="same">${overlap.map(o => `<button class="rv" data-idx="${o.idx}"><span class="who"><b>${chDot(o.ch)}${esc(CHMAP[o.ch].name)}</b><span class="mono">${esc(o.s)}–${esc(o.e)}</span></span><span><span class="nm">${esc(o.n)}</span><br><span class="sub">${esc(comp(o.n).chips.join(' '))}</span></span><span class="px">${o.p ? won(best(o)) : '—'}</span></button>`).join('') || '<p class="quiet">겹치는 방송이 없습니다.</p>'}</div>`;
   $('#sheet').hidden = false; $('#closeSheet').focus();
 }
 function closeDetail() { $('#sheet').hidden = true; }
 $('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet' || e.target.id === 'closeSheet') return closeDetail(); const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx, detailPool); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
 
-$('#setSeg').addEventListener('click', e => { const b = e.target.closest('[data-set]'); if (!b || b.dataset.set === state.set) return; useSet(b.dataset.set); closeDetail(); if (state.docs.tv || state.docs.tc) render(); });
+$('#setSeg').addEventListener('click', e => { const b = e.target.closest('[data-set]'); if (!b || b.dataset.set === state.set) return; useSet(b.dataset.set); state.luScrolled = false; closeDetail(); if (state.docs.tv || state.docs.tc) render(); });
 
 // ---------- data from db ----------
 function showEmpty(title, body) {
@@ -731,7 +721,7 @@ async function bootStatic() {
     if (!tv && !tc) { showEmpty(d + ' 편성을 불러오지 못했습니다', '잠시 후 새로 고쳐 주세요.'); return; }
     render();
   };
-  $('#dateSel').addEventListener('change', e => load(e.target.value));
+  $('#dateSel').addEventListener('change', e => { state.luScrolled = false; load(e.target.value); });
   const today = kstNow().date;
   await load(state.dates.includes(today) ? today : state.dates[0]);
   return true;
@@ -751,7 +741,7 @@ async function boot() {
     unsubDay = db.doc('days/' + d).onSnapshot(snap => { seen.tv = true; state.docs.tv = snap.exists ? snap.data() : null; after(); }, fail);
     unsubT = db.doc('tdays/' + d).onSnapshot(snap => { seen.tc = true; state.docs.tc = snap.exists ? snap.data() : null; after(); }, () => { seen.tc = true; after(); });
   };
-  $('#dateSel').addEventListener('change', e => subscribeDay(e.target.value));
+  $('#dateSel').addEventListener('change', e => { state.luScrolled = false; subscribeDay(e.target.value); });
   db.doc('meta/index').onSnapshot(snap => {
     const m = snap.exists ? snap.data() : {};
     state.dates = [...new Set([...(m.dates || []), ...(m.tdates || [])])].sort().reverse();
