@@ -18,6 +18,7 @@
   --warn:#b8430b; --warn-soft:#fbe7da; --caution:#8a6a00; --caution-soft:#f6eecb;
   --now:#d1291b; --shadow:0 1px 2px rgba(21,32,42,.06),0 4px 14px rgba(21,32,42,.06);
   --ch-nsmall:#0a7564; --ch-gsshop:#4a7d1e; --ch-cjmall:#7b3fa8; --ch-lotteimall:#c0262f; --ch-hmall:#1f6a5c; --ch-hnsmall:#d1661a; --ch-immall:#2b5ea7;
+  --ch-nsmallplus:#0a7564; --ch-gsmyshop:#4a7d1e; --ch-cjmallplus:#7b3fa8; --ch-lotteonetv:#c0262f; --ch-hmallplus:#1f6a5c; --ch-kshop:#b3261e; --ch-kshopplus:#8a3b12; --ch-bshop:#d4442a; --ch-ssgshop:#a8326e; --ch-shopnt:#5b4bb5; --ch-wshop:#2f7f9e;
   --f-body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --ppm:2px; /* timeline pixels per minute */
@@ -28,6 +29,7 @@
   --warn:#f5894a; --warn-soft:#3a2216; --caution:#e2c15a; --caution-soft:#332b10;
   --now:#ff6b5e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
   --ch-nsmall:#3bbfa8; --ch-gsshop:#8cc35a; --ch-cjmall:#b88ae0; --ch-lotteimall:#f07178; --ch-hmall:#5cc2ad; --ch-hnsmall:#f3a15e; --ch-immall:#7fa8ec;
+  --ch-nsmallplus:#3bbfa8; --ch-gsmyshop:#8cc35a; --ch-cjmallplus:#b88ae0; --ch-lotteonetv:#f07178; --ch-hmallplus:#5cc2ad; --ch-kshop:#f28b82; --ch-kshopplus:#e2a36b; --ch-bshop:#ff8a65; --ch-ssgshop:#f48fb1; --ch-shopnt:#a99cf0; --ch-wshop:#6cc3e0;
   color-scheme:dark }}
 :root[data-theme="dark"]{
   --bg:#0e1418; --surface:#161f25; --surface-2:#1b262d; --ink:#e4ebef; --muted:#93a2ad; --line:#2a3741;
@@ -35,6 +37,7 @@
   --warn:#f5894a; --warn-soft:#3a2216; --caution:#e2c15a; --caution-soft:#332b10;
   --now:#ff6b5e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
   --ch-nsmall:#3bbfa8; --ch-gsshop:#8cc35a; --ch-cjmall:#b88ae0; --ch-lotteimall:#f07178; --ch-hmall:#5cc2ad; --ch-hnsmall:#f3a15e; --ch-immall:#7fa8ec;
+  --ch-nsmallplus:#3bbfa8; --ch-gsmyshop:#8cc35a; --ch-cjmallplus:#b88ae0; --ch-lotteonetv:#f07178; --ch-hmallplus:#5cc2ad; --ch-kshop:#f28b82; --ch-kshopplus:#e2a36b; --ch-bshop:#ff8a65; --ch-ssgshop:#f48fb1; --ch-shopnt:#a99cf0; --ch-wshop:#6cc3e0;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -65,9 +68,10 @@ h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balan
 .tab .count{font-family:var(--f-mono);font-size:11px;padding:0 6px;border-radius:999px;background:var(--warn);color:#fff}
 
 /* summary strip */
-.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
-@media (max-width:900px){.strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
 @media (max-width:520px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.setseg button{font-weight:600}
+.setnote{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:14px 16px;color:var(--muted)}
 .chcard{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .chcard.own{border-color:var(--accent);background:var(--accent-soft)}
 .chname{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px}
@@ -255,6 +259,7 @@ tbody tr:hover td{background:var(--surface-2)}
   <header class="bar">
     <div class="brand"><span class="onair off" id="onair">OFF AIR</span><h1>NS 재핑 보드</h1></div>
     <span class="clock" id="clock">--:--</span>
+    <div class="seg setseg" id="setSeg" role="group" aria-label="편성 구분"><button data-set="tv" aria-pressed="true">TV홈쇼핑</button><button data-set="tc" aria-pressed="false">데이터홈쇼핑</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" id="tab-timeline" aria-selected="true" data-view="timeline">재핑 타임라인</button>
       <button class="tab" role="tab" id="tab-alerts" aria-selected="false" data-view="alerts">동일 상품군 알림 <span class="count" id="alertCount" hidden>0</span></button>
@@ -272,6 +277,7 @@ tbody tr:hover td{background:var(--surface-2)}
   </div>
 
   <div id="app" hidden>
+    <p class="setnote" id="setNote" hidden></p>
     <section class="strip" id="strip" aria-label="채널별 오늘 편성 요약"></section>
 
     <section id="view-timeline" data-view-panel="timeline" style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
@@ -313,18 +319,24 @@ tbody tr:hover td{background:var(--surface-2)}
 
 <script>
 (() => {
-const CH = [
-  {id:'nsmall', name:'NS홈쇼핑', own:true},
-  {id:'gsshop', name:'GS샵'},
-  {id:'cjmall', name:'CJ온스타일'},
-  {id:'lotteimall', name:'롯데홈쇼핑'},
-  {id:'hmall', name:'현대홈쇼핑'},
-  {id:'hnsmall', name:'홈앤쇼핑'},
-  {id:'immall', name:'공영쇼핑'},
-];
-const CHMAP = Object.fromEntries(CH.map(c => [c.id, c]));
-const CHORD = Object.fromEntries(CH.map((c, i) => [c.id, i]));
-const OWN = 'nsmall';
+const SETS = {
+  tv: {label: 'TV홈쇼핑', own: 'nsmall', ch: [
+    {id:'nsmall', name:'NS홈쇼핑', own:true}, {id:'gsshop', name:'GS샵'}, {id:'cjmall', name:'CJ온스타일'}, {id:'lotteimall', name:'롯데홈쇼핑'},
+    {id:'hmall', name:'현대홈쇼핑'}, {id:'hnsmall', name:'홈앤쇼핑'}, {id:'immall', name:'공영쇼핑'}]},
+  tc: {label: '데이터홈쇼핑', own: 'nsmallplus', ch: [
+    {id:'nsmallplus', name:'NS Shop+', own:true}, {id:'gsmyshop', name:'GS마이샵'}, {id:'cjmallplus', name:'CJ온스타일+'}, {id:'lotteonetv', name:'롯데OneTV'},
+    {id:'hmallplus', name:'현대홈쇼핑+샵'}, {id:'bshop', name:'SK스토아'}, {id:'kshop', name:'KT알파쇼핑'}, {id:'kshopplus', name:'KT알파쇼핑+'},
+    {id:'ssgshop', name:'신세계쇼핑'}, {id:'shopnt', name:'쇼핑엔티'}, {id:'wshop', name:'W쇼핑'}]},
+};
+const CHMAP = Object.fromEntries([...SETS.tv.ch, ...SETS.tc.ch].map(c => [c.id, c]));
+let CH = SETS.tv.ch, CHORD = {}, OWN = 'nsmall';
+function useSet(k) {
+  state.set = SETS[k] ? k : 'tv'; const S = SETS[state.set];
+  CH = S.ch; OWN = S.own; CHORD = Object.fromEntries(CH.map((c, i) => [c.id, i]));
+  state.chOn = new Set(CH.map(c => c.id));
+  document.querySelectorAll('#setSeg [data-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.set === state.set)));
+  try { localStorage.setItem('zap.set', state.set); } catch (e) {}
+}
 const NEAR_MIN = 120;
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -369,12 +381,14 @@ const benefits = it => [it.ifm ? `무이자 ${it.ifm}개월` : '', it.cd ? `카�
 const opPrice = o => o.mx || o.cp || o.sp || o.p || 0;
 const opCount = it => Math.max(it.opn || 0, (it.op || []).length);
 
-let state = {dates: [], date: null, day: null, items: [], view: 'timeline', mode: 'cards', sort: {k: 's', dir: 1}, chOn: new Set(CH.map(c => c.id))};
+let state = {dates: [], date: null, day: null, docs: {tv: null, tc: null}, items: [], tvItems: [], set: 'tv', view: 'timeline', mode: 'cards', sort: {k: 's', dir: 1}, chOn: new Set()};
+let savedSet = 'tv'; try { savedSet = localStorage.getItem('zap.set') || 'tv'; } catch (e) {}
+useSet(savedSet);
 try { const m = localStorage.getItem('zap.mode'); if (m === 'table' || m === 'cards') state.mode = m; } catch (e) {}
 let unsubDay = null;
 
 // ---------- data prep ----------
-function prep(items) {
+function prep(items, OWN) {
   const list = items.filter(i => CHMAP[i.ch]).map((i, idx) => {
     const s = toMin(i.s); let e = toMin(i.e); if (!i.e || e <= s) e += 1440; if (e - s > 360) e = s + 60;
     return {...i, idx, sm: s, em: e};
@@ -420,11 +434,18 @@ function tick() {
 setInterval(tick, 30000); tick();
 
 function render() {
+  const tvDoc = state.docs.tv, setDoc = state.docs[state.set];
+  state.tvItems = prep((tvDoc && tvDoc.items) || [], SETS.tv.own);
+  state.items = state.set === 'tv' ? state.tvItems : prep((setDoc && setDoc.items) || [], OWN);
+  state.day = setDoc || tvDoc;
   const items = state.items;
   $('#emptyState').hidden = true; $('#app').hidden = false;
-  const ca = state.day && state.day.collectedAt;
+  const note = $('#setNote');
+  note.hidden = !!setDoc;
+  if (!setDoc) note.textContent = `${SETS[state.set].label} 편성이 이 날짜에는 아직 수집되지 않았습니다. 다음 자동 수집 후 표시됩니다.`;
+  const ca = setDoc && setDoc.collectedAt;
   $('#collected').textContent = ca ? '수집 ' + new Date(ca).toLocaleString('ko-KR', {timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : '';
-  renderStrip(items); renderTimeline(items); renderAlerts(items); renderCompare(); renderEpg(items); tick();
+  renderStrip(items); renderTimeline(items); renderAlerts(items); renderCompare(); renderEpg(state.tvItems); tick();
 }
 
 function renderStrip(items) {
@@ -439,6 +460,7 @@ function renderStrip(items) {
 // ---------- timeline ----------
 function renderTimeline(items) {
   const H = 24 * 60;
+  const tlEl = $('#tl'); tlEl.style.gridTemplateColumns = `52px repeat(${CH.length}, minmax(150px,1fr))`; tlEl.style.minWidth = `calc(52px + ${CH.length} * 150px)`;
   let html = `<div class="tl-head corner">KST</div>` + CH.map(c => `<div class="tl-head ${c.own ? 'own' : ''}">${chDot(c.id)}${esc(c.name)}${c.own ? '<span class="tag">자사</span>' : ''}</div>`).join('');
   let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
   for (let hr = 0; hr <= 24; hr++) rail += `<span class="h" style="top:calc(${hr * 60} * var(--ppm))">${String(hr).padStart(2, '0')}:00</span>`;
@@ -495,7 +517,7 @@ function renderAlerts(items) {
   const nClash = own.reduce((a, n) => a + n.rel.filter(r => r.kind === 'clash').length, 0);
   const ac = $('#alertCount'); ac.hidden = !nClash; ac.textContent = nClash;
   const order = {clash: 0, near: 1, brand: 2, loose: 3};
-  let html = `<div class="section-h"><h2>NS 방송 ${own.length}건 중 ${hit.length}건이 경쟁사와 겹칩니다</h2><p>소분류가 같은 방송이 같은 시간이면 동시간, NS 방송 앞뒤 ${NEAR_MIN}분 안이면 인접. 가격은 카드할인까지 반영한 최대혜택가, 단가는 상품명 구성 기준 추정치입니다.</p></div>`;
+  let html = `<div class="section-h"><h2>${esc(CHMAP[OWN].name)} 방송 ${own.length}건 중 ${hit.length}건이 경쟁사와 겹칩니다</h2><p>소분류가 같은 방송이 같은 시간이면 동시간, NS 방송 앞뒤 ${NEAR_MIN}분 안이면 인접. 가격은 카드할인까지 반영한 최대혜택가, 단가는 상품명 구성 기준 추정치입니다.</p></div>`;
   if (!own.length) html += `<p class="quiet">이 날짜에는 NS홈쇼핑 편성이 수집되지 않았습니다.</p>`;
   const head = `<thead><tr><th>채널 · 시간</th><th>상품 · 구성</th><th class="num">정상가</th><th class="num">최대혜택가</th><th class="num">단가</th><th>혜택</th><th>관계</th></tr></thead>`;
   for (const n of hit) {
@@ -592,7 +614,7 @@ const GEN = {'뉴스':'--ch-immall','드라마':'--ch-cjmall','연예/오락':'-
 const genVar = g => `var(${GEN[g] || '--muted'})`;
 const isOff = t => /방송\s*시간이\s*아닙니다|정파/.test(t);
 function epgRows() {
-  const epg = (state.day && state.day.epg) || [];
+  const epg = (state.docs.tv && state.docs.tv.epg) || [];
   return epg.map(c => {
     const rows = c.items.map(([s, t, g]) => ({s, t, g, sm: toMin(s)})).sort((a, b) => a.sm - b.sm);
     rows.forEach((r, i) => { r.em = i + 1 < rows.length ? rows[i + 1].sm : 1440; if (r.em <= r.sm) r.em = r.sm + 30; });
@@ -615,7 +637,7 @@ function renderEpg(items) {
   const grid = () => { let g = ''; for (let hr = 1; hr < 24; hr++) g += `<div class="gridline" style="top:calc(${hr * 60} * var(--ppm))"></div>`; return g; };
   // NS column (compact)
   let ns = `<div class="col own" style="height:calc(${H} * var(--ppm))">${grid()}`;
-  for (const it of items.filter(i => i.ch === OWN)) {
+  for (const it of items.filter(i => i.ch === SETS.tv.own)) {
     const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
     ns += `<button class="blk own ${px < 96 ? 'short' : ''} ${px < 50 ? 'tiny' : ''}" style="--c:var(--ch-nsmall);top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}"><span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span><span class="pline">${it.p ? `<span class="big">${won(best(it))}</span>` : '<span class="more">가격 미표기</span>'}</span><span class="cat">${esc(it.c2)}</span></button>`;
   }
@@ -634,14 +656,17 @@ function renderEpg(items) {
   const target = state.date === n.date ? Math.max(0, n.min - 60) : 18 * 60;
   requestAnimationFrame(() => { sc.scrollTop = target * 2; });
 }
-$('#epg').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx); });
+$('#epg').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx, state.tvItems); });
 function epgAt(min) {
   return epgRows().map(c => { const r = c.rows.find(x => x.sm <= min && min < x.em); return r && !isOff(r.t) ? {c, r} : null; }).filter(Boolean);
 }
 
 // ---------- detail ----------
-function openDetail(idx) {
-  const it = state.items.find(i => i.idx === idx); if (!it) return;
+let detailPool = null;
+function openDetail(idx, pool) {
+  pool = pool || state.items; detailPool = pool;
+  const it = pool.find(i => i.idx === idx); if (!it) return;
+  const ORD = Object.fromEntries([...SETS.tv.ch, ...SETS.tc.ch].map((c, i) => [c.id, i]));
   const ch = CHMAP[it.ch];
   const steps = [['정상가', it.p]];
   if (it.sp && it.sp !== it.p) steps.push(['판매가', it.sp]);
@@ -651,7 +676,7 @@ function openDetail(idx) {
   const ops = it.op || []; const oc = opCount(it);
   const opsHtml = ops.length ? `<div class="section-h"><h2>이 방송 판매 구성</h2><p>본상품 외 함께 판매 ${oc}개</p></div>
     <ul class="oplist"><li><span><b>${esc(it.n)}</b></span><span><b>${it.p ? won(best(it)) : '—'}</b></span></li>${ops.map(o => `<li><span>${esc(o.n)}</span><span>${won(opPrice(o))}${o.p && opPrice(o) < o.p ? `<br><span class="was">${won(o.p)}</span>` : ''}</span></li>`).join('')}${oc > ops.length ? `<li><span class="quiet">외 ${oc - ops.length}개</span><span></span></li>` : ''}</ul>` : '';
-  const overlap = state.items.filter(o => o.ch !== it.ch && Math.min(o.em, it.em) - Math.max(o.sm, it.sm) > 0).sort((a, b) => CHORD[a.ch] - CHORD[b.ch]);
+  const overlap = pool.filter(o => o.ch !== it.ch && Math.min(o.em, it.em) - Math.max(o.sm, it.sm) > 0).sort((a, b) => ORD[a.ch] - ORD[b.ch]);
   $('#panel').innerHTML = `<button class="x" id="closeSheet">닫기</button>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="chname">${chDot(it.ch)}${esc(ch.name)} · <span class="mono">${esc(it.s)}–${esc(it.e)}</span></span><h3 id="pTitle">${esc(it.n)}</h3>${chipsHtml(it)}</div>
     ${ladder}
@@ -673,8 +698,10 @@ function openDetail(idx) {
   $('#sheet').hidden = false; $('#closeSheet').focus();
 }
 function closeDetail() { $('#sheet').hidden = true; }
-$('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet' || e.target.id === 'closeSheet') return closeDetail(); const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx); });
+$('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet' || e.target.id === 'closeSheet') return closeDetail(); const b = e.target.closest('[data-idx]'); if (b) openDetail(+b.dataset.idx, detailPool); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+$('#setSeg').addEventListener('click', e => { const b = e.target.closest('[data-set]'); if (!b || b.dataset.set === state.set) return; useSet(b.dataset.set); closeDetail(); if (state.docs.tv || state.docs.tc) render(); });
 
 // ---------- data from db ----------
 function showEmpty(title, body) {
@@ -689,12 +716,15 @@ async function bootStatic() {
   const get = async p => { const r = await fetch(p + '?t=' + Date.now(), {cache: 'no-store'}); if (!r.ok) throw new Error(r.status); return r.json(); };
   let idx;
   try { idx = await get('data/index.json'); } catch (e) { return false; }
-  state.dates = (idx.dates || []).slice().sort().reverse();
-  if (!state.dates.length) { showEmpty('아직 수집된 편성이 없습니다', '매일 아침 자동 수집이 끝나면 이곳에 표시됩니다.'); return true; }
+  const tset = new Set(idx.tdates || []);
+  state.dates = [...new Set([...(idx.dates || []), ...tset])].sort().reverse();
+  if (!state.dates.length) { showEmpty('아직 수집된 편성이 없습니다', '자동 수집이 끝나면 이곳에 표시됩니다.'); return true; }
   const load = async d => {
     state.date = d; fillDates();
-    try { state.day = await get('data/' + d + '.json'); state.items = prep(state.day.items || []); render(); }
-    catch (e) { showEmpty(d + ' 편성을 불러오지 못했습니다', '잠시 후 새로 고쳐 주세요.'); }
+    const [tv, tc] = await Promise.all([get('data/' + d + '.json').catch(() => null), tset.has(d) ? get('data/t-' + d + '.json').catch(() => null) : null]);
+    state.docs = {tv, tc};
+    if (!tv && !tc) { showEmpty(d + ' 편성을 불러오지 못했습니다', '잠시 후 새로 고쳐 주세요.'); return; }
+    render();
   };
   $('#dateSel').addEventListener('change', e => load(e.target.value));
   const today = kstNow().date;
@@ -706,18 +736,20 @@ async function boot() {
   if (!inClaude && await bootStatic()) return;
   const db = inClaude ? await window.claude.use('db').catch(() => null) : null;
   if (!db) { if (await bootStatic()) return; showEmpty('편성 데이터에 연결할 수 없습니다', 'claude.ai에 로그인한 상태로 이 페이지를 열면 매일 수집된 편성표가 표시됩니다.'); return; }
+  let unsubT = null;
   const subscribeDay = d => {
-    if (unsubDay) unsubDay();
-    state.date = d; fillDates();
-    unsubDay = db.doc('days/' + d).onSnapshot(snap => {
-      if (!snap.exists) { showEmpty(d + ' 편성이 아직 없습니다', '이 날짜의 수집이 끝나면 자동으로 나타납니다.'); return; }
-      state.day = snap.data(); state.items = prep(state.day.items || []); render();
-    }, () => showEmpty('편성 데이터를 읽지 못했습니다', '잠시 후 페이지를 새로 고쳐 주세요.'));
+    if (unsubDay) unsubDay(); if (unsubT) unsubT();
+    state.date = d; fillDates(); state.docs = {tv: null, tc: null};
+    let seen = {tv: false, tc: false};
+    const after = () => { if (!seen.tv || !seen.tc) return; if (!state.docs.tv && !state.docs.tc) { showEmpty(d + ' 편성이 아직 없습니다', '이 날짜의 수집이 끝나면 자동으로 나타납니다.'); return; } render(); };
+    const fail = () => showEmpty('편성 데이터를 읽지 못했습니다', '잠시 후 페이지를 새로 고쳐 주세요.');
+    unsubDay = db.doc('days/' + d).onSnapshot(snap => { seen.tv = true; state.docs.tv = snap.exists ? snap.data() : null; after(); }, fail);
+    unsubT = db.doc('tdays/' + d).onSnapshot(snap => { seen.tc = true; state.docs.tc = snap.exists ? snap.data() : null; after(); }, () => { seen.tc = true; after(); });
   };
   $('#dateSel').addEventListener('change', e => subscribeDay(e.target.value));
   db.doc('meta/index').onSnapshot(snap => {
-    const dates = (snap.exists && snap.data().dates) || [];
-    state.dates = dates.slice().sort().reverse();
+    const m = snap.exists ? snap.data() : {};
+    state.dates = [...new Set([...(m.dates || []), ...(m.tdates || [])])].sort().reverse();
     if (!state.dates.length) { showEmpty('아직 수집된 편성이 없습니다', '매일 아침 자동 수집이 7개 TV 홈쇼핑 채널의 편성과 상품·가격을 이곳에 채웁니다. 첫 수집이 끝나면 바로 표시됩니다.'); return; }
     const today = kstNow().date;
     if (!state.date || !state.dates.includes(state.date)) subscribeDay(state.dates.includes(today) ? today : state.dates[0]);
