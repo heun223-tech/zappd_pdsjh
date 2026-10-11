@@ -23,10 +23,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '22'
       - name: Install Playwright
         run: |
           npm init -y >/dev/null
@@ -44,5 +44,9 @@ jobs:
           git add data
           if git diff --cached --quiet; then echo "no changes"; exit 0; fi
           git commit -m "Update schedule data $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
-          for i in 1 2 3; do git pull --rebase -q origin main && git push && exit 0; sleep 5; done
+          for i in 1 2 3 4; do
+            if git pull --rebase -X theirs -q origin main && git push; then exit 0; fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((i * 5))
+          done
           exit 1
