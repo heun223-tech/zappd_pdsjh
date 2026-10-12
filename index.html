@@ -149,6 +149,8 @@ h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balan
 .blk.clash{background:var(--warn-soft);border-color:var(--warn);border-left-color:var(--warn);border-width:2px 2px 2px 3px}
 .blk.near{background:var(--caution-soft);border-color:var(--caution);border-style:dashed;border-left-style:solid;border-left-color:var(--caution)}
 .blk .t{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.src{font-family:var(--f-body);font-size:9.5px;font-weight:600;line-height:14px;padding:0 4px;border-radius:3px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.gapblk{position:absolute;left:4px;right:4px;border:1px dashed var(--line);border-radius:6px;background:repeating-linear-gradient(45deg,transparent 0 6px,color-mix(in srgb,var(--line) 40%,transparent) 6px 12px);color:var(--muted);font-size:11px;line-height:1.35;padding:4px 6px;overflow:hidden}
 .blk .nm{font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere}
 .blk .cat{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .blk.short .nm{-webkit-line-clamp:1}
@@ -492,7 +494,7 @@ function renderLineup(items) {
       const ovl = o => Math.min(o.em, it.em) - Math.max(o.sm, it.sm);
       const main = l.reduce((m, o) => (!m || ovl(o) > ovl(m) ? o : m), null);
       const extra = l.length - 1;
-      const progs = l.length ? l.map(o => `<button class="lu-it ${o === main ? '' : 'extra'}" data-idx="${o.idx}" title="${esc(o.s + '–' + o.e + ' ' + o.n)}"><span class="tm">${esc(o.s)}–${esc(o.e)}</span><span class="nm">${esc(o.n)}</span>${o.p ? `<span class="pr">${won(best(o))}</span>` : '<span class="pr na">가격 미표기</span>'}</button>`).join('') : '<span class="lu-none">편성 정보 없음</span>';
+      const progs = l.length ? l.map(o => `<button class="lu-it ${o === main ? '' : 'extra'}" data-idx="${o.idx}" title="${esc(o.s + '–' + o.e + ' ' + o.n)}"><span class="tm">${esc(o.s)}–${esc(o.e)}${o.src === 'o' ? ' <span class="src">공식</span>' : ''}</span><span class="nm">${esc(o.n)}</span>${o.p ? `<span class="pr">${won(best(o))}</span>` : '<span class="pr na">가격 미표기</span>'}</button>`).join('') : '<span class="lu-none">편성 정보 없음</span>';
       const more = extra > 0 ? `<button class="lu-more" data-n="${extra}" title="이 시간에 걸친 앞뒤 방송 ${extra}개 더 보기">+${extra}</button>` : '';
       return `<div class="lu-ch"><div class="who"><span class="wn">${chDot(c.id)}${esc(c.name)}</span>${more}</div><div class="progs">${progs}</div></div>`;
     }).join('');
@@ -524,13 +526,16 @@ function renderTimeline(items) {
   for (const c of CH) {
     let col = `<div class="col ${c.own ? 'own' : ''}" style="height:calc(${H} * var(--ppm))">`;
     for (let hr = 1; hr < 24; hr++) col += `<div class="gridline" style="top:calc(${hr * 60} * var(--ppm))"></div><div class="gridline half" style="top:calc(${hr * 60 - 30} * var(--ppm))"></div>`;
-    for (const it of items.filter(i => i.ch === c.id)) {
+    const mine = items.filter(i => i.ch === c.id).sort((a, b) => a.sm - b.sm);
+    // slots neither hsmoa nor the channel's own schedule covers
+    mine.forEach((it, k) => { const nx = mine[k + 1]; if (nx && nx.sm - it.em >= 20) col += `<div class="gapblk" style="top:calc(${it.em} * var(--ppm) + 1px);height:calc(${nx.sm - it.em} * var(--ppm) - 2px)" title="수집된 편성 정보가 없는 시간">${esc(it.e)}–${esc(nx.s)}<br>편성 정보 없음</div>`; });
+    for (const it of mine) {
       const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
       const own = c.own;
       const cls = ['blk', own ? 'own' : '', px < 96 ? 'short' : '', px < 50 ? 'tiny' : ''].join(' ');
       const price = it.p ? `<span class="pline"><span class="big">${won(best(it))}</span></span>` : `<span class="pline"><span class="more">가격 미표기</span></span>`;
       col += `<button class="${cls}" style="--c:var(--ch-${c.id});top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}">
-        <span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span>${price}</button>`;
+        <span class="t">${esc(it.s)}–${esc(it.e)}${it.src === 'o' ? '<span class="src" title="홈쇼핑모아에 없어 홈쇼핑사 공식 편성표에서 가져온 방송">공식</span>' : ''}</span><span class="nm">${esc(it.n)}</span>${price}</button>`;
     }
     html += col + '</div>';
   }
@@ -683,6 +688,7 @@ function openDetail(idx, pool) {
       <dt>무이자</dt><dd>${it.ifm ? `최대 ${it.ifm}개월` : '—'}</dd>
       <dt>카드할인</dt><dd>${esc(it.cd || '—')}</dd>
       <dt>브랜드</dt><dd>${esc(it.b || '—')}</dd>
+      ${it.src === 'o' ? '<dt>출처</dt><dd>홈쇼핑사 공식 편성표 (홈쇼핑모아에 없는 방송이라 가격·구성 정보가 적습니다)</dd>' : ''}
       ${it.pg ? `<dt>프로그램</dt><dd>${esc(it.pg)}</dd>` : ''}
     </dl>
     ${it.u ? `<a class="btn" href="${esc(it.u)}" target="_blank" rel="noopener">상품 페이지 열기 ↗</a>` : ''}
