@@ -309,10 +309,10 @@ tbody tr:hover td{background:var(--surface-2)}
     <span class="clock" id="clock">--:--</span>
     <div class="seg setseg" id="setSeg" role="group" aria-label="편성 구분"><button data-set="tv" aria-pressed="true">TV홈쇼핑</button><button data-set="tc" aria-pressed="false">데이터홈쇼핑</button></div>
     <div class="tabs" role="tablist">
-      <button class="tab" role="tab" id="tab-timeline" aria-selected="true" data-view="timeline">경쟁사 홈쇼핑 편성표</button>
+      <button class="tab" role="tab" id="tab-epg" aria-selected="true" data-view="epg">재핑 타임라인</button>
+      <button class="tab" role="tab" id="tab-timeline" aria-selected="false" data-view="timeline">경쟁사 홈쇼핑 편성표</button>
       <button class="tab" role="tab" id="tab-lineup" aria-selected="false" data-view="lineup">NS 기준 비교</button>
       <button class="tab" role="tab" id="tab-compare" aria-selected="false" data-view="compare">상품·가격 검색</button>
-      <button class="tab" role="tab" id="tab-epg" aria-selected="false" data-view="epg">재핑 타임라인</button>
     </div>
     <span class="spacer"></span>
     <div class="datepick"><label for="dateSel" class="meta">방송일</label><select id="dateSel"></select></div>
@@ -453,7 +453,7 @@ function setView(v) {
   if (v === 'lineup') scrollLineup();
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setView(t.dataset.view)));
-const h0 = (location.hash || '').slice(1); setView(['lineup', 'timeline', 'compare', 'epg'].includes(h0) ? h0 : (matchMedia('(max-width:760px)').matches ? 'lineup' : 'timeline'));
+const h0 = (location.hash || '').slice(1); setView(['lineup', 'timeline', 'compare', 'epg'].includes(h0) ? h0 : (matchMedia('(max-width:760px)').matches ? 'lineup' : 'epg'));
 
 function tick() {
   const n = kstNow(); $('#clock').textContent = n.hm + ' KST';
