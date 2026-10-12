@@ -3,9 +3,9 @@ import { chromium } from 'playwright';
 const d = process.argv[2] || '2026-10-12';
 const prev = new Date(Date.parse(d + 'T00:00:00Z') - 86400e3).toISOString().slice(0, 10);
 const url = `https://hsmoa.com/?date=${+d.slice(8)}&time=${d}T03%3A00%3A00.000Z&time_size=24&direction=down&base_hour_datetime=${prev}T23%3A59%3A00%2B09%3A00`;
-const b = await chromium.launch(); const p = await b.newPage({ locale: 'ko-KR', timezoneId: 'Asia/Seoul' });
-await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }); await p.waitForTimeout(25000);
-const out = await p.evaluate(() => {
+const b = await chromium.launch(); const p = await b.newPage();
+await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }); let out;
+for (let k = 0; k < 25; k++) { await p.waitForTimeout(3000); out = await p.evaluate(() => {
   const res = { text: [], hits: [], noPdid: [], cjAll: [], total: 0, len: document.body.innerText.length };
   const t = document.body.innerText; let i = -1;
   for (const w of ['하스카프', '허니베리']) { i = t.indexOf(w); if (i >= 0) res.text.push(t.slice(Math.max(0, i - 120), i + 80)); }
@@ -31,6 +31,6 @@ const out = await p.evaluate(() => {
   while (stack.length) { const f = stack.pop(); if (f.memoizedProps && typeof f.memoizedProps === 'object') visit(f.memoizedProps, 'props', 0); if (f.memoizedState && typeof f.memoizedState === 'object') visit(f.memoizedState, 'state', 0); if (f.child) stack.push(f.child); if (f.sibling) stack.push(f.sibling); }
   res.hits = res.hits.slice(0, 20); res.noPdid = res.noPdid.slice(0, 40); res.cjAll.sort();
   return res;
-});
+}); if (out.total >= 300) break; }
 console.log(JSON.stringify(out, null, 1));
 await b.close();
