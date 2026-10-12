@@ -1,36 +1,31 @@
-// One-off probe #2: schedule data shapes per site.
+// One-off probe #3: fetch candidate schedule APIs directly and dump their shape.
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 const b = await chromium.launch();
 const ctx = await b.newContext({ locale: 'ko-KR', timezoneId: 'Asia/Seoul', userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
 const out = {};
-const skip = /google|facebook|criteo|kakao|naver|amplitude|moloco|twitter|t\.co|daum|adnxs|widerplanet|cloudflare|hackle|mediacategory|log\./;
-async function watch(name, url, click) {
-  const r = out[name] = { reqs: [] }; const page = await ctx.newPage();
-  page.on('response', async res => {
-    const u = res.url(); if (skip.test(u)) return; const ct = res.headers()['content-type'] || '';
-    if (!/json|html/.test(ct) || res.request().resourceType() === 'document' && !click) return;
-    let body = ''; try { body = await res.text(); } catch {}
-    r.reqs.push({ u: u.slice(0, 300), m: res.request().method(), post: (res.request().postData() || '').slice(0, 300), s: res.status(), ct: ct.slice(0, 30), len: body.length, body: body.slice(0, 1500) });
+const D = '20261012', DD = '2026-10-12', T = '20261013';
+async function grab(name, fn) { try { out[name] = await fn(); } catch (e) { out[name] = { error: String(e.message).slice(0, 300) }; } }
+const txt = async res => ({ status: res.status(), ct: res.headers()['content-type'], len: (await res.text()).length, body: (await res.text()).slice(0, 7000) });
+await grab('cj_full', async () => { const j = await (await ctx.request.get(`https://display.cjonstyle.com/c/rest/tv/tvSchedule?bdDt=${D}&isMobile=false&broadType=live&isEmployee=false`)).json(); return j.result.programList.map(p => [new Date(p.bdStrDtm + 9 * 3600e3).toISOString().slice(11, 16), new Date(p.bdEndDtm + 9 * 3600e3).toISOString().slice(11, 16), p.pgmNm, (p.itemList || []).map(i => i.itemNm + ' ' + i.salePrice).slice(0, 3)]); });
+await grab('cj_tomorrow', async () => { const j = await (await ctx.request.get(`https://display.cjonstyle.com/c/rest/tv/tvSchedule?bdDt=${T}&isMobile=false&broadType=live&isEmployee=false`)).json(); return j.result.programList.length; });
+await grab('immall', async () => txt(await ctx.request.post('https://www.gongyoungshop.kr/tvshopping/selectScheduleSub.do', { form: { brcStdDate: D } })));
+await grab('lotte', async () => txt(await ctx.request.get(`https://www.lotteimall.com/main/scheduleLive.lotte?bdDate=${D}&date=${DD}`)));
+await grab('ns', async () => txt(await ctx.request.get(`https://mapi.nsmall.com/md/api/v1/display/media/schedule/tv/${D}?formDate=${D}&cnnlCd=TV`)));
+await grab('hns', async () => txt(await ctx.request.get(`https://www.hnsmall.com/gen/areaCacheView/gca/60000059/8005369?date=${T}`)));
+// find schedule links on GS and Hmall pages
+for (const [k, u] of [['gs', 'https://www.gsshop.com/shop/tv/tvScheduleMain.gs'], ['gs_home', 'https://www.gsshop.com/index.gs'], ['hmall_home', 'https://www.hmall.com/md/dpl/index']]) {
+  await grab(k, async () => {
+    const page = await ctx.newPage(); const reqs = [];
+    page.on('response', async res => { const ct = res.headers()['content-type'] || ''; if (/json/.test(ct) && /sch|brod|tv|live/i.test(res.url())) { let t = ''; try { t = await res.text(); } catch {} reqs.push([res.url().slice(0, 250), res.status(), t.length, t.slice(0, 600)]); } });
+    const r = await page.goto(u, { waitUntil: 'domcontentloaded', timeout: 40000 }); await page.waitForTimeout(8000);
+    const links = await page.evaluate(() => [...document.querySelectorAll('a,[data-rel]')].filter(a => /편성/.test(a.textContent + (a.dataset.rel || ''))).map(a => [a.textContent.trim().slice(0, 20), a.getAttribute('href'), a.outerHTML.slice(0, 200)]).slice(0, 8));
+    const text = (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ');
+    const i = text.search(/\d\d:\d\d\s*[~-]\s*\d\d:\d\d/);
+    const res = { status: r && r.status(), at: page.url(), title: await page.title(), links, sample: text.slice(Math.max(0, i - 80), i + 700), reqs: reqs.slice(0, 20) };
+    await page.close(); return res;
   });
-  try {
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 40000 }); await page.waitForTimeout(5000);
-    if (click) { const el = page.getByText('편성표', { exact: false }).first(); await el.click({ timeout: 8000 }).catch(e => r.clickErr = String(e.message).slice(0, 150)); await page.waitForTimeout(8000); }
-    r.at = page.url(); r.title = await page.title();
-    r.html = (await page.content()).length;
-    r.sample = await page.evaluate(() => { const t = document.body.innerText; const i = t.search(/\d\d:\d\d\s*~\s*\d\d:\d\d/); return t.slice(Math.max(0, i - 100), i + 900).replace(/\s+/g, ' '); });
-    r.dom = await page.evaluate(() => { const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { if (/\d\d:\d\d\s*~\s*\d\d:\d\d/.test(n.textContent)) { let e = n.parentElement; for (let k = 0; k < 4 && e.parentElement; k++) e = e.parentElement; return e.outerHTML.slice(0, 2500); } } return ''; });
-  } catch (e) { r.error = String(e.message).slice(0, 200); }
-  await page.close();
 }
-// CJ JSON API
-try { const res = await ctx.request.get('https://display.cjonstyle.com/c/rest/tv/tvSchedule?bdDt=20261012&isMobile=false&broadType=live&isEmployee=false'); const j = await res.json(); const l = j.result.programList || []; out.cj = { status: res.status(), n: l.length, keys: Object.keys(j.result), first: JSON.stringify(l[0]).slice(0, 3000), around: l.filter(p => /11:3|12:/.test(new Date(p.bdStrDtm + 9 * 3600e3).toISOString())).map(p => JSON.stringify(p).slice(0, 1500)) }; } catch (e) { out.cj = { error: String(e.message) }; }
-await watch('immall', 'https://www.gongyoungshop.kr/tvshopping/tvSchedule.do', false);
-await watch('hnsmall', 'https://www.hnsmall.com/display/tvschedule', false);
-await watch('gsshop', 'https://www.gsshop.com/', true);
-await watch('lotteimall', 'https://www.lotteimall.com/', true);
-await watch('hmall', 'https://www.hmall.com/', true);
-await watch('nsmall', 'https://m.nsmall.com/store/fixed/schedule', false);
 fs.mkdirSync('debug', { recursive: true });
 fs.writeFileSync('debug/official.json', JSON.stringify(out, null, 1));
 await b.close();
