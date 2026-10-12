@@ -1,0 +1,929 @@
+{
+ "cjmall": {
+  "home": "https://www.cjonstyle.com/",
+  "steps": [
+   {
+    "at": "https://display.cjonstyle.com/p/homeTab/main?hmtabMenuId=H00005&rPIC=homeonstyle",
+    "status": 200,
+    "title": "홈 | CJ온스타일"
+   },
+   {
+    "at": "https://display.cjonstyle.com/p/homeTab/main?hmtabMenuId=002409&rPIC=schedulePC",
+    "status": 200,
+    "title": "TV쇼핑 | CJ온스타일",
+    "text": "본문 바로가기 주메뉴 바로가기 마이존 바로가기 CJ ONSTYLE CJ ONSTYLE 통합 검색어 입력 또는 최근 검색어, 인기 검색어 선택 마케팅 검색 키워드 검색 로그인 마이존 장바구니 카테고리 TV쇼핑 홈 혜택 1:1 문의 쇼핑 히스토리 쇼핑 히스토리가 없습니다. 페이지 위로 가기 바로방문 ON 앱다운로드 편성표 다른 서비스 선택 TV LIVE TV+ 총 13일 간의 편성표를 제공합니다. 7 수 8 목 9 금 10 토 11 일 12 오늘 13 화 14 수 15 목 16 금 17 토 18 일 19 월 채널 라이브 10월 12일 편성표 TV LIVE 방송중 00:05:07 남음 건강식품 4부 자막방송 섬마을 곱창김 35,900원~ 방송알림 신청 01:55 ~ 02:55 심야재방 베스트 1부 방송중 구매 가능 고밀도 면 프리미엄 차렵이불+베개커버 세트 SK 359,000원~ 방송알림 신청 방송중 구매 가능 고밀도 면 프리미엄 차렵이불+베개커버세트 Q 299,000원~ 방송알림 신청 방송중 구매 가능 60수 고밀도 면 프리미엄 차렵이불+베개커버 세트 SS 199,000원~ 방송알림 신청 02:55 ~ 03:10 심야재방 베스트 2부 26FW 엘로이 레이스 커버업 롱셔츠 99,000원~ 무이자3 방송알림 신청 03:10 ~ 03:25 심야재방 베스트 3부 26FW 캐시미어 블렌디드 헤리티지 맥코트 499,000원~ 무이자12 방송알림 신청 26FW 캐시미어 블렌디드 헤리티지 팬츠 159,900원~ 무이자6 방송알림 신청 26FW 울 캐시미어 헤링본 자켓 199,900원~ 무이자10 방송알림 신청 26FW 울 캐시미어 블렌디드 페어아일 니트 베스트 1종 79,900원~ 무이자3 방송알림 신청 03:25 ~ 03:40 심야재방 베스트 4부 26FW 카멜 실크 블렌디드 핸드메이드 케이프 149,000원~ 무이자6 방송알림 신청 26FW 카멜실크 블렌디드 핸드메이드 팬츠 139,000원~ 무이자3 방송알림 신청 26FW 아뜰리에 벌룬 셔츠 79,900원~ 무이자3 방송알림 신청 03:40 ~ 03:55 심야재방 베스트 5부 26FW 이중직 아플리케 자수스웻 2종 69,900원~ 무이자3 방송알림 신청 03:55 ~ 04:10 심야재방 베스트 6부 [최초가 79,900원] 보트넥 돌먼니트 3종 29,900원~ 방송알림 신청 [최초가89,900]링클프리 텐션 트윌팬츠2종 39,900원~ 방송알림 신청 [최초가79,900]모헤어 그라데이션 풀오버 39,900원~ 방송알림 신청 04:10 ~ 04:40 심야재방 베스트 7부 [공식정품] NEW 트루테크 새틴 메리제인 스니커즈 149,000원~ 무이자3 방송알림 신청 04:40 ~ 05:15 심야재방 베스트 8부 [최초가 99,000원]25FW 리치 벨벳 풀오버 39,000원~ 방송알림 신청 [최초가 119,000원]25FW 이자벨 투턱 데님 59,000원~ 방송알림 신청 [최초가 159,000원]25FW 마벨 니트 새틴 원피스 할인율 57% 할인가 69,000원~ 정상가 159,000원~ 쿠폰 90,000"
+   }
+  ],
+  "links": [
+   [
+    "TV편성표",
+    "https://display.cjonstyle.com/p/homeTab/main?hmtabMenuId=002409&rPIC=schedulePC"
+   ],
+   [
+    "TV+편성표",
+    "https://display.cjonstyle.com/p/homeTab/main?hmtabMenuId=002409&broadType=plus"
+   ]
+  ],
+  "reqs": [
+   {
+    "u": "https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920",
+    "s": 200,
+    "ct": "text/javascript;charset=UTF-8",
+    "body": "(()=>{\"use strict\";function t(){return\"undefined\"!=typeof globalThis?globalThis:\"undefined\"!=typeof self?self:void 0}var e,n,i,o,r;function a(t,n,i,o=!1,r=null){let a=r||`/cdn-cgi/rum?${t}`,s=!0;if(navigator&&\"string\"==typeof navigator.userAgent)try{const t=navigator.userAgent.match(/Chrome\\/([0-9]+"
+   },
+   {
+    "u": "https://display.cjonstyle.com/p/homeTab/main?hmtabMenuId=002409&rPIC=schedulePC",
+    "s": 200,
+    "ct": "text/html;charset=UTF-8",
+    "body": "\r\n\r\n\r\n\r\n\r\n<!DOCTYPE html>\r\n<!--[if IE 7 ]> <html lang=\"ko\" class=\"ie7\"> <![endif]-->\r\n<!--[if IE 8 ]> <html lang=\"ko\" class=\"ie8\"> <![endif]-->\r\n<!--[if IE 9 ]> <html lang=\"ko\" class=\"ie9\"> <![endif]-->\r\n<!--[if (gt IE 9)|!(IE)]><!--> <html lang=\"ko\"> <!--<![endif]-->\r\n<head>\r\n\r\n\n<script type=\"modul"
+   },
+   {
+    "u": "https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&ae=g&auid=1609048364.1791793476&dt=TV%EC%87%BC%ED%95%91%20%7C%20CJ%EC%98%A8%EC%8A%A4%ED%83%80%EC%9D%BC&en=page_view&dl=https%3A%2F%2Fdisplay.cjonstyle.com%2Fp%2Fhome",
+    "s": 200,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.32.1-min.js.gz",
+    "s": 200,
+    "ct": "application/javascript",
+    "body": "var sessionReplay=function(e){\"use strict\";var t=function(e,r){return t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(e,t){e.__proto__=t}||function(e,t){for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r])},t(e,r)};function r(e,r){if(\"function\"!=typeof r&&null!==r)"
+   },
+   {
+    "u": "https://cdn.amplitude.com/libs/analytics-browser-2.42.4-min.js.gz",
+    "s": 200,
+    "ct": "application/javascript",
+    "body": "!function(){\"use strict\";function e(e,t){return t.forEach(function(t){t&&\"string\"!=typeof t&&!Array.isArray(t)&&Object.keys(t).forEach(function(n){if(\"default\"!==n&&!(n in e)){var r=Object.getOwnPropertyDescriptor(t,n);Object.defineProperty(e,n,r.get?r:{enumerable:!0,get:function(){return t[n]}})}})"
+   },
+   {
+    "u": "https://sr-client-cfg.amplitude.com/config/72c03b4c847466c85e47f4a201fbeba6?config_group=browser",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"configs\":{\"diagnostics\":{\"browserSDK\":{\"sampleRate\":0.02}},\"sessionReplay\":{\"sr_privacy_config\":{\"maskSelector\":[],\"blockSelector\":[],\"unmaskSelector\":[],\"defaultMaskLevel\":\"medium\"},\"sr_sampling_config\":{\"capture_enabled\":true}},\"analyticsSDK\":{}}}"
+   },
+   {
+    "u": "https://sr-client-cfg.amplitude.com/config/72c03b4c847466c85e47f4a201fbeba6?config_group=browser",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"configs\":{\"diagnostics\":{\"browserSDK\":{\"sampleRate\":0.02}},\"sessionReplay\":{\"sr_privacy_config\":{\"maskSelector\":[],\"blockSelector\":[],\"unmaskSelector\":[],\"defaultMaskLevel\":\"medium\"},\"sr_sampling_config\":{\"capture_enabled\":true}},\"analyticsSDK\":{}}}"
+   },
+   {
+    "u": "https://sr-client-cfg.amplitude.com/config/72c03b4c847466c85e47f4a201fbeba6?config_group=browser",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"configs\":{\"diagnostics\":{\"browserSDK\":{\"sampleRate\":0.02}},\"sessionReplay\":{\"sr_privacy_config\":{\"maskSelector\":[],\"blockSelector\":[],\"unmaskSelector\":[],\"defaultMaskLevel\":\"medium\"},\"sr_sampling_config\":{\"capture_enabled\":true}},\"analyticsSDK\":{}}}"
+   },
+   {
+    "u": "blob:https://display.cjonstyle.com/0b186e16-0cc8-478e-8046-5020ef27be95",
+    "s": 200,
+    "ct": "application/javascript",
+    "body": "var WebWorker=function(e){\"use strict\";var t,r=function(){return r=Object.assign||function(e){for(var t,r=1,n=arguments.length;r<n;r++)for(var s in t=arguments[r])Object.prototype.hasOwnProperty.call(t,s)&&(e[s]=t[s]);return e},r.apply(this,arguments)};function n(e,t,r,n){return new(r||(r=Promise))("
+   },
+   {
+    "u": "blob:https://display.cjonstyle.com/a430e2de-a82e-4cba-80e3-2cf443b6312a",
+    "s": 200,
+    "ct": "application/javascript",
+    "body": "var WebWorker=function(e){\"use strict\";onmessage=function(e){var s=\"string\"==typeof e.data?JSON.parse(e.data):e.data,t=s.event,a=s.sessionId,n=t.type,r=t.timestamp,i=t.delay,o=t.data,d=null!=i?JSON.stringify({type:n,timestamp:r,delay:i,data:o}):JSON.stringify({type:n,timestamp:r,data:o});postMessage"
+   },
+   {
+    "u": "https://display.cjonstyle.com/c/rest/ad/scriptList",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"status\":200,\"errorCode\":null,\"message\":\"OK\",\"result\":{\"advertiseScriptTupleList\":[{\"adScriptNm\":\"tuneModule\"},{\"adScriptNm\":\"facebookModule\"},{\"adScriptNm\":\"criteoModule\"},{\"adScriptNm\":\"googleModule\"},{\"adScriptNm\":\"kakaoModule\"},{\"adScriptNm\":\"dbasenModule\"},{\"adScriptNm\":\"appInterfaceModule\"},{"
+   },
+   {
+    "u": "https://sslwidget.criteo.com/event?a=%5B129538%2C129537%2C2491%5D&v=5.51.0&p0=e%3Dce%26m%3D%255B%255D%26h%3Dsha256&p1=e%3Dce%26m%3D%255B%255D%26h%3Dmd5&p2=e%3Dexd%26site_type%3Dd&p3=e%3Dvh&p4=e%3Ddis&bundle=JJzmsl9FZXo5e",
+    "s": 302,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://connect.facebook.net/signals/config/151903095379191?v=2.9.419&r=stable&domain=display.cjonstyle.com&hme=7459fa3e38c2784dbaf309537bed5fa7e8560fab51fb61e53e5ffafeb46a02a9&ex_m=118%2C241%2C171%2C27%2C82%2C83%2C162%2",
+    "s": 200,
+    "ct": "application/x-javascript; charset=utf-8",
+    "body": "/**\n* Copyright (c) 2017-present, Facebook, Inc. All rights reserved.\n*\n* You are hereby granted a non-exclusive, worldwide, royalty-free license to use,\n* copy, modify, and distribute this software in source code or binary form for use\n* in connection with the web services and APIs provided by Face"
+   },
+   {
+    "u": "https://user.cjonstyle.com/v1/login/info",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"status\":200,\"message\":null,\"result\":{\"custNo\":null,\"id\":null,\"segCd\":null,\"age\":null,\"gender\":null,\"isLoggedIn\":false,\"isCJOneMember\":null,\"isAutoLoggedIn\":null,\"isEmployee\":null,\"isCommerceEmployee\":null,\"isVerified\":null,\"isBlacklisted\":null,\"isAdult\":false,\"isForeigner\":null,\"isSimpleAccount\":n"
+   },
+   {
+    "u": "https://base.cjonstyle.com/c/rest/myzone/noticeLatest?isFooterNoticeYN=Y",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"code\":1,\"serialID\":\"20261012172444\",\"resCode\":\"MSG_COM_SUC_011\",\"resMsg\":\"조회 되었습니다.\",\"result\":{\"bbsId\":\"03\",\"bbsNo\":85277,\"subject\":\"개인정보 처리방침 개정 안내\",\"contents\":\"<div style=\\\"font-size: 13.3333px; text-align: center;\\\"> <b><span style=\\\"line-height: 19.9733px; font-size: 14pt;\\\">개인정보 처리방침 개정 안내문</"
+   },
+   {
+    "u": "https://display.cjonstyle.com/c/rest/module/newContList?id=002409&cjEmpYn=false&type=H&pmType=P",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"status\":200,\"errorCode\":\"400\",\"message\":\"Filter 조회 결과없음.\",\"result\":\"\",\"error\":false}"
+   },
+   {
+    "u": "https://display.cjonstyle.com/c/rest/tv/tvSchedule?bdDt=20261012&isMobile=false&broadType=live&isEmployee=false",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"status\":200,\"errorCode\":null,\"message\":\"OK\",\"result\":{\"programList\":[{\"bnrLinkTpCd\":null,\"pgmCd\":\"562430\",\"pgmNm\":\"1촌1명품/1사1명품\",\"mobileBnrImgUrl\":null,\"bnrLinkVal\":null,\"bdStrDtm\":1791734400000,\"bnrLinkMatrNm\":null,\"bdEndDtm\":1791736200000,\"itemList\":[{\"discountRate\":0,\"brandName\":null,\"harmGrd\":n"
+   },
+   {
+    "u": "https://base.cjonstyle.com/c/rest/switchCache/getValue?key=USE_LEGACY_ORDER",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"jsonTuple\":{\"code\":1,\"serialID\":\"20261012172444\",\"resCode\":\"MSG_COM_SUC_009\",\"resMsg\":\"성공적으로 처리 되었습니다.\",\"result\":null,\"description\":null,\"status\":200,\"errorCode\":null,\"message\":\"성공적으로 처리 되었습니다.\"}}"
+   },
+   {
+    "u": "https://display.cjonstyle.com/c/rest/gnb/contents/p?appKind=web",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"status\":200,\"errorCode\":null,\"message\":\"OK\",\"result\":{\"displayCardInfo\":[],\"homeMenuBase\":{\"hmtabMenuNm\":\"홈\",\"hmtabMenuId\":\"H00005\"},\"mainCategoryInfo\":[{\"categoryName\":\"여성패션\",\"categoryId\":\"G00011\",\"categoryIcon\":\"//image.cjonstyle.net/public/confirm/assets/TDP_CATE/202510/30/PC_ic_category_girl_2"
+   },
+   {
+    "u": "https://base.cjonstyle.com/p/rest/myzone/recentview?type=D&employeeDiscountRate=0",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"code\":1,\"serialID\":\"20261012172444\",\"resCode\":\"MSG_COM_SUC_011\",\"resMsg\":\"조회 되었습니다.\",\"result\":{\"detailContentsList\":[]},\"description\":null,\"status\":200,\"errorCode\":null,\"message\":\"조회 되었습니다.\"}"
+   },
+   {
+    "u": "https://display-frontapi.cjonstyle.com/time/server-time",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"result\":1791793484440,\"message\":\"OK\",\"status\":200}"
+   },
+   {
+    "u": "https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+    "s": 200,
+    "ct": "application/json",
+    "body": ""
+   },
+   {
+    "u": "https://widget.as.criteo.com/event?a=%5B129538%2C129537%2C2491%5D&v=5.51.0&p0=e%3Dce%26m%3D%255B%255D%26h%3Dsha256&p1=e%3Dce%26m%3D%255B%255D%26h%3Dmd5&p2=e%3Dexd%26site_type%3Dd&p3=e%3Dvh&p4=e%3Ddis&bundle=JJzmsl9FZXo5e",
+    "s": 200,
+    "ct": "application/x-javascript",
+    "body": "/*<!--*//*-->*/"
+   },
+   {
+    "u": "https://ga-cjonstyle.com/v4/record",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"sequenceNumber\":\"49677804929888976823110242856928961795690051103514166162\",\"shardId\":\"shardId-000000000057\"}"
+   },
+   {
+    "u": "https://gum.criteo.com/sid/json?origin=onetag&domain=cjonstyle.com&sn=ChromeSyncframe&so=undefined&topUrl=display.cjonstyle.com&bundle=JJzmsl9FZXo5eldDcjlDcXlQNU9zMTJ1bkNHS28yd29DU2FlbGlPYmVjWDFQbFVPSGRpV25MNTcwJTJGaUQ5Z",
+    "s": 200,
+    "ct": "application/json; charset=utf-8",
+    "body": "{\"sid\":null,\"removeSid\":false,\"bundle\":\"vmpgLl9FZXo5eldDcjlDcXlQNU9zMTJ1bkNFamxsY3ZKNzVnNHFUdEN4c0tKYnNhdTUwSTNZOXpERU9KUXQ4UjZHdDQ4U01ZaVhiNVJDdE54NiUyQmpkUEhwdXRudWZ0SWNMazVreTg4Z3RMcHplaHZLeDkyJTJGOGZRbEF3aDlsd1ZwVjFZV3loUHZOWmRzRGQ2aFVIOHNURXNWJTJCVFElM0QlM0Q\",\"info\":\"C_Lqfl9FZXo5eldDcjlDcXlQNU9"
+   },
+   {
+    "u": "https://www.googletagmanager.com/gtag/js?id=G-51EC6CKH10&cx=c&gtm=4e6a72",
+    "s": 200,
+    "ct": "application/javascript; charset=UTF-8",
+    "body": "\n// Copyright 2012 Google Inc. All rights reserved.\n \n(function(){\n\nvar data = {\n\n\"resource\": {\n  \"version\":\"4\",\n  \n  \"macros\":[{\"function\":\"__c\",\"vtp_value\":true},{\"function\":\"__e\"},{\"function\":\"__actids\"},{\"function\":\"__v\",\"vtp_name\":\"gtm.configContainerId\",\"vtp_dataLayerVersion\":1},{\"function\":\"_"
+   },
+   {
+    "u": "https://www.google-analytics.com/j/collect?v=1&_v=j102&a=821225276&t=pageview&_s=1&dl=https%3A%2F%2Fdisplay.cjonstyle.com%2Fp%2FhomeTab%2Fmain%3FhmtabMenuId%3D002409%26rPIC%3DschedulePC&ul=ko-kr&dt=TV%EC%87%BC%ED%95%91%2",
+    "s": 200,
+    "ct": "text/plain",
+    "body": "2,x"
+   },
+   {
+    "u": "https://analytics.twitter.com/1/i/adsct?bci=4&dv=Asia%2FSeoul%26ko-KR%26Google%20Inc.%26Linux%20x86_64%26255%261280%26720%264%2624%261280%26720%260%26na&eci=3&event=%7B%7D&event_id=90e30bf3-0d70-4d3e-b780-216fa89858ef&in",
+    "s": 200,
+    "ct": "image/gif;charset=utf-8",
+    "body": "GIF89a\u0001\u0000\u0001\u0000�\u0000\u0000���\u0000\u0000\u0000!�\u0004\t\u0000\u0000\u0001\u0000,\u0000\u0000\u0000\u0000\u0001\u0000\u0001\u0000\u0000\u0002\u0002L\u0001\u0000;"
+   },
+   {
+    "u": "https://pixelfnt-us.dsp-api.moloco.com/v1/pixels/moloco/events?pixel_id=nxt-squidpxl",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{}"
+   },
+   {
+    "u": "https://t.co/1/i/adsct?bci=4&dv=Asia%2FSeoul%26ko-KR%26Google%20Inc.%26Linux%20x86_64%26255%261280%26720%264%2624%261280%26720%260%26na&eci=3&event=%7B%7D&event_id=90e30bf3-0d70-4d3e-b780-216fa89858ef&integration=gtm&p_i",
+    "s": 200,
+    "ct": "image/gif;charset=utf-8",
+    "body": "GIF89a\u0001\u0000\u0001\u0000�\u0000\u0000���\u0000\u0000\u0000!�\u0004\t\u0000\u0000\u0001\u0000,\u0000\u0000\u0000\u0000\u0001\u0000\u0001\u0000\u0000\u0002\u0002L\u0001\u0000;"
+   },
+   {
+    "u": "https://www.googletagmanager.com/gtag/destination?id=AW-AW-739893196&cx=c&gtm=4e6a72",
+    "s": 200,
+    "ct": "application/javascript; charset=UTF-8",
+    "body": "\n// Copyright 2012 Google Inc. All rights reserved.\n \n(function(){\n\nvar data = {\n\n\"resource\": {\n  \"version\":\"1\",\n  \n  \"macros\":[{\"function\":\"__e\"},{\"function\":\"__cid\"},{\"function\":\"__c\",\"vtp_value\":true},{\"function\":\"__actids\"},{\"function\":\"__v\",\"vtp_name\":\"gtm.configContainerId\",\"vtp_dataLayerVersi"
+   },
+   {
+    "u": "https://www.googletagmanager.com/gtag/destination?id=AW-AW-951197791&cx=c&gtm=4e6a72",
+    "s": 200,
+    "ct": "application/javascript; charset=UTF-8",
+    "body": "\n// Copyright 2012 Google Inc. All rights reserved.\n \n(function(){\n\nvar data = {\n\n\"resource\": {\n  \"version\":\"1\",\n  \n  \"macros\":[{\"function\":\"__e\"},{\"function\":\"__cid\"},{\"function\":\"__c\",\"vtp_value\":true},{\"function\":\"__actids\"},{\"function\":\"__v\",\"vtp_name\":\"gtm.configContainerId\",\"vtp_dataLayerVersi"
+   },
+   {
+    "u": "https://www.google.com/rmkt/collect/AW-739893196/?random=1791793484881&cv=11&fst=1791793484881&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72z8838392890za20gzb838392890zd838392890xeaxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=11593",
+    "s": 200,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=1609048364.1791793476&dt=TV%EC%87%BC%ED%95%91%20%7C%20CJ%EC%98%A8%EC%8A%A4%ED%83%80%EC%9D%BC&tid=AW-AW-739893196&dl=https%3A%2F%2Fdisplay.cjonstyle.com%2Fp%",
+    "s": 200,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://astg.widerplanet.com/delivery/wpc.php?v=1&ver=4.0&r=1&md=bs&ga=1lcp6a7-100j5eg-2-1&wp_uid=2-188ae82e20b7896ef02bb742092df76a-s1791793479.597378%7Cmac_osx%7Cchrome-1rcnwjr&ty=Home&ti=43296&device=web&charset=UTF-8",
+    "s": 200,
+    "ct": "application/javascript;charset=UTF-8",
+    "body": "/*<![CDATA[*/\n(function(w) {\n    var wg = w.document.getElementById('wp_tg_cts');\n    function doPair(url) {\n        if (wg == null) { return; }\n        (function(_url) {\n            var frm = w.document.createElement('IFRAME');\n            frm.width = '1px';\n            frm.height = '1px';\n        "
+   },
+   {
+    "u": "https://www.google.com/rmkt/collect/AW-951197791/?random=1791793484903&cv=11&fst=1791793484903&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72z8838392890za20gzb838392890zd838392890xeaxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=11593",
+    "s": 200,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=1609048364.1791793476&dt=TV%EC%87%BC%ED%95%91%20%7C%20CJ%EC%98%A8%EC%8A%A4%ED%83%80%EC%9D%BC&tid=AW-AW-951197791&dl=https%3A%2F%2Fdisplay.cjonstyle.com%2Fp%",
+    "s": 200,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/AW-951197791/?random=1791793484903&cv=11&fst=1791793484903&bg=ffffff&guid=ON&async=1&gtm=45be6a72z8838392890za20gzb838392890zd838392890xeaxf1&gcd=13l3l3l3l",
+    "s": 200,
+    "ct": "text/javascript; charset=UTF-8",
+    "body": "(function(){var s = {};(function(){var l=typeof Object.create==\"function\"?Object.create:function(a){function c(){}c.prototype=a;return new c},m=typeof Object.defineProperties==\"function\"?Object.defineProperty:function(a,c,b){if(a==Array.prototype||a==Object.prototype)return a;a[c]=b.value;return a};"
+   },
+   {
+    "u": "https://www.google.com/pagead/1p-user-list/AW-951197791/?random=1791793484903&cv=11&fst=1791792000000&bg=ffffff&guid=ON&async=1&gtm=45be6a72z8838392890za20gzb838392890zd838392890xeaxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=1159",
+    "s": 200,
+    "ct": "image/gif",
+    "body": "GIF89a\u0001\u0000\u0001\u0000�\u0000\u0000\u0000\u0000\u0000���!�\u0004\u0001\u0000\u0000\u0000\u0000,\u0000\u0000\u0000\u0000\u0001\u0000\u0001\u0000\u0000\u0002\u0001D\u0000;"
+   },
+   {
+    "u": "https://bc.ad.daum.net/bc?d=%7B%22track_id%22%3A%222425877519854751000%22%2C%22event_code%22%3A%22PageView%22%2C%22params%22%3A%7B%7D%2C%22props%22%3A%7B%22lmt%22%3A%22N%22%7D%2C%22site%22%3A%7B%22identifier%22%3A%22disp",
+    "s": 204,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://display.cjonstyle.com/c/rest/pcGnb/rightMenu.json",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"status\":200,\"errorCode\":null,\"message\":\"OK\",\"result\":{\"pcRightLinkTuple\":{\"directLink\":\"http://display.cjonstyle.com/p/exhibition/goExhibition?moveType=D&pic=GNBA____right__baro__\",\"appDownLink\":\"http://display.cjonstyle.com/p/exhibition/goExhibition?moveType=A&pic=GNBA____right__appdown__\",\"emplo"
+   },
+   {
+    "u": "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/AW-739893196/?random=1791793484881&cv=11&fst=1791793484881&bg=ffffff&guid=ON&async=1&gtm=45be6a72z8838392890za20gzb838392890zd838392890xeaxf1&gcd=13l3l3l3l",
+    "s": 200,
+    "ct": "text/javascript; charset=UTF-8",
+    "body": "(function(){var s = {};(function(){var l=typeof Object.create==\"function\"?Object.create:function(a){function c(){}c.prototype=a;return new c},m=typeof Object.defineProperties==\"function\"?Object.defineProperty:function(a,c,b){if(a==Array.prototype||a==Object.prototype)return a;a[c]=b.value;return a};"
+   },
+   {
+    "u": "https://www.google.com/pagead/1p-user-list/AW-739893196/?random=1791793484881&cv=11&fst=1791792000000&bg=ffffff&guid=ON&async=1&gtm=45be6a72z8838392890za20gzb838392890zd838392890xeaxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=1159",
+    "s": 200,
+    "ct": "image/gif",
+    "body": "GIF89a\u0001\u0000\u0001\u0000�\u0000\u0000\u0000\u0000\u0000���!�\u0004\u0001\u0000\u0000\u0000\u0000,\u0000\u0000\u0000\u0000\u0001\u0000\u0001\u0000\u0000\u0002\u0001D\u0000;"
+   },
+   {
+    "u": "https://cjonstyle-evt.mcm-api.moloco.com/rmp/event/v1/platforms/CJONSTYLE/userevents",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{}"
+   },
+   {
+    "u": "https://api2.amplitude.com/2/httpapi",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"code\":200,\"server_upload_time\":1791793485750,\"payload_size_bytes\":692,\"events_ingested\":1}"
+   },
+   {
+    "u": "https://analytics.google.com/g/collect?v=2&tid=G-51EC6CKH10&gtm=45je6a72v887532144za20ozb838392890zd838392890xf1&_p=1791793483801&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=EAAAAGQC&are=1&cid=1074370000.1791793479&frm=0&ir=1&pscdl",
+    "s": 204,
+    "ct": "text/plain",
+    "body": ""
+   }
+  ]
+ },
+ "gsshop": {
+  "home": "https://www.gsshop.com/",
+  "steps": [
+   {
+    "at": "https://www.gsshop.com/",
+    "status": 200,
+    "title": "GS SHOP GS이숍의 새이름, GS SHOP"
+   }
+  ],
+  "links": []
+ },
+ "lotteimall": {
+  "home": "https://www.lotteimall.com/",
+  "steps": [
+   {
+    "at": "https://www.lotteimall.com/main/viewMain.lotte#disp_no=5223317&isWebp=Y",
+    "status": 200,
+    "title": "롯데홈쇼핑 - 새로운 일상의 시작!"
+   }
+  ],
+  "links": [
+   [
+    "편성표",
+    "javascript:"
+   ],
+   [
+    "편성표 보러가기",
+    "https://www.lotteimall.com/main/viewMain.lotte#none"
+   ],
+   [
+    "편성표 보러가기",
+    "javascript:void(0)"
+   ]
+  ]
+ },
+ "hmall": {
+  "home": "https://www.hmall.com/",
+  "steps": [
+   {
+    "at": "https://www.hmall.com/md/dpl/index",
+    "status": 200,
+    "title": "현대홈쇼핑 - 현대Hmall"
+   }
+  ],
+  "links": [
+   [
+    "편성표",
+    ""
+   ]
+  ]
+ },
+ "hnsmall": {
+  "home": "https://www.hnsmall.com/",
+  "steps": [
+   {
+    "at": "https://www.hnsmall.com/index.do",
+    "status": 200,
+    "title": "HOME & SHOPPING"
+   },
+   {
+    "at": "https://www.hnsmall.com/display/tvschedule",
+    "status": 200,
+    "title": "HOME & SHOPPING",
+    "text": "검색 나의쇼핑 장바구니 주문/배송 카테고리 보기 편성표 TV 홈 특가 식품 파트너딜 로그인 고객센터 로그인 닫기 카테고리 TV상품 패션의류 언더웨어 패션잡화 뷰티 스포츠/레저 출산/유아동 가구/침구 생활/건강/반려 주방용품/식기 식품 가전/디지털 도서/교육 렌탈 브랜드스토어 브랜드 더보기 검색 유한킴벌리 인블룸 아모레퍼시픽 대상 이쌀이다 하프클럽 보노하우스 베베숲 비비안 자연의품격 홈 TV쇼핑 편성표 편성표 방송채널안내 방송알림 2 금 3 토 4 일 5 월 6 화 7 수 8 목 9 금 10 토 11 일 12 오늘 13 화 14 수 15 목 16 금 17 토 18 일 19 월 20 화 21 수 22 목 이전 다음 01:00 ~ 02:00졸리줄리향수 [FW향수 초대전/99초특가] 카모베일 50ml + 엘리벨르 100ml + 트레드라빌 50ml 판매가 99,000원 방송 중 구매가능 방송알림 02:00 ~ 02:30보넬드당근주스 NFC 착즙 보넬드 아이엠 당근 15병 (1L X 15병) 판매가 244,000원 바로 구매하기 방송알림 02:30 ~ 03:03세인트스코트티셔츠FW(져지) [St.Scott] 세인트 여성 아트웍 클라우드 기모 맨투맨 3종 판매가 49,900원 바로 구매하기 방송알림 03:03 ~ 03:45신영와코루브라팬티세트 [핑크스킨 1세트 추가증정] 26SS 신영와코루 슬림라이너 쿨 라이트 젤리 브라팬티 패키지-M61 판매가 109,900원 방송 중 구매가능 방송알림 함께 방송하는 상품 [상시용]26SS 신영와코루 슬림라이너 쿨 라이트 젤리 브라팬티 패키지-M61 판매가 109,900원 03:45 ~ 04:45셀리립밤 [홈앤쇼핑 단독]셀리 컬러인밤 4컬러 세트 (피치/자몽/동백/피그) 판매가 59,000원 방송 중 구매가능 방송알림 04:45 ~ 06:00스와니브기초세트 [최신상/기본] NEW 스와니브 EGF 풀기초세트 기본구성(5종x2세트+쇼핑백1개) 판매가 59,900원 방송 중 구매가능 방송알림 함께 방송하는 상품 [최신상/더블] NEW 스와니브 EGF 풀기초세트 더블구성(5종x4세트+쇼핑백2개) 판매가 109,800원 06:00 ~ 07:15종근당건강건강동행 [건강동행] 락토핏 코어맥스 16개월 (180포2통 + 30포4박스) + 핸디청소기 판매가 99,000원 방송 중 구매가능 방송알림 함께 방송하는 상품 [건강동행] 프로메가 식물성알티지오메가3 12개월 (12박스) + 핸디청소기 판매가 99,000원 [건강동행] 아임비타 칼슘마그네슘비타민D 8개월 (4박스) + 핸디청소기 판매가 99,000원 [건강동행] 아이클리어 루테인 12개월 (12박스) + 핸디청소기 판매가 99,000원 [건강동행] 헬씨칸 밀크시슬 12개월 (12박스) + 핸디청소기 판매가 99,000원 상품 더보기 07:15 ~ 08:15엘딘패치 [홈앤단독/완벽더블]엘딘 올인원 주름뿔샷패치 72매(24매X3박스) 판매가 129,000원 바로 구매하기 방송알림 함께 방송하는 상품 [홈앤단독/기본구성]엘딘 올인원 주름뿔샷패치 36매(1박스 24매+3파우치 12"
+   }
+  ],
+  "links": [
+   [
+    "편성표",
+    "https://www.hnsmall.com/display/tvschedule"
+   ],
+   [
+    "편성표",
+    "https://www.hnsmall.com/display/tvschedule"
+   ]
+  ],
+  "reqs": [
+   {
+    "u": "https://www.googletagmanager.com/gtag/destination?id=AW-943386850&cx=c&gtm=4e6a72",
+    "s": 200,
+    "ct": "application/javascript; charset=UTF-8",
+    "body": "\n// Copyright 2012 Google Inc. All rights reserved.\n \n(function(){\n\nvar data = {\n\n\"resource\": {\n  \"version\":\"2\",\n  \n  \"macros\":[{\"function\":\"__c\",\"vtp_value\":true},{\"function\":\"__e\"},{\"function\":\"__actids\"},{\"function\":\"__v\",\"vtp_name\":\"gtm.configContainerId\",\"vtp_dataLayerVersion\":1}],\n  \"tags\":[{\""
+   },
+   {
+    "u": "https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&ae=g&auid=321943430.1791793524&dt=HOME%20%26%20SHOPPING&en=page_view&dl=https%3A%2F%2Fwww.hnsmall.com%2Fdisplay%2Ftvschedule&scrsrc=www.googletagmanager.com&rnd=2050",
+    "s": 200,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://www.googleadservices.com/pagead/conversion/943386850/?random=1791793533410&cv=11&fst=1791793533410&fmt=7&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6a72v878960746z8810221644za20gzb810221644zd810221644xeaxf1&",
+    "s": 200,
+    "ct": "application/json; charset=UTF-8",
+    "body": "event: message\ndata: {\"fetch\":[\"https://googleads.g.doubleclick.net/pagead/viewthroughconversion/943386850/?random=2129966670&cv=11&fst=1791793533410&fmt=8&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6a72v878960746z8810221644za20gzb810221644zd810221644xeaxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938"
+   },
+   {
+    "u": "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/943386850/?random=2129966670&cv=11&fst=1791793533410&fmt=8&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6a72v878960746z8810221644za20gzb810221644zd81022",
+    "s": 302,
+    "ct": "text/html; charset=UTF-8",
+    "body": ""
+   },
+   {
+    "u": "https://www.google.com/pagead/1p-conversion/943386850/?random=2129966670&cv=11&fst=1791793533410&fmt=8&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6a72v878960746z8810221644za20gzb810221644zd810221644xeaxf1&gcd=13l3l3",
+    "s": 200,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://www.hnsmall.com/display/tvschedule",
+    "s": 200,
+    "ct": "text/html;charset=UTF-8",
+    "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"ko\" xml:lang=\"ko\">\n<head>\n    \t<title>HOME &amp; SHOPPING</title>\r\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" /> <meta "
+   },
+   {
+    "u": "https://www.googletagmanager.com/td?id=GTM-WKD8898&v=3&t=t&pid=705941132&gtm=45He6a72v810221644za200zd810221644xf1&seq=1&exp=115616986~115938465~115938468~118897920~118897930~120385422~120469145~120469153~121046263~12104",
+    "s": 204,
+    "ct": "text/plain",
+    "body": ""
+   },
+   {
+    "u": "https://www.googleadservices.com/ccm/conversion/943386850/?random=1791793533410&cv=11&fst=1791793533410&fmt=3&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6a72v878960746z8810221644za20gzb810221644zd810221644xeaxf1&gcd",
+    "s": 200,
+    "ct": "image/gif",
+    "body": "GIF89a\u0001\u0000\u0001\u0000��\u0000���\u0000\u0000\u0000,\u0000\u0000\u0000\u0000\u0001\u0000\u0001\u0000\u0000\u0002\u0002D\u0001\u0000;"
+   },
+   {
+    "u": "https://image.hnsmall.com/common2014/202610091033/js/tvshopping/tvschedule.js",
+    "s": 200,
+    "ct": "application/javascript; charset=UTF-8",
+    "body": "var mainObjName = 'tvschedule'\r\n\r\n$(document).ready(function(){\r\n    /**\r\n     * gen호출(운영 반영시): genArea.genCacheView\r\n     * 실시간 호출(개발/로컬 확인시): genArea.genRealTimeView\r\n     */\r\n    genArea.genCacheView('60000059','8005369','#scheduleList', callbackSchedule); // 편성표\r\n});\r\n\r\n$(function () {\r\n    main"
+   },
+   {
+    "u": "https://www.googletagmanager.com/gtag/js?id=G-EGF9M89H7V&cx=c&gtm=4e6a72",
+    "s": 200,
+    "ct": "application/javascript; charset=UTF-8",
+    "body": "\n// Copyright 2012 Google Inc. All rights reserved.\n \n(function(){\n\nvar data = {\n\n\"resource\": {\n  \"version\":\"5\",\n  \n  \"macros\":[{\"function\":\"__c\",\"vtp_value\":true},{\"function\":\"__e\"},{\"function\":\"__actids\"},{\"function\":\"__v\",\"vtp_name\":\"gtm.configContainerId\",\"vtp_dataLayerVersion\":1},{\"function\":\"_"
+   },
+   {
+    "u": "https://log.mediacategory.com/servlet/rd?sc=&url=https%3A%2F%2Fwww.hnsmall.com%2Fdisplay%2Ftvschedule&rdType=RF&adtmode=1",
+    "s": 200,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://ib.adnxs.com/getuidj",
+    "s": 200,
+    "ct": "application/json; charset=utf-8",
+    "body": "{\"uid\":\"4479526810620177576\"}"
+   },
+   {
+    "u": "https://www.hnsmall.com/common2014/js/tvshopping/lottie/lottie-player.js?_=1791793535952",
+    "s": 200,
+    "ct": "application/javascript;charset=UTF-8",
+    "body": "!function(t,e){\"object\"==typeof exports&&\"undefined\"!=typeof module?e(exports):\"function\"==typeof define&&define.amd?define([\"exports\"],e):e((t=\"undefined\"!=typeof globalThis?globalThis:t||self)[\"lottie-player\"]={})}(this,(function(exports){\"use strict\";function _asyncIterator(t){var e,r,i,s=2;for(\""
+   },
+   {
+    "u": "https://www.hnsmall.com/common2014/js/tvshopping/lottie/onair.json",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"v\":\"5.9.0\",\"fr\":50,\"ip\":0,\"op\":100,\"w\":100,\"h\":100,\"nm\":\"Layer 1/onair\",\"ddd\":0,\"assets\":[],\"layers\":[{\"ddd\":0,\"ind\":1,\"ty\":4,\"nm\":\"Layer 1/onair Outlines 2\",\"sr\":1,\"ks\":{\"o\":{\"a\":0,\"k\":100,\"ix\":11},\"r\":{\"a\":0,\"k\":0,\"ix\":10},\"p\":{\"a\":0,\"k\":[51.75,50,0],\"ix\":2,\"l\":2},\"a\":{\"a\":0,\"k\":[200,200,0],\"ix\""
+   },
+   {
+    "u": "https://www.hnsmall.com/common2014/js/tvshopping/lottie/onair.json",
+    "s": 200,
+    "ct": "application/json;charset=UTF-8",
+    "body": "{\"v\":\"5.9.0\",\"fr\":50,\"ip\":0,\"op\":100,\"w\":100,\"h\":100,\"nm\":\"Layer 1/onair\",\"ddd\":0,\"assets\":[],\"layers\":[{\"ddd\":0,\"ind\":1,\"ty\":4,\"nm\":\"Layer 1/onair Outlines 2\",\"sr\":1,\"ks\":{\"o\":{\"a\":0,\"k\":100,\"ix\":11},\"r\":{\"a\":0,\"k\":0,\"ix\":10},\"p\":{\"a\":0,\"k\":[51.75,50,0],\"ix\":2,\"l\":2},\"a\":{\"a\":0,\"k\":[200,200,0],\"ix\""
+   },
+   {
+    "u": "https://analytics.google.com/g/collect?v=2&tid=G-EGF9M89H7V&gtm=45je6a72v9170084618za20ozb810221644zd810221644xf1&_p=1791793533353&gcd=13l3l3l3l1l1&npa=0&dma=0&ecid=650765377&_eu=EAAAAGQC&are=1&cid=1346772443.1791793523&",
+    "s": 204,
+    "ct": "text/plain",
+    "body": ""
+   }
+  ]
+ },
+ "immall": {
+  "home": "https://www.gongyoungshop.kr/",
+  "steps": [
+   {
+    "at": "https://www.gongyoungshop.kr/main.do",
+    "status": 200,
+    "title": "공영홈쇼핑 | 홈"
+   },
+   {
+    "at": "https://www.gongyoungshop.kr/tvshopping/tvSchedule.do",
+    "status": 200,
+    "title": "공영홈쇼핑 | 편성표",
+    "text": "본문 바로가기 회원가입 로그인 고객센터 검색어 검색 20 갓김치 검색어 순위 하락 1 사과 검색어 순위 상승 2 김치 검색어 순위 상승 3 쌀 검색어 순위 하락 4 고추가루 검색어 순위 상승 5 도미솔김치 검색어 순위 변동없음 6 고구마 검색어 순위 상승 7 온누리상품권 검색어 순위 상승 8 뱅어포 검색어 순위 상승 9 포기김치 검색어 순위 상승 10 오징어 검색어 순위 상승 11 떡 검색어 순위 상승 12 꿀고구마 검색어 순위 상승 13 새우젓 검색어 순위 하락 14 고춧가루 검색어 순위 상승 15 휴지 검색어 순위 상승 16 전복 검색어 순위 하락 17 햅쌀 검색어 순위 상승 18 양파 검색어 순위 상승 19 화장지 검색어 순위 하락 20 갓김치 검색어 순위 하락 1 사과 검색어 순위 상승 마이페이지 좋아요 0 장바구니 0 전체 카테고리 LIVE TV쇼핑 편성표 선택됨 홈 모바일11주년 베스트상품전 혜택은길게! 특가일주 가을케어 가치쇼핑 같이샵 BEST랭킹 이벤트·쿠폰 TV편성표 최근 본 상품 최근 본 상품이 없습니다. 1:1 채팅상담 앱 다운로드TOP TV쇼핑 편성표 방송채널안내 본 편성표는 방송이 확정된 프로그램과 상품만 제공하여 공영쇼핑의 내부사정에 따라 변경될 수 있습니다. 총 15일간의 편성표를 제공합니다. 8 목요일 9 금요일 10 토요일 11 일요일 12 오늘 선택됨 13 화요일 14 수요일 15 목요일 16 금요일 17 토요일 18 일요일 19 월요일 20 화요일 21 수요일 22 목요일 이전방송 01:00~02:00 식품 [초록농장] 26년 햇 나주 신고배(더알짜) 7kg 29,900원 구매평점 4.1 (32) 구매 2,987 TV쇼핑 무료배송 방송알림 찜 좋아요 구매하기 방송과 함께하는 상품 (1개) 26년 경북 홍로 더알짜사과 5kg 1박스 29,900원 구매평점 3.0 (8) 구매 1,808 방송알림 찜 장바구니 TV쇼핑 무료배송 이전방송 02:00~02:50 가전디지털 쿠빙스 착즙기 AUTO6 219,000원 구매평점 4.5 (2) 구매 840 TV쇼핑 무료배송 무10 방송알림 찜 좋아요 구매하기 이전방송 02:50~03:20 뷰티잡화 26FW 신상품 [지오베] 천연소가죽 지퍼 컴포트 슬립온 10% 44,820원 49,800원 구매평점 4.9 (15) 구매 2,245 TV쇼핑 무료배송 방송알림 찜 좋아요 구매하기 이전방송 03:20~03:50 뷰티잡화 엘루자이 콜라겐 링클밤 10ea 49,900원 구매평점 4.7 (52) 구매 129 TV쇼핑 무료배송 방송알림 찜 좋아요 구매하기 방송과 함께하는 상품 (1개) 엘루자이 콜라겐 링클밤 3ea 20,900원 구매평점 5.0 (1) 구매 2 방송알림 찜 장바구니 TV쇼핑 무료배송 이전방송 04:10~05:00 가구침구 [K] 메리엔느 소프트플란넬 누빔이불 2장세트 59,900원 구매평점 4.7 (4) 구매 647 TV쇼핑 무료배송 방송알림 찜 좋아요 구매하기 방송과 함께하는 상품 (2개) [Q] 메리엔느 소프트플란넬 기모 누빔이불 2장세트 54,900원 구매평점 5."
+   }
+  ],
+  "links": [
+   [
+    "LIVE\n        \t\t\n            TV",
+    "https://www.gongyoungshop.kr/tvshopping/tvShoppingMain.do"
+   ],
+   [
+    "편성표",
+    "https://www.gongyoungshop.kr/tvshopping/tvSchedule.do"
+   ],
+   [
+    "편성표",
+    "https://www.gongyoungshop.kr/tvshopping/tvSchedule.do"
+   ]
+  ],
+  "reqs": [
+   {
+    "u": "https://www.gongyoungshop.kr/tvshopping/tvSchedule.do",
+    "s": 200,
+    "ct": "text/html;charset=UTF-8",
+    "body": "<!DOCTYPE html>\r\n<html lang=\"ko\">\r\n<head>\r\n\t<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\" />\r\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n\t<meta name=\"viewport\" content=\"width=995\" />\r\n\t<meta name=\"autocomplete\" content=\"off\"\t/>\r\n\t<meta name=\"format-detection\" content"
+   },
+   {
+    "u": "https://www.gongyoungshop.kr/css/gy_page_tvshopping.css?ver=20261006_01",
+    "s": 200,
+    "ct": "text/css",
+    "body": "@charset \"UTF-8\";\n/* TV쇼핑 */ /* TV쇼핑 > 라이브 */\n.tvtop-container {\n  margin: 0 auto;\n  padding-top: 24px;\n  max-width: 1600px;\n  overflow: hidden;\n}\n\n.swiper-tvtop .swiper-slide {\n  width: 628px;\n}\n.swiper-tvtop .swiper-slide .prdthumb-tv-l {\n  filter: blur(5px);\n  opacity: 0;\n  pointer-events: none;\n"
+   },
+   {
+    "u": "https://www.gongyoungshop.kr/common/getSiteList.do",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"siteList\":[{\"bnrNm\":\"중소벤처기업부\",\"bnrNo\":\"2560\",\"bnrImgUrl\":\"/banner/2022/7524120220302150915.jpg\",\"bnrLnkYn\":\"Y\",\"lnkImgUrl\":\"https://www.mss.go.kr\",\"parnCdDtlId\":null,\"bnrGrpCd\":\"F01\",\"popupImgUrl\":null,\"mClnkImgUrl\":null,\"tgtChCd\":null,\"brcInfoNo\":null,\"brcDispTpSct\":null,\"bnrShowTpSct\":null},{\"bn"
+   },
+   {
+    "u": "https://log.gongyoungshop.kr/nlog/log/event?v=663862269&s=EC_WEB&u=https%3A%2F%2Fwww.gongyoungshop.kr%2Ftvshopping%2FtvSchedule.do&r=&a=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7)%20AppleWebKit%2F537.",
+    "s": 200,
+    "ct": "application/javascript;charset=utf-8",
+    "body": ""
+   },
+   {
+    "u": "https://www.gongyoungshop.kr/search/rankingKwdList.do",
+    "s": 200,
+    "ct": "application/json",
+    "body": "[[\"사과\",\"1\"],[\"김치\",\"1\"],[\"쌀\",\"-2\"],[\"고추가루\",\"2\"],[\"도미솔김치\",\"0\"],[\"고구마\",\"1\"],[\"온누리상품권\",\"30\"],[\"뱅어포\",\"50\"],[\"포기김치\",\"9\"],[\"오징어\",\"4\"],[\"떡\",\"9\"],[\"꿀고구마\",\"39\"],[\"새우젓\",\"-1\"],[\"고춧가루\",\"1\"],[\"휴지\",\"29\"],[\"전복\",\"-5\"],[\"햅쌀\",\"11\"],[\"양파\",\"5\"],[\"화장지\",\"-8\"],[\"갓김치\",\"-14\"]]"
+   },
+   {
+    "u": "https://www.gongyoungshop.kr/common/cartCnt.do",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"rows\":0,\"result\":true}"
+   },
+   {
+    "u": "https://www.gongyoungshop.kr/main/ecQuickMenuBrcHtml.do?onAirViewYn=N",
+    "s": 200,
+    "ct": "text/html;charset=utf-8",
+    "body": "<!-- ######################## 방송 비상전시 상품 노출 -->\n"
+   },
+   {
+    "u": "https://www.gongyoungshop.kr/tvshopping/selectScheduleSub.do",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"prdList\":[{\"searchMbrNo\":\"\",\"searchCondition\":\"\",\"searchKeyword\":null,\"searchUseYn\":\"\",\"searchStartDate\":\"\",\"searchEndDate\":\"\",\"pageNumber\":\"\",\"pageTotCnt\":\"\",\"totalPage\":\"\",\"rows\":\"5\",\"page\":\"1\",\"pageYn\":\"\",\"registerMember\":null,\"modifyMember\":null,\"registerDate\":null,\"modifyDate\":null,\"regDtime\""
+   }
+  ]
+ },
+ "nsmall": {
+  "home": "https://www.nsmall.com/",
+  "steps": [
+   {
+    "at": "https://m.nsmall.com/store/atypical/home",
+    "status": 200,
+    "title": "NS홈쇼핑- 건강한 아이디어"
+   },
+   {
+    "at": "https://m.nsmall.com/store/fixed/schedule",
+    "status": 200,
+    "title": "NS홈쇼핑- 건강한 아이디어",
+    "text": "X 본문바로가기 반시 2.5kg 8,900원 검색 카테고리 메뉴 월 5 화 6 수 7 목 8 금 9 토 10 일 11 오늘 12 화 13 수 14 목 15 금 16 토 17 일 18 월 19 편성검색 TV편성표 TV LIVE TV Shop+ 방송시간표 지난방송02:00 ~ 02:40 늘해랑 특등급 햇 해남 호박고구마 4kg+4kg(총 8kg) 29,900원 TV쇼핑 무료배송 바로구매 더창 볼륨핏 위그 1개 5% 75,050원 79,000원 TV쇼핑 쿠폰5% 무료배송 방송중 구매가능 더창 볼륨핏 위그 2개 5% 132,050원 139,000원 TV쇼핑 쿠폰5% 무료배송 방송중 구매가능 지난방송03:20 ~ 04:00 [메이준뉴트리] 그레이스빈 유기농 서리태 콩물 두유 4박스(총60포) 128,000원 TV쇼핑 무료배송 바로구매 (60%세일)팻 버닝 와사비 다이어트W 4세트(24주분) 140,000원 TV쇼핑 씽씽배송 카드5% 무료배송 바로구매 (60%세일)팻 버닝 와사비 다이어트W 2세트(12주분) 79,200원 TV쇼핑 씽씽배송 카드5% 무료배송 바로구매 지난방송04:00 ~ 05:00 난각번호 1번 무항생제 유정란 대란 40구 26,900원 TV쇼핑 무료배송 바로구매 (방송에서만 3통 더) 정호영셰프의 맛좋은 백명란 400gX5통+비빔용 백명란 100gX3통 57,900원 TV쇼핑 무료배송 방송중 구매가능 지난방송05:00 ~ 05:40 (60%세일)팻 버닝 와사비 다이어트W 4세트(24주분) 140,000원 TV쇼핑 씽씽배송 카드5% 무료배송 바로구매 (60%세일)팻 버닝 와사비 다이어트W 2세트(12주분) 79,200원 TV쇼핑 씽씽배송 카드5% 무료배송 바로구매 지난방송05:40 ~ 06:30 [이경제] 시즌8 이경제 더힘찬 통녹용 사슴진액 4박스/4개월분 209,000원 TV쇼핑 무료배송 바로구매 시즌8 이경제 더힘찬 통녹용 사슴진액 8박스/8개월분 7% 369,000원 399,000원 TV쇼핑 쿠폰 무료배송 방송중 구매가능 지난방송06:30 ~ 07:25 제주산 당찬여주 발효효소 5박스 138,000원 TV쇼핑 카드5% 무료배송 바로구매 제주산 당찬여주 발효효소 10박스 198,000원 TV쇼핑 카드5% 무료배송 바로구매 제주산 당찬여주 발효효소 1박스 35,000원 TV쇼핑 무료배송 바로구매 제주산 당찬여주 발효효소 10박스 198,000원 TV쇼핑 카드5% 무료배송 바로구매 제주산 당찬여주 발효효소 10박스(무료체험 1박스포함) 10% 178,200원 198,000원 TV쇼핑 쿠폰10% 카드5% 무료배송 방송중 구매가능 지난방송07:25 ~ 08:25 [(주)일월] 일월 온담 벨벳 헤븐 카본 온열담요 3%124,000원 129,000원 TV쇼핑 쿠폰 카드5% 무료배송 바로구매 일월 온담 벨벳 헤븐 카본 온열담요 1+1 2% 194,000원 199,000원 TV쇼핑 쿠폰 카드5% 무료배송 방송중 구매가능 지난방송08:25 ~ 09:30 [쿠쿠] 쿠쿠 블랙스톤 10인용(CRP-R1095FGW/FGB,R1015FBB)+로얄튜더엘"
+   }
+  ],
+  "links": [
+   [
+    "편성표",
+    "https://m.nsmall.com/store/fixed/schedule"
+   ],
+   [
+    "편성표",
+    ""
+   ],
+   [
+    "편성표",
+    ""
+   ]
+  ],
+  "reqs": [
+   {
+    "u": "https://m.nsmall.com/store/fixed/schedule",
+    "s": 200,
+    "ct": "text/html; charset=utf-8",
+    "body": "<!DOCTYPE html>\n<html lang=\"ko\">\n  <head>\n    <script type=\"module\" crossorigin src=\"/assets/polyfills-kukGGA6f.js\"></script>\n\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover\" />\n  "
+   },
+   {
+    "u": "https://m.nsmall.com/assets/schedule-related-item-D0tMw5a1.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "import{bD as e,bB as t,bG as o,e as a,s as l,l as s,bI as n,a6 as i,ar as r,aj as d,U as u,bb as c,_ as b}from\"./index-1CsNPbic.js\";import{D as p,x as v,I as m,J as y,K as g,O as f,P as k,u as T,L as C,M as I,N as L,T as O,Q as S,S as w,V as h,a3 as N,a4 as _}from\"./lottie-8BvJ8JeK.js\";const x=e=>(N"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/schedule-related-item-CgcHG2Bc.css",
+    "s": 200,
+    "ct": "text/css",
+    "body": "@keyframes live-bar-bounce-63b6fd03{10%{transform:scaleY(.3)}30%{transform:scaleY(1)}60%{transform:scaleY(.5)}80%{transform:scaleY(1)}to{transform:scaleY(.3)}}.unit-wrap[data-v-63b6fd03]{display:flex;width:100%}.unit-wrap .img-wrap[data-v-63b6fd03]{border-radius:1.2rem;flex:0 0 9.4rem;height:9.4rem;"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-tvshop-bridge.vue_vue_type_style_index_0_lang-uUx9qq8l.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "var e=Object.defineProperty,t=Object.defineProperties,l=Object.getOwnPropertyDescriptors,a=Object.getOwnPropertySymbols,s=Object.prototype.hasOwnProperty,n=Object.prototype.propertyIsEnumerable,o=(t,l,a)=>l in t?e(t,l,{enumerable:!0,configurable:!0,writable:!0,value:a}):t[l]=a,r=(e,t)=>{for(var l in"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-notify-broadcast.vue_vue_type_script_setup_true_lang-7JJKUsLi.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "var a=Object.defineProperty,e=Object.defineProperties,l=Object.getOwnPropertyDescriptors,o=Object.getOwnPropertySymbols,s=Object.prototype.hasOwnProperty,t=Object.prototype.propertyIsEnumerable,n=(e,l,o)=>l in e?a(e,l,{enumerable:!0,configurable:!0,writable:!0,value:o}):e[l]=o,u=(a,e)=>{for(var l in"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-tvshop-bridge-Dhy0uJvs.css",
+    "s": 200,
+    "ct": "text/css",
+    "body": ".vjs-modal-dialog .vjs-modal-dialog-content,.video-js .vjs-modal-dialog,.vjs-button>.vjs-icon-placeholder:before,.video-js .vjs-big-play-button .vjs-icon-placeholder:before{height:100%;left:0;position:absolute;top:0;width:100%}.vjs-button>.vjs-icon-placeholder:before,.video-js .vjs-big-play-button ."
+   },
+   {
+    "u": "https://sdk-api.hackle.io/api/v1/cohorts",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"cohorts\":[]}"
+   },
+   {
+    "u": "https://sdk-api.hackle.io/api/v1/user-targets",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"events\":[]}"
+   },
+   {
+    "u": "blob:https://m.nsmall.com/a5934fa7-da3c-4504-9a21-e7142f78ebbc",
+    "s": 200,
+    "ct": "application/javascript",
+    "body": "let timeOffset = 0\nlet date = new Date()\nlet apiURL = '' // 초기값 비워둠\nlet syncInterval = null\n\nconst UPDATE_SERVER_TIME = 10 * 60 * 1000\n\n// API 호출 함수\nconst fetchServerTime = () => {\n  if (!apiURL) return\n\n  const requestTime = Date.now() // 요청 시작\n\n  // fetch 옵션에 credentials 등을 추가하여 쿠키 인증 대응\n  fetch(`"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/store/tplt/storeCmpst/lnb-pgm?pageNum=1&pageSize=1&useCache=Y",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":{\"total\":1,\"list\":[{\"dispId\":\"1009574500\",\"dispNm\":\"LNB인기프로그램(lnb-pgm)\",\"tpltGrpId\":\"100013\",\"tpltGrpNm\":\"LNB인기프로그램\",\"tpltGrpSeq\":\"1\",\"subAreaYn\":null,\"areaId\":\"200080\",\"areaNm\":\"LNB인기프로그램_001_LNB_슬라이드_M_배너\",\"areaKey\":\"10"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/store/tplt/gnb-menuList",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":{\"gnbSprInfo\":[{\"gnbSprSeq\":1,\"gnbSprNm\":\"쇼핑 모아보기\",\"gnbSprTxtColor\":\"#DC0A0A\",\"gnbList\":[{\"linkSpr\":\"1\",\"sprOrd\":1,\"menuSeq\":4,\"menuNm\":\"홈.특가\",\"mktSntnc\":null,\"mktUseYn\":\"N\",\"badgeUseYn\":\"N\",\"badgeSprType\":null,\"lndMenuYn"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/media/serverTime",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":\"2026-10-12 17:26:12\"}}"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/category/lnbMenuList",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":{\"tvStore\":{\"dispGrpId\":97001,\"dispGrpNm\":\"NSMALL(NEW)\",\"dispId\":1792054,\"dispNm\":\"TV쇼핑\",\"categoryLevel\":1,\"lvl1DispId\":1792054,\"lvl1DispNm\":\"TV쇼핑\",\"lvl2DispId\":1009574311,\"lvl2DispNm\":\"신선식품\",\"lvl3DispId\":null,\"lvl3DispNm"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/store/tplt/storeCmpst/search-keyword?pageNum=1&pageSize=1&useCache=Y",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":{\"total\":1,\"list\":[{\"dispId\":\"1009575800\",\"dispNm\":\"검색-키워드(search-keyword)\",\"tpltGrpId\":\"101463\",\"tpltGrpNm\":\"검색-키워드\",\"tpltGrpSeq\":\"4\",\"subAreaYn\":null,\"areaId\":\"212204\",\"areaNm\":\"검색-키워드_004_검색_광고_템플릿\",\"areaKey\":\"101463_0"
+   },
+   {
+    "u": "https://connect.facebook.net/signals/config/1164815017046073?v=2.9.419&r=stable&domain=m.nsmall.com&hme=7459fa3e38c2784dbaf309537bed5fa7e8560fab51fb61e53e5ffafeb46a02a9&ex_m=118%2C241%2C171%2C27%2C82%2C83%2C162%2C78%2C77",
+    "s": 200,
+    "ct": "application/x-javascript; charset=utf-8",
+    "body": "/**\n* Copyright (c) 2017-present, Facebook, Inc. All rights reserved.\n*\n* You are hereby granted a non-exclusive, worldwide, royalty-free license to use,\n* copy, modify, and distribute this software in source code or binary form for use\n* in connection with the web services and APIs provided by Face"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/schedule-time-item-BqHvERhN.css",
+    "s": 200,
+    "ct": "text/css",
+    "body": "@keyframes live-bar-bounce-442ce634{10%{transform:scaleY(.3)}30%{transform:scaleY(1)}60%{transform:scaleY(.5)}80%{transform:scaleY(1)}to{transform:scaleY(.3)}}.unit-wrap.type-a[data-v-442ce634]{padding:1.7rem 1.6rem;position:relative}.unit-wrap.type-a .time-link[data-v-442ce634]{background-color:tra"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-schedule-a-time-list-DPoIz2B9.css",
+    "s": 200,
+    "ct": "text/css",
+    "body": "@keyframes live-bar-bounce{10%{transform:scaleY(.3)}30%{transform:scaleY(1)}60%{transform:scaleY(.5)}80%{transform:scaleY(1)}to{transform:scaleY(.3)}}.modal-schedule-time-list.layer-wrap.full .layer-contents{padding-top:0}.modal-schedule-time-list.type-a .item{border-bottom:.1rem solid var(--gray-20"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-schedule-b-related-list-C54LtLTr.css",
+    "s": 200,
+    "ct": "text/css",
+    "body": "@charset \"UTF-8\";@keyframes live-bar-bounce-5b0de983{10%{transform:scaleY(.3)}30%{transform:scaleY(1)}60%{transform:scaleY(.5)}80%{transform:scaleY(1)}to{transform:scaleY(.3)}}.unit-wrap .goods-info-wrap[data-v-5b0de983]{display:flex;flex:1;flex-direction:column;margin-top:1.2rem;position:relative}."
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-notify-broadcast-C_o0U3G5.css",
+    "s": 200,
+    "ct": "text/css",
+    "body": "@keyframes live-bar-bounce{10%{transform:scaleY(.3)}30%{transform:scaleY(1)}60%{transform:scaleY(.5)}80%{transform:scaleY(1)}to{transform:scaleY(.3)}}.modal-notify-wrap.layer-wrap.bottom.fixed-bottom{z-index:102}.modal-notify-wrap.layer-wrap.bottom.fixed-bottom .layer-contents{padding-bottom:10rem}."
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-schedule-search-EkIPLTF6.css",
+    "s": 200,
+    "ct": "text/css",
+    "body": "@keyframes live-bar-bounce{10%{transform:scaleY(.3)}30%{transform:scaleY(1)}60%{transform:scaleY(.5)}80%{transform:scaleY(1)}to{transform:scaleY(.3)}}.modal-schedule-search.layer-wrap.full .layer-contents{padding:0 0 10rem}\n"
+   },
+   {
+    "u": "https://www.clarity.ms/tag/v249ckfnkg?ref=npm",
+    "s": 200,
+    "ct": "application/x-javascript",
+    "body": "!function(c,l,a,r,i,t,y){a[c].v||a[c].t||a[c](\"metadata\",(function(){a[c](\"set\", \"C_IS\", \"0\");}),!1,!0);if(a[c].v||a[c].t)return a[c](\"event\",c,\"dup.\"+i.projectId);a[c].t=!0,(t=l.createElement(r)).async=!0,t.src=\"https://scripts.clarity.ms/0.8.72/clarity.js\",(y=l.getElementsByTagName(r)[0]).parentNo"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-schedule-a-time-list.vue_vue_type_style_index_0_lang-BCSc-GHs.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "import{L as e}from\"./index-1CsNPbic.js\";import{S as l}from\"./schedule-time-item-Bp38l8VN.js\";import{D as t,r as a,x as s,o as n,J as o,V as i,P as u,Q as c,L as r,K as m,U as f,u as d,T as p,i as v,n as h,O as S}from\"./lottie-8BvJ8JeK.js\";const y={class:\"time-info\"},g={class:\"time-list\"},L=t({__name"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/schedule-time-item-Bp38l8VN.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "import{a4 as s,_ as a}from\"./index-1CsNPbic.js\";import{D as e,x as t,J as l,K as n,L as i,S as p,u as c,T as o,Q as m,M as r,N as d,a3 as u,a4 as v}from\"./lottie-8BvJ8JeK.js\";const y=s=>(u(\"data-v-442ce634\"),s=s(),v(),s),b={key:0,class:\"label\"},k=y(()=>i(\"div\",{class:\"live-bar\"},[i(\"span\"),i(\"span\")"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-schedule-b-related-list.vue_vue_type_style_index_0_lang-DxMNu5hE.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "import{B as e}from\"./index-CLkn60IS.js\";import{a4 as t,dS as a,br as o,O as s,s as l,W as n,dT as i,dU as r,dV as d,dW as u,y as c,H as m,a9 as p,ay as v,aD as f,bB as y,bD as g,r as b,bG as C,l as D,bI as h,ac as T,aB as O,af as w,w as I,a6 as k,ar as S,aj as N,U as L,bb as _,_ as x}from\"./index-1C"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/schedule-home-C4O_LaPh.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "var e=Object.defineProperty,t=Object.defineProperties,l=Object.getOwnPropertyDescriptors,a=Object.getOwnPropertySymbols,s=Object.prototype.hasOwnProperty,n=Object.prototype.propertyIsEnumerable,o=(t,l,a)=>l in t?e(t,l,{enumerable:!0,configurable:!0,writable:!0,value:a}):t[l]=a,i=(e,t)=>{for(var l in"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/p.modal-schedule-time-list.vue_vue_type_style_index_0_lang-DcrZ5Ydn.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "import{S as e}from\"./schedule-time-item-Bp38l8VN.js\";import{s}from\"./lodash-Bwgjb0JU.js\";import{D as t,x as l,J as i,K as a,L as c,T as o,U as m,u,S as d,O as n}from\"./lottie-8BvJ8JeK.js\";const p={class:\"modal-schedule-time-list type-a\"},r=c(\"div\",{class:\"sub-title\"},\"방송시간표\",-1),h={class:\"time-info\""
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-notify-broadcast.vue_vue_type_style_index_0_lang-BMhB585t.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "var e=Object.defineProperty,a=Object.defineProperties,l=Object.getOwnPropertyDescriptors,t=Object.getOwnPropertySymbols,o=Object.prototype.hasOwnProperty,n=Object.prototype.propertyIsEnumerable,s=(a,l,t)=>l in a?e(a,l,{enumerable:!0,configurable:!0,writable:!0,value:t}):a[l]=t,u=(e,a)=>{for(var l in"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/store/tplt/storeCmpst/2348554?pageNum=1&pageSize=10&useCache=Y",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":{\"total\":1,\"list\":[{\"dispId\":\"2348554\",\"dispNm\":\"인기 브랜드\",\"tpltGrpId\":\"100014\",\"tpltGrpNm\":\"인기브랜드\",\"tpltGrpSeq\":\"2\",\"subAreaYn\":null,\"areaId\":\"201070\",\"areaNm\":\"인기브랜드_002_LNB_S_배너\",\"areaKey\":\"100014_002_400013\",\"subAreaId\""
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/store/tplt/tpltCmpst/grp/101463/seq/4?useCache=Y",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":[{\"cmpstCompntId\":\"400057\",\"cmpstCompntType\":\"T_BR_0022\",\"tpltFixSpr\":null,\"widthSize\":\"0\",\"tpltEpsuType\":null,\"setUseYn\":null,\"rollIntrvSs\":null,\"autoRollYn\":null,\"stckySetYn\":null,\"goodsOrbCondCd\":\"MANL\",\"updatedAt\":nul"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/schedule-home-Dj9-rCZN.css",
+    "s": 200,
+    "ct": "text/css",
+    "body": "@charset \"UTF-8\";.schedule-a-list{background-color:var(--gray-200);display:flex;flex-direction:column;padding-bottom:10rem;row-gap:.8rem}.schedule-a-list>li{background-color:var(--white)}.schedule-a-list .onair-time{background-color:var(--white);height:4.4rem;line-height:1;padding:1.2rem 2rem}.sched"
+   },
+   {
+    "u": "https://gum.criteo.com/sid/json?origin=onetag&domain=nsmall.com&sn=ChromeSyncframe&so=undefined&topUrl=m.nsmall.com&bundle=34xKP19XU2MzZ3JqeXFLY3lYOXZ4YXVmM3RNZkRFa25qY0l6S2hITnpJYmtPRlZ6ajI3WFNxTlpmUE5uRU5iTVNrNHY2c1VNV",
+    "s": 200,
+    "ct": "application/json; charset=utf-8",
+    "body": "{\"sid\":null,\"removeSid\":false,\"bundle\":\"Bfukj19XU2MzZ3JqeXFLY3lYOXZ4YXVmM3RHT1pFYjFHJTJGQ1k1UXJqbDNKbG5JVDlzQjRaVm5RWE9zZkJtbEJPaHpPck5uU29wbFM1QkVvNEFPWnlJTVp5UjdtayUyRmlFaXNQcDB3cHNXN1E5SHdZbXNNeVFVbUVhYmNEajA3d3RUZGJqQ1g0UGFMeiUyQjI1d2s1JTJGUkdlbHdLYjFTdyUzRCUzRA\",\"info\":\"WCxGhF9XU2MzZ3JqeXFLY3lY"
+   },
+   {
+    "u": "https://rt.buzzni.com/cookie?brtudid=1791793566-84f0d779-6549-4261-8f71-d2213139b15c",
+    "s": 200,
+    "ct": "text/javascript; charset=utf-8",
+    "body": "var buzzni_d = new Date();\nbuzzni_d.setTime(buzzni_d.getTime() + 31536000000);\ndocument.cookie = \"brtudid=1791793566-84f0d779-6549-4261-8f71-d2213139b15c; SameSite=Lax; expires=\" + buzzni_d.toUTCString() + \"; path=/; domain=\" + document.domain;\ntry { window.localStorage.setItem(\"brtudid\", \"179179356"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/media/serverTime",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":\"2026-10-12 17:26:13\"}}"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-schedule-search.vue_vue_type_style_index_0_lang-C9cdKnbJ.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "import{H as e,W as o,L as a,dX as s}from\"./index-1CsNPbic.js\";import{S as l,_ as t}from\"./goods-collection.vue_vue_type_style_index_0_lang-ChrfhyaD.js\";import{D as n,x as d,r as u,w as r,J as c,V as i,P as m,O as p,u as f,i as v,L as h}from\"./lottie-8BvJ8JeK.js\";const g=h(\"div\",{class:\"header-wrap\"}"
+   },
+   {
+    "u": "https://m.nsmall.com/assets/modal-schedule-b-time-list.vue_vue_type_style_index_0_lang-C5_Q6HlI.js",
+    "s": 200,
+    "ct": "application/javascript; charset=utf-8",
+    "body": "import{B as e}from\"./index-CLkn60IS.js\";import{S as s}from\"./schedule-time-item-Bp38l8VN.js\";import{s as t}from\"./lodash-Bwgjb0JU.js\";import{D as l,r as a,x as o,o as i,J as m,V as n,P as c,Q as u,L as d,K as r,U as p,u as f,T as h,i as v,O as S}from\"./lottie-8BvJ8JeK.js\";const y={class:\"time-info\"}"
+   },
+   {
+    "u": "https://www.googletagmanager.com/gtag/js?id=G-3V5Q2NHY4Z&cx=c&gtm=4e6a72",
+    "s": 200,
+    "ct": "application/javascript; charset=UTF-8",
+    "body": "\n// Copyright 2012 Google Inc. All rights reserved.\n \n(function(){\n\nvar data = {\n\n\"resource\": {\n  \"version\":\"2\",\n  \n  \"macros\":[{\"function\":\"__c\",\"vtp_value\":true},{\"function\":\"__e\"},{\"function\":\"__actids\"},{\"function\":\"__v\",\"vtp_name\":\"gtm.configContainerId\",\"vtp_dataLayerVersion\":1},{\"function\":\"_"
+   },
+   {
+    "u": "https://www.facebook.com/tr/?id=1164815017046073&ev=PageView&dl=https%3A%2F%2Fm.nsmall.com%2Fstore%2Ffixed%2Fschedule&rl=&if=false&ts=1791793573420&iw=false&sw=1280&sh=720&udwv[em][0][v]=3193c0ec3c1b567bbfc928ac7f55a9d1c",
+    "s": 200,
+    "ct": "text/plain",
+    "body": ""
+   },
+   {
+    "u": "https://sslwidget.criteo.com/event?a=83026&v=5.51.0&p0=e%3Dce%26m%3D%255B%255D%26h%3D&p1=e%3Dexd%26z%3D%26site_type%3Dd&p2=e%3Dvh&p3=e%3Ddis&bundle=Bfukj19XU2MzZ3JqeXFLY3lYOXZ4YXVmM3RHT1pFYjFHJTJGQ1k1UXJqbDNKbG5JVDlzQjRa",
+    "s": 302,
+    "ct": "",
+    "body": ""
+   },
+   {
+    "u": "https://config.airbridge.io/v1/web/apps/nsmall?browserClientID=45180b5b-4900-489d-a281-78b39bad4410&webToken=0806667fb5474393a928b23b8e4d00c0",
+    "s": 200,
+    "ct": "application/json; charset=utf-8",
+    "body": "{\"androidMarket\":\"https://play.google.com/store/apps/details?id=com.nsmobilehub\",\"appIconImageUrl\":\"https://play-lh.googleusercontent.com/IYXGjXLkxk_hP6yADh55145-dB2I5mqBOfI6fvmb3Klxvr6_E6KSIcgoSZU1k_Luoawa\",\"appId\":14058,\"appName\":\"NS홈쇼핑\",\"appSubdomain\":\"nsmall\",\"appTitle\":\"NS홈쇼핑\",\"iosMarket\":\"http"
+   },
+   {
+    "u": "https://m.nsmall.com/images/icons/store/schedule/icon-arrow-date-prev.svg",
+    "s": 200,
+    "ct": "image/svg+xml",
+    "body": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M16 20L8 12L16 4\" stroke=\"#757575\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</svg>\n"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/popup/fixBnnr",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":{\"dispPopupId\":\"808166\",\"dispPopupNm\":\"10/1 2:00-11/1 1:59 홈 고정배너_다드림\",\"compntId\":812369,\"compntOrd\":\"1\",\"dispCompntType\":\"IMGTXT\",\"compntBckgColor\":\"#15193C\",\"textFirstColor\":\"#FFFFFF\",\"textFirstCtnt\":null,\"textScndCtnt\""
+   },
+   {
+    "u": "https://widget.as.criteo.com/event?a=83026&v=5.51.0&p0=e%3Dce%26m%3D%255B%255D%26h%3D&p1=e%3Dexd%26z%3D%26site_type%3Dd&p2=e%3Dvh&p3=e%3Ddis&bundle=Bfukj19XU2MzZ3JqeXFLY3lYOXZ4YXVmM3RHT1pFYjFHJTJGQ1k1UXJqbDNKbG5JVDlzQjRa",
+    "s": 200,
+    "ct": "application/x-javascript",
+    "body": "/*<!--*//*-->*/"
+   },
+   {
+    "u": "https://event.airbridge.io/v3/apps/nsmall",
+    "s": 200,
+    "ct": "application/json; charset=utf-8",
+    "body": "{\"ingested\":1,\"at\":\"2026-10-12T08:26:13.69980863Z\",\"skAdNetwork\":null}"
+   },
+   {
+    "u": "https://lex.toss.im/api/lex/event/v2",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"resultType\":\"SUCCESS\",\"success\":{}}"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/media/serverTime",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":\"2026-10-12 17:26:13\"}}"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/popup/todayList",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":[{\"popupBaseInfo\":{\"dispPopupId\":800434,\"dispPopupNm\":\"중앙팝업 샘플\",\"mediaTypeCd\":null,\"popupPotnType\":\"P_AR_001\",\"popupSprType\":\"P_SPR_01\",\"popupPotnTypeNm\":\"비정형매장\",\"popupSprTypeNm\":\"중앙배너\",\"applyTmUseYn\":\"N\",\"applyStartTm\":n"
+   },
+   {
+    "u": "https://event.airbridge.io/v3/apps/nsmall",
+    "s": 200,
+    "ct": "application/json; charset=utf-8",
+    "body": "{\"ingested\":1,\"at\":\"2026-10-12T08:26:13.871749371Z\",\"skAdNetwork\":null}"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/popup/todayPtnList?ptnCd=110",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":[]}}"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/media/schedule/brdctAlarmInfo?formDate=20261012&CnnlCd=tv",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":[{\"alarmYn\":\"N\",\"infrId\":null,\"goodsCd\":35951487},{\"alarmYn\":\"N\",\"infrId\":null,\"goodsCd\":36252273},{\"alarmYn\":\"N\",\"infrId\":null,\"goodsCd\":36252468},{\"alarmYn\":\"N\",\"infrId\":null,\"goodsCd\":36184787},{\"alarmYn\":\"N\",\"infrId\":"
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/display/media/schedule/tv/20261012?formDate=20261012&cnnlCd=TV",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":{\"totalOrgan\":[{\"endDtm\":\"20261012024000\",\"goodsCd\":36148109,\"liveCd\":\"C\",\"pgmCd\":\"1139926\",\"startDtm\":\"20261012020000\",\"pgmNm\":\"N_히트상품앵콜방송 2부\",\"brdctOrd\":\"1\",\"goods\":{\"sysDate\":\"2026-10-12 17:24:42\",\"accptPathCd\":\"100\",\""
+   },
+   {
+    "u": "https://mapi.nsmall.com/md/api/v1/media/serverTime",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"data\":{\"resultCode\":\"0000\",\"resultMessage\":\"요청이 정상적으로 처리되었습니다.\",\"resultData\":\"2026-10-12 17:26:14\"}}"
+   },
+   {
+    "u": "https://m.nsmall.com/images/icons/store/schedule/icon-arrow-down.svg",
+    "s": 200,
+    "ct": "image/svg+xml",
+    "body": "<svg width=\"9\" height=\"6\" viewBox=\"0 0 9 6\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M0.5 1L4.5 5L8.5 1\" stroke=\"#111111\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</svg>\n"
+   },
+   {
+    "u": "https://m.nsmall.com/images/icons/store/schedule/icon-alarm.svg",
+    "s": 200,
+    "ct": "image/svg+xml",
+    "body": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<g clip-path=\"url(#clip0_9916_15970)\">\n<path d=\"M10.2197 1.5H10C6.48963 1.5 3.6439 4.34572 3.6439 7.85609V12.0705C3.6439 12.1883 3.60454 12.3027 3.53207 12.3956L2.60268 13.5867C2.15439 14.1613 2.56379 15 "
+   },
+   {
+    "u": "https://nstalk.mand.co.kr:4189/api/messages",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"code\":\"0\",\"type\":\"message\",\"count\":0,\"messages\":[],\"talk_enable\":false}"
+   },
+   {
+    "u": "https://device.kr.aiqua.c.appier.net/aiqua/web/966ef26ddcc00f25775f/data/",
+    "s": 200,
+    "ct": "application/json",
+    "body": "{\"qgUserId\":\"5776816749977393\",\"version\":\"v2\"}\n"
+   },
+   {
+    "u": "https://analytics.google.com/g/collect?v=2&tid=G-3V5Q2NHY4Z&gtm=45je6a72v878574557za20ozb9178269223zd9178269223xf1&_p=1791793572192&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAGQC&are=1&cid=2039114519.1791793571&frm=0&pscdl=no",
+    "s": 204,
+    "ct": "text/plain",
+    "body": ""
+   }
+  ]
+ }
+}
