@@ -1,0 +1,53 @@
+{
+ "text": [],
+ "hits": [
+  [
+   "props.data[4].schedules[5].same_time_products[7].name",
+   "뉴밋 야생하스카프베리 착즙 100 6+6박스",
+   "pdid,entity_id,commerce_id,name,url,sale_status,image,price,is_commerce_product,sale_price,pid,site,promotion_info,product_meta_type,tv_channel,recent_broadcast_start_datetime,recent_broadcast_end_datetime,alarm_info,start_datetime,end_datetime,price_per_unit,is_promotion,card_info,interest_free_info,price_info,is_seller_discount"
+  ],
+  [
+   "props.data[4].schedules[6].name",
+   "[뉴밋] (방송에서만)뉴밋 야생 하스카프베리 100 10박스+1박스",
+   "name,simple_name,commerce_id,pid,site,url,sale_price,price,images,category1,sale_status,recent_score,pdid,category2,category3,schedule_score,admin_score,site_score,review_count,review_rating,image,promotion_info,point_info,entity_id,tv_channel_type,tv_channel,live_order,live_rank,start_datetime,start_hour_datetime"
+  ],
+  [
+   "props.data[4].schedules[6].same_time_products[0].name",
+   "[뉴밋] 뉴밋 야생 하스카프베리 100 5박스",
+   "pdid,entity_id,commerce_id,name,url,sale_status,image,price,is_commerce_product,sale_price,pid,site,promotion_info,product_meta_type,tv_channel,recent_broadcast_start_datetime,recent_broadcast_end_datetime,alarm_info,start_datetime,end_datetime,price_per_unit,is_promotion,card_info,interest_free_info,price_info,is_seller_discount"
+  ]
+ ],
+ "noPdid": [],
+ "cjAll": [
+  [
+   "2026-10-12T12:35:00+09:00",
+   "2026-10-12T13:35:00+09:00",
+   "cjmall_2095279702",
+   "[기획가]SS_광목 패드 겸 스프레드 2종",
+   "props.data[3].schedules[3].same_time_products[2]"
+  ],
+  [
+   "2026-10-12T12:35:00+09:00",
+   "2026-10-12T13:35:00+09:00",
+   "cjmall_2095279742",
+   "[기획가]Q_광목 패드 겸 스프레드 2종",
+   "props.data[3].schedules[3].same_time_products[1]"
+  ],
+  [
+   "2026-10-12T12:35:00+09:00",
+   "2026-10-12T13:35:00+09:00",
+   "cjmall_2095279757",
+   "[기획가]K_광목 패드 겸 스프레드 2종",
+   "props.data[3].schedules[3].same_time_products[0]"
+  ],
+  [
+   "2026-10-12T12:35:00+09:00",
+   "2026-10-12T13:35:00+09:00",
+   "cjmall_2095279826",
+   "[기획가]SK_광목 광목 패드 겸 스프레드 2종",
+   "props.data[3].schedules[3]"
+  ]
+ ],
+ "total": 871,
+ "len": 3040
+}
