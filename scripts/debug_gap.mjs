@@ -23,7 +23,7 @@ for (let k = 0; k < 25; k++) { await p.waitForTimeout(3000); out = await p.evalu
     }
     for (const k of Object.keys(v)) {
       const x = v[k];
-      if (typeof x === 'string' && (x.includes('하스카프') || x.includes('허니베리'))) res.hits.push([path + '.' + k, x.slice(0, 80), Object.keys(v).slice(0, 30).join(',')]);
+      if (typeof x === 'string' && (x.includes('하스카프') || x.includes('허니베리'))) res.hits.push([path + '.' + k, x.slice(0, 80), v.tv_channel, v.tv_channel_type, v.start_datetime, v.end_datetime, v.pdid, Object.keys(v).join(',')]);
       else if (x && typeof x === 'object' && k !== '_owner' && k !== 'children') visit(x, path + '.' + k, d + 1);
     }
   };
