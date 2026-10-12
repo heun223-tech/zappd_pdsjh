@@ -6,7 +6,7 @@ const url = `https://hsmoa.com/?date=${+d.slice(8)}&time=${d}T03%3A00%3A00.000Z&
 const b = await chromium.launch(); const p = await b.newPage({ locale: 'ko-KR', timezoneId: 'Asia/Seoul' });
 await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }); await p.waitForTimeout(25000);
 const out = await p.evaluate(() => {
-  const res = { text: [], hits: [], noPdid: [], cjAll: [] };
+  const res = { text: [], hits: [], noPdid: [], cjAll: [], total: 0, len: document.body.innerText.length };
   const t = document.body.innerText; let i = -1;
   for (const w of ['하스카프', '허니베리']) { i = t.indexOf(w); if (i >= 0) res.text.push(t.slice(Math.max(0, i - 120), i + 80)); }
   const rootEl = document.getElementById('__next');
@@ -17,7 +17,8 @@ const out = await p.evaluate(() => {
     if (!v || typeof v !== 'object' || d > 14 || seen.has(v)) return; seen.add(v);
     if (Array.isArray(v)) { v.forEach((x, j) => visit(x, path + '[' + j + ']', d + 1)); return; }
     if (v.start_datetime && v.tv_channel) {
-      if (v.tv_channel === 'cjmall' && String(v.start_datetime).includes('T1')) res.cjAll.push([v.start_datetime, v.end_datetime, v.pdid, (v.name || '').slice(0, 40), path.slice(-80)]);
+      res.total++;
+      if (v.tv_channel === 'cjmall' && ['10','11','12'].includes(String(v.start_datetime).slice(11,13))) res.cjAll.push([v.start_datetime, v.end_datetime, v.pdid, (v.name || '').slice(0, 40), path.slice(-80)]);
       if (!v.pdid) res.noPdid.push([v.tv_channel, v.start_datetime, (v.name || '').slice(0, 40), Object.keys(v).slice(0, 25).join(',')]);
     }
     for (const k of Object.keys(v)) {
