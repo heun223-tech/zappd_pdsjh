@@ -291,6 +291,8 @@ tbody tr:hover td{background:var(--surface-2)}
 .tl-head .kt{font-family:var(--f-mono);font-size:10px;font-weight:500;color:var(--muted)}
 .tl-head .grp{font-size:10px;font-weight:500;color:var(--muted)}
 .tl-head.adj{box-shadow:inset 0 -3px 0 var(--accent)}
+.tl-head.own.flow{left:auto;z-index:5}
+.col.own.flow{position:relative;left:auto;z-index:auto}
 .sw.g{background:color-mix(in srgb,var(--g) 18%,var(--surface));border-left:3px solid var(--g)}
 .epgnow{display:flex;flex-direction:column;gap:4px}
 .epgnow div{display:grid;grid-template-columns:88px 48px minmax(0,1fr);gap:8px;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line)}
@@ -348,7 +350,7 @@ tbody tr:hover td{background:var(--surface-2)}
     </section>
 
     <section id="view-epg" data-view-panel="epg" hidden style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
-      <div class="tl-legend" id="epgLegend"></div>
+      <div class="tl-legend"><div class="seg" id="epgOrder" role="group" aria-label="채널 순서"><button data-o="grp" aria-pressed="true">지상파·종편·케이블 순</button><button data-o="num" aria-pressed="false">채널번호 순</button></div><span id="epgLegend" style="display:contents"></span></div>
       <div class="tl-scroll" id="epgScroll"><div class="tl" id="epg"></div></div>
     </section>
   </div>
@@ -623,27 +625,39 @@ function epgRows() {
     return {...c, rows};
   });
 }
-function renderEpg(items) {
+let epgOrder = 'grp'; try { if (localStorage.getItem('zap.epgOrder') === 'num') epgOrder = 'num'; } catch (e) {}
+function renderEpg(items, keepScroll) {
   const chans = epgRows();
-  const sec = $('#view-epg');
+  document.querySelectorAll('#epgOrder [data-o]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.o === epgOrder)));
   if (!chans.length) { $('#epg').innerHTML = ''; $('#epgLegend').innerHTML = '<span>이 날짜의 방송 편성표는 아직 수집되지 않았습니다. 다음 자동 수집부터 함께 표시됩니다.</span>'; $('#tab-epg').hidden = false; return; }
-  $('#epgLegend').innerHTML = `<span>숫자는 KT 지니TV 채널번호. NS홈쇼핑(2번) 양옆은 ENA(1)·tvN(3)이라 밑줄로 표시했습니다.</span>`;
-  const H = 24 * 60; const cols = 1 + chans.length;
-  const tl = $('#epg'); tl.style.gridTemplateColumns = `52px minmax(220px,1.5fr) repeat(${cols - 1}, minmax(128px,1fr))`; tl.style.minWidth = `calc(52px + 220px + ${cols - 1} * 128px)`;
-  let html = `<div class="tl-head corner">KST</div><div class="tl-head own">${chDot('nsmall')}NS홈쇼핑 <span class="kt">2</span></div>` +
-    chans.map(c => `<div class="tl-head ${c.no === 1 || c.no === 3 ? 'adj' : ''}"><span style="display:flex;flex-direction:column;min-width:0"><span class="grp">${esc(c.grp)}</span><span>${esc(c.name)} <span class="kt">${c.no}</span></span></span></div>`).join('');
+  const byNum = epgOrder === 'num';
+  $('#epgLegend').innerHTML = byNum
+    ? `<span>KT 지니TV 채널번호 순서입니다. 리모컨으로 채널을 올리고 내릴 때 만나는 순서 그대로 NS홈쇼핑(2번)이 ENA(1)·tvN(3) 사이에 있습니다.</span>`
+    : `<span>지상파 · 종편 · 케이블 · 뉴스 순서입니다. 숫자는 KT 지니TV 채널번호, NS홈쇼핑(2번) 양옆 ENA(1)·tvN(3)은 밑줄로 표시했습니다.</span>`;
+  const H = 24 * 60;
+  // NS first (by group) or at channel 2 (by number)
+  const cols = [{ns: true, no: 2}, ...chans];
+  if (byNum) cols.sort((a, b) => a.no - b.no);
+  const tl = $('#epg');
+  tl.style.gridTemplateColumns = '52px ' + cols.map(c => c.ns ? 'minmax(220px,1.5fr)' : 'minmax(128px,1fr)').join(' ');
+  tl.style.minWidth = `calc(52px + 220px + ${cols.length - 1} * 128px)`;
+  const flow = byNum ? ' flow' : '';
+  let html = `<div class="tl-head corner">KST</div>` + cols.map(c => c.ns
+    ? `<div class="tl-head own${flow}">${chDot('nsmall')}NS홈쇼핑 <span class="kt">2</span></div>`
+    : `<div class="tl-head ${c.no === 1 || c.no === 3 ? 'adj' : ''}"><span style="display:flex;flex-direction:column;min-width:0"><span class="grp">${esc(c.grp)}</span><span>${esc(c.name)} <span class="kt">${c.no}</span></span></span></div>`).join('');
   let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
   for (let hr = 0; hr <= 24; hr++) rail += `<span class="h" style="top:calc(${hr * 60} * var(--ppm))">${String(hr).padStart(2, '0')}:00</span>`;
   html += rail + '</div>';
   const grid = () => { let g = ''; for (let hr = 1; hr < 24; hr++) g += `<div class="gridline" style="top:calc(${hr * 60} * var(--ppm))"></div>`; return g; };
-  // NS column (compact)
-  let ns = `<div class="col own" style="height:calc(${H} * var(--ppm))">${grid()}`;
-  for (const it of items.filter(i => i.ch === SETS.tv.own)) {
-    const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
-    ns += `<button class="blk own ${px < 96 ? 'short' : ''} ${px < 50 ? 'tiny' : ''}" style="--c:var(--ch-nsmall);top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}"><span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span><span class="pline">${it.p ? `<span class="big">${won(best(it))}</span>` : '<span class="more">가격 미표기</span>'}</span></button>`;
-  }
-  html += ns + '</div>';
-  for (const c of chans) {
+  for (const c of cols) {
+    if (c.ns) {
+      let ns = `<div class="col own${flow}" style="height:calc(${H} * var(--ppm))">${grid()}`;
+      for (const it of items.filter(i => i.ch === SETS.tv.own)) {
+        const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
+        ns += `<button class="blk own ${px < 96 ? 'short' : ''} ${px < 50 ? 'tiny' : ''}" style="--c:var(--ch-nsmall);top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}"><span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span><span class="pline">${it.p ? `<span class="big">${won(best(it))}</span>` : '<span class="more">가격 미표기</span>'}</span></button>`;
+      }
+      html += ns + '</div>'; continue;
+    }
     let col = `<div class="col" style="height:calc(${H} * var(--ppm))">${grid()}`;
     for (const r of c.rows) {
       const dur = Math.min(r.em, H) - r.sm; if (dur <= 0) continue; const px = dur * 2; const off = isOff(r.t);
@@ -652,11 +666,14 @@ function renderEpg(items) {
     html += col + '</div>';
   }
   html += `<div class="nowline" hidden><span></span></div>`;
+  const sc = $('#epgScroll'); const keep = sc.scrollTop;
   tl.innerHTML = html;
-  const n = kstNow(); const sc = $('#epgScroll');
+  if (keepScroll) { sc.scrollTop = keep; sc.scrollLeft = 0; tick(); return; }
+  const n = kstNow();
   const target = state.date === n.date ? Math.max(0, n.min - 60) : 18 * 60;
   requestAnimationFrame(() => { sc.scrollTop = target * 2; });
 }
+$('#epgOrder').addEventListener('click', e => { const b = e.target.closest('[data-o]'); if (!b || b.dataset.o === epgOrder) return; epgOrder = b.dataset.o; try { localStorage.setItem('zap.epgOrder', epgOrder); } catch (er) {} renderEpg(state.tvItems, true); });
 $('#epg').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx, state.tvItems); });
 function epgAt(min) {
   return epgRows().map(c => { const r = c.rows.find(x => x.sm <= min && min < x.em); return r && !isOff(r.t) ? {c, r} : null; }).filter(Boolean);
