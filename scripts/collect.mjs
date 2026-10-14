@@ -116,21 +116,21 @@ const num = v => +String(v || '').replace(/[^\d]/g, '') || 0;
 const firstPerSlot = list => { const seen = new Set(); return list.filter(x => x.s && x.n && !seen.has(x.d + x.s) && seen.add(x.d + x.s)); };
 const OFFICIAL = {
   cjmall: async (req, d) => {
-    const j = await (await req.get(`https://display.cjonstyle.com/c/rest/tv/tvSchedule?bdDt=${ymd(d)}&isMobile=false&broadType=live&isEmployee=false`, { timeout: 25000 })).json();
+    const j = await (await req.get(`https://display.cjonstyle.com/c/rest/tv/tvSchedule?bdDt=${ymd(d)}&isMobile=false&broadType=live&isEmployee=false`, { timeout: 30000 })).json();
     return ((j.result && j.result.programList) || []).map(p => { const it = (p.itemList || [])[0] || {}; const a = kstOf(p.bdStrDtm), z = kstOf(p.bdEndDtm);
       return { d: a.slice(0, 10), s: a.slice(11, 16), e: z.slice(11, 16), n: it.itemNm || '', p: it.salePrice || 0, sp: it.hpSalePrice || 0, pg: p.pgmNm || '' }; });
   },
   immall: async (req, d) => {
-    const x = await (await req.post('https://www.gongyoungshop.kr/tvshopping/selectScheduleSub.do', { form: { brcStdDate: ymd(d) }, timeout: 25000 })).text();
+    const x = await (await req.post('https://www.gongyoungshop.kr/tvshopping/selectScheduleSub.do', { form: { brcStdDate: ymd(d) }, timeout: 30000 })).text();
     return firstPerSlot([...x.matchAll(/<prdList>([\s\S]*?)<\/prdList>/g)].map(m => { const b = m[1], a = xmlTag(b, 'brcBgnDtm'), z = xmlTag(b, 'brcEndDtm');
       return { d: `${a.slice(0, 4)}-${a.slice(4, 6)}-${a.slice(6, 8)}`, s: `${a.slice(8, 10)}:${a.slice(10, 12)}`, e: `${z.slice(8, 10)}:${z.slice(10, 12)}`, n: xmlTag(b, 'prdNm'), p: num(xmlTag(b, 'prdPrc')), sp: 0, pg: xmlTag(b, 'brcPgmNm') }; }));
   },
   lotteimall: async (req, d) => {
-    const j = await (await req.get(`https://www.lotteimall.com/main/scheduleLive.lotte?bdDate=${ymd(d)}&date=${d}`, { timeout: 25000 })).json();
+    const j = await (await req.get(`https://www.lotteimall.com/main/scheduleLive.lotte?bdDate=${ymd(d)}&date=${d}`, { timeout: 30000 })).json();
     return firstPerSlot(((j.body && j.body.prod) || []).map(p => ({ d, s: p.stime || '', e: p.etime || '', n: p.name || '', p: num(p.price_orig) || num(p.price_disc), sp: num(p.price_disc), pg: '' })));
   },
   nsmall: async (req, d) => {
-    const j = await (await req.get(`https://mapi.nsmall.com/md/api/v1/display/media/schedule/tv/${ymd(d)}?formDate=${ymd(d)}&cnnlCd=TV`, { timeout: 25000 })).json();
+    const j = await (await req.get(`https://mapi.nsmall.com/md/api/v1/display/media/schedule/tv/${ymd(d)}?formDate=${ymd(d)}&cnnlCd=TV`, { timeout: 30000 })).json();
     const l = (j.data && j.data.resultData && j.data.resultData.totalOrgan) || [];
     return firstPerSlot(l.map(o => { const g = o.goods || {}, a = String(o.startDtm || ''), z = String(o.endDtm || '');
       return { d: `${a.slice(0, 4)}-${a.slice(4, 6)}-${a.slice(6, 8)}`, s: `${a.slice(8, 10)}:${a.slice(10, 12)}`, e: `${z.slice(8, 10)}:${z.slice(10, 12)}`, n: (g.productNm || '').trim(), p: g.salePrice || 0, sp: g.dcPrice || 0, pg: o.pgmNm || '' }; }));
@@ -141,10 +141,18 @@ const span = x => { const a = hmMin(x.s); let z = hmMin(x.e); if (z <= a) z += 1
 async function fillFromOfficial(req, d, items) {
   const added = [];
   for (const [ch, fetchOfficial] of Object.entries(OFFICIAL)) {
-    let list = [];
-    try { list = (await fetchOfficial(req, d)).filter(x => x.d === d && /^\d\d:\d\d$/.test(x.s) && /^\d\d:\d\d$/.test(x.e)); }
-    catch (e) { OFFICIAL_LOG.push(`${d} ${ch} error ${String(e.message).slice(0, 100)}`); continue; }
+    let list = null;
+    for (let attempt = 1; attempt <= 3 && !list; attempt++) {
+      try { list = (await fetchOfficial(req, d)).filter(x => x.d === d && /^\d\d:\d\d$/.test(x.s) && /^\d\d:\d\d$/.test(x.e)); }
+      catch (e) { OFFICIAL_LOG.push(`${d} ${ch} try${attempt} ${String(e.message).split('\n')[0].slice(0, 80)}`); await new Promise(r => setTimeout(r, 5000 * attempt)); }
+    }
     const mine = items.filter(i => i.ch === ch).map(span);
+    if (!list) {
+      // site unreachable this run: keep what an earlier run already took from it
+      const prev = ((readJson(path.join(DATA, `${d}.json`)) || {}).items || []).filter(i => i.ch === ch && i.src === 'o');
+      const kept = prev.filter(o => { const [a, z] = span(o); return !mine.some(([b, y]) => Math.min(z, y) - Math.max(a, b) >= 5); });
+      added.push(...kept); OFFICIAL_LOG.push(`${d} ${ch} unreachable, kept ${kept.length} from earlier run`); continue;
+    }
     let n = 0;
     for (const o of list) {
       const [a, z] = span(o);
