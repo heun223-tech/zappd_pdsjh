@@ -634,9 +634,7 @@ function renderEpg(items, keepScroll) {
   document.querySelectorAll('#epgOrder [data-o]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.o === epgOrder)));
   if (!chans.length) { $('#epg').innerHTML = ''; $('#epgLegend').innerHTML = '<span>이 날짜의 방송 편성표는 아직 수집되지 않았습니다. 다음 자동 수집부터 함께 표시됩니다.</span>'; $('#tab-epg').hidden = false; return; }
   const byNum = epgOrder === 'num';
-  $('#epgLegend').innerHTML = byNum
-    ? `<span>KT 지니TV 0~24번을 리모컨 순서 그대로 놓았습니다(2026년 9월 2일 채널표 기준). 홈쇼핑 칸은 상품·가격, 일반 채널은 프로그램이 나옵니다.</span>`
-    : `<span>지상파 · 종편 · 케이블 · 뉴스 순서입니다. 숫자는 KT 지니TV 채널번호, NS홈쇼핑(2번) 양옆 ENA(1)·tvN(3)은 밑줄로 표시했습니다.</span>`;
+  $('#epgLegend').innerHTML = '';
   const H = 24 * 60;
   // NS first (by group) or at channel 2 (by number)
   const cols = byNum
