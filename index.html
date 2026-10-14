@@ -329,12 +329,12 @@ tbody tr:hover td{background:var(--surface-2)}
   <div id="app" hidden>
     <p class="setnote" id="setNote" hidden></p>
     <section id="view-lineup" data-view-panel="lineup" hidden style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
-      <div class="tl-legend"><span id="lineupNote"></span><span>가격은 최대혜택가. 방송을 누르면 가격·구성 상세가 열립니다.</span></div>
+      <div class="tl-legend"><span id="lineupNote"></span><span>가격은 방송 판매가(쿠폰·카드할인 제외). 방송을 누르면 가격·구성 상세가 열립니다.</span></div>
       <div class="lineup" id="lineup"></div>
     </section>
 
     <section id="view-timeline" data-view-panel="timeline" style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
-      <div class="tl-legend"><span>가격은 최대혜택가. 방송을 누르면 상세가 열립니다.</span></div>
+      <div class="tl-legend"><span>가격은 방송 판매가(쿠폰·카드할인 제외). 방송을 누르면 상세가 열립니다.</span></div>
       <div class="tl-scroll" id="tlScroll"><div class="tl" id="tl"></div></div>
     </section>
 
@@ -384,7 +384,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const won = n => n ? Math.round(n).toLocaleString('ko-KR') + '원' : '—';
 const toMin = hm => { const [h, m] = (hm || '0:0').split(':').map(Number); return h * 60 + m; };
 const kstNow = () => { const d = new Date(Date.now() + 9 * 3600e3); return {date: d.toISOString().slice(0, 10), min: d.getUTCHours() * 60 + d.getUTCMinutes(), hm: d.toISOString().slice(11, 16)}; };
-const best = it => it.mx || it.cp || it.sp || it.p || 0;
+// price as sold on the TV broadcast: hsmoa-only coupons and card discounts are left out
+const best = it => it.sp || it.p || 0;
 const chDot = id => `<i class="dot" style="--c:var(--ch-${id})"></i>`;
 
 // ---------- composition parsed from the product name ----------
@@ -419,7 +420,7 @@ const unitTxt = it => { const u = comp(it.n).unit; const v = unitPrice(it); retu
 const chipsHtml = it => { const c = comp(it.n).chips; return c.length ? `<span class="chips">${c.map(x => `<span class="cpc">${esc(x)}</span>`).join('')}</span>` : ''; };
 const offPct = it => { const b = best(it); return it.p && b && b < it.p ? Math.round((1 - b / it.p) * 100) : 0; };
 const benefits = it => [it.ifm ? `무이자 ${it.ifm}개월` : '', it.cd ? `카드 ${it.cd}` : '', it.lp ? `런칭가 ${won(it.lp)}` : ''].filter(Boolean);
-const opPrice = o => o.mx || o.cp || o.sp || o.p || 0;
+const opPrice = o => o.sp || o.p || 0;
 const opCount = it => Math.max(it.opn || 0, (it.op || []).length);
 
 let state = {dates: [], date: null, day: null, docs: {tv: null, tc: null}, items: [], tvItems: [], set: 'tv', view: 'timeline', mode: 'cards', sort: {k: 's', dir: 1}, chOn: new Set()};
@@ -554,7 +555,7 @@ $('#tl').addEventListener('click', e => { const b = e.target.closest('.blk'); if
 // ---------- channel cards / table ----------
 const COLS = [
   {k: 's', l: '시간'}, {k: 'ch', l: '채널'}, {k: 'n', l: '상품 · 구성'},
-  {k: 'p', l: '정상가', num: 1}, {k: 'sp', l: '판매가', num: 1}, {k: 'best', l: '최대혜택가', num: 1},
+  {k: 'p', l: '정상가', num: 1}, {k: 'best', l: '판매가', num: 1},
   {k: 'off', l: '할인', num: 1}, {k: 'unit', l: '단가', num: 1}, {k: 'ifm', l: '무이자', num: 1}, {k: 'cd', l: '카드할인'}
 ];
 const sortVal = (it, k) => k === 's' ? it.sm : k === 'ch' ? CHORD[it.ch] : k === 'best' ? best(it) : k === 'off' ? offPct(it) : k === 'unit' ? unitPrice(it) : it[k];
@@ -576,9 +577,9 @@ function renderCompare() {
 function card(it) {
   const off = offPct(it); const b = best(it); const ops = it.op || []; const oc = opCount(it);
   
-  const sub = [it.sp && it.sp !== it.p ? `판매가 ${won(it.sp)}` : '', it.cp && it.cp !== it.sp ? `${it.cpw || '쿠폰'} ${won(it.cp)}` : ''].filter(Boolean).join(' · ');
+  const sub = '';
   const price = it.p ? `<div class="pc-price"><div class="row">${off ? `<span class="was">${won(it.p)}</span><span class="off">-${off}%</span>` : ''}</div>
-      <div class="row"><span class="big">${won(b)}</span><span class="lbl">${b !== it.p ? '최대혜택가' : '판매가'}</span></div>
+      <div class="row"><span class="big">${won(b)}</span><span class="lbl">판매가</span></div>
       ${sub ? `<span class="pc-sub">${esc(sub)}</span>` : ''}${unitTxt(it) ? `<span class="unit">${esc(unitTxt(it))}</span>` : ''}</div>`
     : `<div class="pc-price"><span class="quiet">가격 미표기 (상담·렌탈·여행)</span></div>`;
   const ben = benefits(it);
@@ -600,7 +601,7 @@ function renderRows() {
     $('#cmp tbody').innerHTML = rows.map(i => { const off = offPct(i); return `<tr class="${i.ch === OWN ? 'own' : ''}" data-idx="${i.idx}">
       <td class="mono">${esc(i.s)}–${esc(i.e)}</td><td style="white-space:nowrap">${chDot(i.ch)} ${esc(CHMAP[i.ch].name)}</td>
       <td class="nm">${esc(i.n)}${chipsHtml(i)}${opCount(i) ? `<span class="more">함께 판매 ${opCount(i)}개</span>` : ''}</td>
-      <td class="num">${won(i.p)}</td><td class="num">${won(i.sp)}</td><td class="num"><b>${i.p ? won(best(i)) : '—'}</b></td>
+      <td class="num">${won(i.p)}</td><td class="num"><b>${i.p ? won(best(i)) : '—'}</b></td>
       <td class="num">${off ? `<span class="off">-${off}%</span>` : '—'}</td><td class="num"><span class="unit">${esc(unitTxt(i) || '—')}</span></td>
       <td class="num">${i.ifm ? i.ifm + '개월' : '—'}</td><td>${esc(i.cd || '—')}</td></tr>`; }).join('')
       || `<tr><td colspan="${COLS.length}" class="quiet">조건에 맞는 방송이 없습니다. 필터를 줄여 보세요.</td></tr>`;
@@ -693,8 +694,6 @@ function openDetail(idx, pool) {
   const ch = CHMAP[it.ch];
   const steps = [['정상가', it.p]];
   if (it.sp && it.sp !== it.p) steps.push(['판매가', it.sp]);
-  if (it.cp && it.cp !== it.sp) steps.push([it.cpw || '쿠폰적용가', it.cp]);
-  if (it.mx && it.mx !== (it.cp || it.sp)) steps.push(['카드할인 적용 최대혜택가', it.mx]);
   const ladder = it.p ? `<div class="ladder">${steps.map(([l, v]) => `<div><span>${esc(l)}</span><span>${won(v)}</span></div>`).join('')}</div>` : `<p class="quiet">가격이 공개되지 않은 방송입니다 (상담·렌탈·여행·보험 등).</p>`;
   const ops = it.op || []; const oc = opCount(it);
   const opsHtml = ops.length ? `<div class="section-h"><h2>이 방송 판매 구성</h2><p>본상품 외 함께 판매 ${oc}개</p></div>
@@ -708,7 +707,7 @@ function openDetail(idx, pool) {
       ${unitTxt(it) ? `<dt>단가</dt><dd class="mono">${esc(unitTxt(it))} <span class="quiet">(상품명 구성 기준 추정)</span></dd>` : ''}
       ${it.lp ? `<dt>런칭가</dt><dd class="mono">${won(it.lp)}</dd>` : ''}
       <dt>무이자</dt><dd>${it.ifm ? `최대 ${it.ifm}개월` : '—'}</dd>
-      <dt>카드할인</dt><dd>${esc(it.cd || '—')}</dd>
+      <dt>카드할인</dt><dd>${esc(it.cd || '—')} ${it.cd ? '<span class="quiet">(참고, 가격에는 미반영)</span>' : ''}</dd>
       <dt>브랜드</dt><dd>${esc(it.b || '—')}</dd>
       ${it.src === 'o' ? '<dt>출처</dt><dd>홈쇼핑사 공식 편성표 (홈쇼핑모아에 없는 방송이라 가격·구성 정보가 적습니다)</dd>' : ''}
       ${it.pg ? `<dt>프로그램</dt><dd>${esc(it.pg)}</dd>` : ''}

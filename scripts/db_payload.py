@@ -36,7 +36,7 @@ def trim(doc):
 
 
 def best(i):
-    return i.get('mx') or i.get('cp') or i.get('sp') or i.get('p') or 0
+    return i.get('sp') or i.get('p') or 0
 
 
 def changes(prev, new, coll, now_min, today):
