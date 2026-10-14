@@ -350,7 +350,7 @@ tbody tr:hover td{background:var(--surface-2)}
     </section>
 
     <section id="view-epg" data-view-panel="epg" hidden style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
-      <div class="tl-legend"><div class="seg" id="epgOrder" role="group" aria-label="채널 순서"><button data-o="grp" aria-pressed="true">지상파·종편·케이블 순</button><button data-o="num" aria-pressed="false">채널번호 순</button></div><span id="epgLegend" style="display:contents"></span></div>
+      <div class="tl-legend"><div class="seg" id="epgOrder" role="group" aria-label="채널 순서"><button data-o="grp" aria-pressed="true">지상파·종편·케이블 순</button><button data-o="num" aria-pressed="false">지니TV 채널번호 순 (0~24)</button></div><span id="epgLegend" style="display:contents"></span></div>
       <div class="tl-scroll" id="epgScroll"><div class="tl" id="epg"></div></div>
     </section>
   </div>
@@ -468,6 +468,7 @@ setInterval(tick, 30000); tick();
 function render() {
   const tvDoc = state.docs.tv, setDoc = state.docs[state.set];
   state.tvItems = prep((tvDoc && tvDoc.items) || [], SETS.tv.own);
+  state.tcAll = prep((state.docs.tc && state.docs.tc.items) || [], SETS.tc.own);
   state.items = state.set === 'tv' ? state.tvItems : prep((setDoc && setDoc.items) || [], OWN);
   state.day = setDoc || tvDoc;
   const items = state.items;
@@ -625,6 +626,8 @@ function epgRows() {
     return {...c, rows};
   });
 }
+// KT 지니TV channel numbers 0-24 (channel table effective 2026-09-02)
+const KT_LINEUP = [[0, 'tc', 'gsmyshop'], [1, 'epg', 'ENA'], [2, 'tv', 'nsmall'], [3, 'epg', 'tvN'], [4, 'tv', 'lotteimall'], [5, 'epg', 'SBS'], [6, 'tv', 'cjmall'], [7, 'epg', 'KBS2'], [8, 'tv', 'gsshop'], [9, 'epg', 'KBS1'], [10, 'tv', 'hmall'], [11, 'epg', 'MBC'], [12, 'tc', 'kshop'], [13, 'epg', 'EBS'], [14, 'tv', 'hnsmall'], [15, 'epg', 'JTBC'], [16, 'epg', 'MBN'], [17, 'tc', 'bshop'], [18, 'epg', '채널A'], [19, 'tc', 'ssgshop'], [20, 'epg', 'TV조선'], [21, 'tv', 'immall'], [22, 'tc', 'shopnt'], [23, 'epg', '연합뉴스TV'], [24, 'epg', 'YTN']];
 let epgOrder = 'grp'; try { if (localStorage.getItem('zap.epgOrder') === 'num') epgOrder = 'num'; } catch (e) {}
 function renderEpg(items, keepScroll) {
   const chans = epgRows();
@@ -632,31 +635,35 @@ function renderEpg(items, keepScroll) {
   if (!chans.length) { $('#epg').innerHTML = ''; $('#epgLegend').innerHTML = '<span>이 날짜의 방송 편성표는 아직 수집되지 않았습니다. 다음 자동 수집부터 함께 표시됩니다.</span>'; $('#tab-epg').hidden = false; return; }
   const byNum = epgOrder === 'num';
   $('#epgLegend').innerHTML = byNum
-    ? `<span>KT 지니TV 채널번호 순서입니다. 리모컨으로 채널을 올리고 내릴 때 만나는 순서 그대로 NS홈쇼핑(2번)이 ENA(1)·tvN(3) 사이에 있습니다.</span>`
+    ? `<span>KT 지니TV 0~24번을 리모컨 순서 그대로 놓았습니다(2026년 9월 2일 채널표 기준). 홈쇼핑 칸은 상품·가격, 일반 채널은 프로그램이 나옵니다.</span>`
     : `<span>지상파 · 종편 · 케이블 · 뉴스 순서입니다. 숫자는 KT 지니TV 채널번호, NS홈쇼핑(2번) 양옆 ENA(1)·tvN(3)은 밑줄로 표시했습니다.</span>`;
   const H = 24 * 60;
   // NS first (by group) or at channel 2 (by number)
-  const cols = [{ns: true, no: 2}, ...chans];
-  if (byNum) cols.sort((a, b) => a.no - b.no);
+  const cols = byNum
+    ? KT_LINEUP.map(([no, kind, id]) => kind === 'epg' ? (chans.find(c => c.name === id) && {...chans.find(c => c.name === id), no}) : {hs: true, pool: kind, ch: id, no, ns: id === SETS.tv.own}).filter(Boolean)
+    : [{ns: true, hs: true, pool: 'tv', ch: SETS.tv.own, no: 2}, ...chans];
   const tl = $('#epg');
-  tl.style.gridTemplateColumns = '52px ' + cols.map(c => c.ns ? 'minmax(220px,1.5fr)' : 'minmax(128px,1fr)').join(' ');
-  tl.style.minWidth = `calc(52px + 220px + ${cols.length - 1} * 128px)`;
+  const wOf = c => c.ns ? 220 : c.hs ? 150 : 128;
+  tl.style.gridTemplateColumns = '52px ' + cols.map(c => `minmax(${wOf(c)}px,${c.ns ? 1.5 : 1}fr)`).join(' ');
+  tl.style.minWidth = `${52 + cols.reduce((a, c) => a + wOf(c), 0)}px`;
   const flow = byNum ? ' flow' : '';
   let html = `<div class="tl-head corner">KST</div>` + cols.map(c => c.ns
     ? `<div class="tl-head own${flow}">${chDot('nsmall')}NS홈쇼핑 <span class="kt">2</span></div>`
+    : c.hs ? `<div class="tl-head"><span style="display:flex;flex-direction:column;min-width:0"><span class="grp">${c.pool === 'tc' ? '데이터홈쇼핑' : '홈쇼핑'}</span><span>${chDot(c.ch)}${esc(CHMAP[c.ch].name)} <span class="kt">${c.no}</span></span></span></div>`
     : `<div class="tl-head ${c.no === 1 || c.no === 3 ? 'adj' : ''}"><span style="display:flex;flex-direction:column;min-width:0"><span class="grp">${esc(c.grp)}</span><span>${esc(c.name)} <span class="kt">${c.no}</span></span></span></div>`).join('');
   let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
   for (let hr = 0; hr <= 24; hr++) rail += `<span class="h" style="top:calc(${hr * 60} * var(--ppm))">${String(hr).padStart(2, '0')}:00</span>`;
   html += rail + '</div>';
   const grid = () => { let g = ''; for (let hr = 1; hr < 24; hr++) g += `<div class="gridline" style="top:calc(${hr * 60} * var(--ppm))"></div>`; return g; };
   for (const c of cols) {
-    if (c.ns) {
-      let ns = `<div class="col own${flow}" style="height:calc(${H} * var(--ppm))">${grid()}`;
-      for (const it of items.filter(i => i.ch === SETS.tv.own)) {
+    if (c.hs) {
+      const pool = c.pool === 'tc' ? (state.tcAll || []) : items;
+      let hc = `<div class="col ${c.ns ? 'own' + flow : ''}" style="height:calc(${H} * var(--ppm))">${grid()}`;
+      for (const it of pool.filter(i => i.ch === c.ch)) {
         const dur = Math.min(it.em, H) - it.sm; const px = dur * 2;
-        ns += `<button class="blk own ${px < 96 ? 'short' : ''} ${px < 50 ? 'tiny' : ''}" style="--c:var(--ch-nsmall);top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}"><span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span><span class="pline">${it.p ? `<span class="big">${won(best(it))}</span>` : '<span class="more">가격 미표기</span>'}</span></button>`;
+        hc += `<button class="blk ${c.ns ? 'own' : ''} ${px < 96 ? 'short' : ''} ${px < 50 ? 'tiny' : ''}" style="--c:var(--ch-${c.ch});top:calc(${it.sm} * var(--ppm) + 1px);height:calc(${dur} * var(--ppm) - 2px)" data-idx="${it.idx}" data-pool="${c.pool}" title="${esc(it.s + '–' + it.e + ' ' + it.n)}"><span class="t">${esc(it.s)}–${esc(it.e)}</span><span class="nm">${esc(it.n)}</span><span class="pline">${it.p ? `<span class="big">${won(best(it))}</span>` : '<span class="more">가격 미표기</span>'}</span></button>`;
       }
-      html += ns + '</div>'; continue;
+      html += hc + '</div>'; continue;
     }
     let col = `<div class="col" style="height:calc(${H} * var(--ppm))">${grid()}`;
     for (const r of c.rows) {
@@ -674,7 +681,7 @@ function renderEpg(items, keepScroll) {
   requestAnimationFrame(() => { sc.scrollTop = target * 2; });
 }
 $('#epgOrder').addEventListener('click', e => { const b = e.target.closest('[data-o]'); if (!b || b.dataset.o === epgOrder) return; epgOrder = b.dataset.o; try { localStorage.setItem('zap.epgOrder', epgOrder); } catch (er) {} renderEpg(state.tvItems, true); });
-$('#epg').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx, state.tvItems); });
+$('#epg').addEventListener('click', e => { const b = e.target.closest('.blk'); if (b) openDetail(+b.dataset.idx, b.dataset.pool === 'tc' ? state.tcAll : state.tvItems); });
 function epgAt(min) {
   return epgRows().map(c => { const r = c.rows.find(x => x.sm <= min && min < x.em); return r && !isOff(r.t) ? {c, r} : null; }).filter(Boolean);
 }
