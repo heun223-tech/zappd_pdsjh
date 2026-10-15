@@ -4,8 +4,8 @@
 
 ## 주소
 
-* 사이트(로그인 불필요): https://heun223-tech.github.io/zappd_pdsjh/
-* 저장소: https://github.com/heun223-tech/zappd_pdsjh (Public)
+* 사이트(로그인 불필요): https://heunzie.github.io/zappd_pdsjh/
+* 저장소: https://github.com/heunzie/zappd_pdsjh (Public)
 * Claude 보드(아티팩트): 같은 화면. 동기화 예약 작업은 꺼져 있어 데이터는 갱신되지 않음.
 
 ## 수집
