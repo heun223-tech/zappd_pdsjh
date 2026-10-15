@@ -60,7 +60,19 @@ h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balan
 .clock{font-family:var(--f-mono);font-size:15px;font-weight:600;color:var(--ink)}
 .spacer{flex:1}
 .datepick{display:flex;align-items:center;gap:8px}
-.datepick select{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.datepick{min-width:0;max-width:100%}
+.dstrip{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.dstrip::-webkit-scrollbar{display:none}
+.dchip{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:3px 9px;font-size:12.5px;white-space:nowrap;display:flex;flex-direction:column;align-items:center;line-height:1.25;min-width:46px}
+.dchip small{font-size:10.5px;color:var(--muted)}
+.dchip.sun small,.dchip.sun{color:var(--warn)}
+.dchip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.dchip[aria-pressed="true"] small{color:var(--bg)}
+.dchip.past{opacity:.7}
+.dnav{border:1px solid var(--line);background:var(--surface);border-radius:7px;width:28px;height:34px;font-size:16px;flex:none}
+.dnav:disabled{opacity:.35;cursor:default}
+#dPick{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:5px 6px;color:var(--ink);font-size:12px;flex:none;width:34px;color-scheme:inherit}
+#dPick::-webkit-datetime-edit{display:none}
 .meta{color:var(--muted);font-size:12px}
 .tabs{display:flex;gap:4px;flex-wrap:wrap}
 .tab{border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:999px;font-weight:500;font-size:13px;display:flex;gap:6px;align-items:center}
@@ -317,7 +329,7 @@ tbody tr:hover td{background:var(--surface-2)}
       <button class="tab" role="tab" id="tab-compare" aria-selected="false" data-view="compare">상품·가격 검색</button>
     </div>
     <span class="spacer"></span>
-    <div class="datepick"><label for="dateSel" class="meta">방송일</label><select id="dateSel"></select></div>
+    <div class="datepick"><button class="dnav" id="dPrev" aria-label="이전 날짜">‹</button><div class="dstrip" id="dStrip" role="group" aria-label="방송일"></div><button class="dnav" id="dNext" aria-label="다음 날짜">›</button><input type="date" id="dPick" aria-label="날짜 직접 고르기" title="지난 날짜 찾기"><select id="dateSel" hidden></select></div>
     <span class="meta" id="collected"></span>
   </header>
 
@@ -730,13 +742,31 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(
 
 $('#setSeg').addEventListener('click', e => { const b = e.target.closest('[data-set]'); if (!b || b.dataset.set === state.set) return; useSet(b.dataset.set); state.luScrolled = false; closeDetail(); if (state.docs.tv || state.docs.tc) render(); });
 
+$('#dStrip').addEventListener('click', e => { const b = e.target.closest('[data-d]'); if (b) goDate(b.dataset.d); });
+$('#dPrev').addEventListener('click', () => { const a = [...state.dates].sort(); goDate(a[a.indexOf(state.date) - 1]); });
+$('#dNext').addEventListener('click', () => { const a = [...state.dates].sort(); goDate(a[a.indexOf(state.date) + 1]); });
+$('#dPick').addEventListener('change', e => { const v = e.target.value; if (state.dates.includes(v)) goDate(v); else { e.target.value = state.date; } });
+
 // ---------- data from db ----------
 function showEmpty(title, body) {
   $('#app').hidden = true; const el = $('#emptyState'); el.hidden = false;
   el.innerHTML = `<h2>${esc(title)}</h2><p>${esc(body)}</p>`;
 }
+// date strip: two days back through the furthest collected day; older dates via the arrows or the calendar
+const addDays = (d, n) => new Date(Date.parse(d + 'T12:00:00Z') + n * 86400e3).toISOString().slice(0, 10);
+function goDate(d) { if (!d || d === state.date || !state.dates.includes(d)) return; const sel = $('#dateSel'); sel.value = d; sel.dispatchEvent(new Event('change')); }
 function fillDates() {
-  $('#dateSel').innerHTML = state.dates.map(d => { const w = '일월화수목금토'[new Date(d + 'T12:00:00Z').getUTCDay()]; return `<option value="${d}" ${d === state.date ? 'selected' : ''}>${d.slice(5).replace('-', '.')} (${w})</option>`; }).join('');
+  $('#dateSel').innerHTML = state.dates.map(d => `<option value="${d}" ${d === state.date ? 'selected' : ''}>${d}</option>`).join('');
+  const today = kstNow().date, asc = [...state.dates].sort();
+  const shown = asc.filter(d => d >= addDays(today, -2));
+  if (state.date && !shown.includes(state.date)) shown.unshift(state.date);
+  $('#dStrip').innerHTML = shown.map(d => { const wd = new Date(d + 'T12:00:00Z').getUTCDay(); const w = '일월화수목금토'[wd];
+    const top = d === today ? '오늘' : d === addDays(today, 1) ? '내일' : `${+d.slice(5, 7)}/${+d.slice(8)}`;
+    return `<button class="dchip ${wd === 0 ? 'sun' : ''} ${d < today ? 'past' : ''}" data-d="${d}" aria-pressed="${d === state.date}">${top}<small>${d === today || d === addDays(today, 1) ? `${+d.slice(5, 7)}/${+d.slice(8)} ` : ''}${w}</small></button>`; }).join('');
+  const i = asc.indexOf(state.date);
+  $('#dPrev').disabled = i <= 0; $('#dNext').disabled = i < 0 || i >= asc.length - 1;
+  const pk = $('#dPick'); pk.min = asc[0] || ''; pk.max = asc[asc.length - 1] || ''; pk.value = state.date || '';
+  const cur = $('#dStrip [aria-pressed="true"]'); if (cur) cur.scrollIntoView({block: 'nearest', inline: 'nearest'});
 }
 // Static hosting (GitHub Pages 등): data/index.json + data/<date>.json 을 읽는다.
 async function bootStatic() {
