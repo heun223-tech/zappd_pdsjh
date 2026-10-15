@@ -701,7 +701,7 @@ function openDetail(idx, pool) {
   const ops = ownOps(it); const oc = opCount(it); const others = otherOps(it);
   const rbTxt = rb => `${+rb.slice(5, 7)}/${+rb.slice(8, 10)} ${rb.slice(11, 16)}`;
   const othersHtml = others.length ? `<details class="calm"><summary>다른 시간 방송 상품 ${others.length}개 <span class="quiet">(홈쇼핑모아에 함께 표시됐지만 이 방송 구성 아님)</span></summary><ul class="oplist" style="margin-top:8px">${others.map(o => `<li><span>${esc(o.n)}<br><span class="quiet mono">${esc(rbTxt(o.rb))} 방송</span></span><span>${won(opPrice(o))}</span></li>`).join('')}</ul></details>` : '';
-  const opsHtml = (ops.length ? `<div class="section-h"><h2>이 방송 판매 구성</h2><p>본상품 외 함께 판매 ${oc}개</p></div>
+  const opsHtml = (ops.length ? `<div class="section-h"><h2>이 방송 시간에 함께 판매</h2><p>홈쇼핑사가 이 방송에 같이 등록한 상품 ${oc}개 · 본상품의 다른 구성뿐 아니라 다른 상품도 섞여 있습니다</p></div>
     <ul class="oplist"><li><span><b>${esc(it.n)}</b></span><span><b>${it.p ? won(best(it)) : '—'}</b></span></li>${ops.map(o => `<li><span>${esc(o.n)}</span><span>${won(opPrice(o))}${o.p && opPrice(o) < o.p ? `<br><span class="was">${won(o.p)}</span>` : ''}</span></li>`).join('')}${oc > ops.length ? `<li><span class="quiet">외 ${oc - ops.length}개</span><span></span></li>` : ''}</ul>` : '') + othersHtml;
   const overlap = pool.filter(o => o.ch !== it.ch && Math.min(o.em, it.em) - Math.max(o.sm, it.sm) > 0).sort((a, b) => ORD[a.ch] - ORD[b.ch]);
   $('#panel').innerHTML = `<button class="x" id="closeSheet">닫기</button>
