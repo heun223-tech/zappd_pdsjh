@@ -153,9 +153,17 @@ const OFFICIAL = {
 };
 const hmMin = hm => +hm.slice(0, 2) * 60 + +hm.slice(3, 5);
 const span = x => { const a = hmMin(x.s); let z = hmMin(x.e); if (z <= a) z += 1440; return [a, z]; };
+// a channel needs the official schedule only when hsmoa leaves a hole of 20+ minutes (or has nothing)
+const hasGap = (items, ch) => {
+  const l = items.filter(i => i.ch === ch).map(span).sort((a, b) => a[0] - b[0]);
+  if (!l.length || l[l.length - 1][1] < 1440 - 20) return true;
+  for (let k = 1; k < l.length; k++) if (l[k][0] - l[k - 1][1] >= 20) return true;
+  return false;
+};
 async function fillFromOfficial(req, d, items) {
   const added = [];
   for (const [ch, fetchOfficial] of Object.entries(OFFICIAL)) {
+    if (!hasGap(items, ch)) { OFFICIAL_LOG.push(`${d} ${ch} no gap`); continue; }
     let list = null;
     // a site that failed every retry earlier in this run is skipped for the remaining days
     for (let attempt = 1; attempt <= 3 && !list && !OFFICIAL_DOWN.has(ch); attempt++) {
@@ -237,7 +245,8 @@ async function main() {
 
   const hs = {};
   for (const d of days) hs[d] = await hsmoaDay(page, d);
-  for (const d of days) if (hs[d].filter(i => TV.includes(i.ch)).length >= minTvFor(d)) hs[d] = hs[d].concat(await fillFromOfficial(ctx.request, d, hs[d]));
+  // hsmoa first; official sites only for holes still open by the day before broadcast (today and tomorrow)
+  for (const d of days) if (near(d) && hs[d].filter(i => TV.includes(i.ch)).length >= minTvFor(d)) hs[d] = hs[d].concat(await fillFromOfficial(ctx.request, d, hs[d]));
   await browser.close();
   const epg = await epgDays(days);
 
