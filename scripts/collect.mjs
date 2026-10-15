@@ -175,7 +175,7 @@ async function fillFromOfficial(req, d, items) {
       const [a, z] = span(o);
       // keep only official broadcasts that hsmoa has nothing for (less than 5 minutes of overlap)
       if (mine.some(([b, y]) => Math.min(z, y) - Math.max(a, b) >= 5)) continue;
-      added.push({ ch, d, s: o.s, e: o.e, n: o.n || o.pg || '방송', b: '', c1: '', c2: '', c3: '', p: o.p || 0, sp: o.sp && o.sp !== o.p ? o.sp : 0, mx: 0, dr: 0, cp: 0, cpw: '', lp: 0, cd: '', ifm: 0, pg: o.pg || '', u: '', lo: 0, op: [], opn: 0, src: 'o' });
+      added.push({ ch, d, s: o.s, e: o.e, n: o.n || o.pg || '방송', b: '', c1: '', c2: '', c3: '', p: o.p || o.sp || 0, sp: o.sp && o.sp !== (o.p || o.sp) ? o.sp : 0, mx: 0, dr: 0, cp: 0, cpw: '', lp: 0, cd: '', ifm: 0, pg: o.pg || '', u: '', lo: 0, op: [], opn: 0, src: 'o' });
       n++;
     }
     OFFICIAL_LOG.push(`${d} ${ch} official ${list.length} added ${n}`);
