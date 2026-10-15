@@ -12,6 +12,10 @@ const KEEP_DAYS = 60;
 const TV = ['nsmall', 'gsshop', 'cjmall', 'lotteimall', 'hmall', 'hnsmall', 'immall'];
 const TC = ['nsmallplus', 'gsmyshop', 'cjmallplus', 'lotteonetv', 'hmallplus', 'kshop', 'kshopplus', 'bshop', 'ssgshop', 'shopnt', 'wshop'];
 const MIN_TV = 80, MIN_TC = 60, MIN_EPG = 100;
+// today and tomorrow are complete on hsmoa; later days fill in gradually, so they are kept with a lower bar
+const AHEAD = 7, MIN_FUTURE = 20;
+const near = d => d <= kst(1);
+const minTvFor = d => near(d) ? MIN_TV : MIN_FUTURE;
 
 const kst = (offsetDays = 0) => new Date(Date.now() + 9 * 3600e3 + offsetDays * 86400e3).toISOString().slice(0, 10);
 const prevDay = d => new Date(Date.parse(d + 'T00:00:00Z') - 86400e3).toISOString().slice(0, 10);
@@ -75,6 +79,7 @@ function capSize(doc, limit) {
 
 const HS_LOG = [];
 async function hsmoaDay(page, d) {
+  const minTv = minTvFor(d), tries = near(d) ? 6 : 2;
   const dd = String(+d.slice(8, 10));
   const base = `date=${dd}&time_size=24&direction=down&base_hour_datetime=${prevDay(d)}T23%3A59%3A00%2B09%3A00`;
   const urls = [
@@ -82,7 +87,7 @@ async function hsmoaDay(page, d) {
     `https://hsmoa.com/?${base}`,
     `https://hsmoa.com/?${base.replace('&time_size', `&time=${encodeURIComponent(new Date().toISOString())}&time_size`)}`,
   ];
-  for (let attempt = 0; attempt < urls.length * 2; attempt++) {
+  for (let attempt = 0; attempt < tries; attempt++) {
     const url = urls[attempt % urls.length];
     try {
       await page.goto('about:blank');
@@ -93,11 +98,12 @@ async function hsmoaDay(page, d) {
         await page.waitForTimeout(2000);
         items = (await page.evaluate(HSMOA_EXTRACT, [...TV, ...TC]).catch(() => [])).filter(i => i.d === d);
         const tvN = items.filter(i => TV.includes(i.ch)).length;
-        if (tvN >= MIN_TV && items.length === last) break;
+        if (tvN >= minTv && items.length === last) break;
+        if (k >= 8 && items.length === last && tvN < minTv) break; // nothing more is coming for this day
         last = items.length;
       }
       HS_LOG.push(`${d} try${attempt + 1} ${items.length}`);
-      if (items.filter(i => TV.includes(i.ch)).length >= MIN_TV) return items;
+      if (items.filter(i => TV.includes(i.ch)).length >= minTv) return items;
     } catch (e) { HS_LOG.push(`${d} try${attempt + 1} error ${String(e.message).slice(0, 120)}`); }
     await page.waitForTimeout(3000);
   }
@@ -212,7 +218,7 @@ async function epgDays(days) {
 
 async function main() {
   fs.mkdirSync(DATA, { recursive: true });
-  const days = [kst(0), kst(1)];
+  const days = Array.from({ length: AHEAD + 1 }, (_, i) => kst(i));
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ locale: 'ko-KR', timezoneId: 'Asia/Seoul', userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36' });
   const page = await ctx.newPage();
@@ -220,7 +226,7 @@ async function main() {
 
   const hs = {};
   for (const d of days) hs[d] = await hsmoaDay(page, d);
-  for (const d of days) if (hs[d].filter(i => TV.includes(i.ch)).length >= MIN_TV) hs[d] = hs[d].concat(await fillFromOfficial(ctx.request, d, hs[d]));
+  for (const d of days) if (hs[d].filter(i => TV.includes(i.ch)).length >= minTvFor(d)) hs[d] = hs[d].concat(await fillFromOfficial(ctx.request, d, hs[d]));
   await browser.close();
   const epg = await epgDays(days);
 
@@ -232,7 +238,10 @@ async function main() {
     const prevTv = readJson(tvFile);
     const res = { tv: tv.length, tc: tc.length, epg: !!epg[d] };
 
-    if (tv.length >= MIN_TV) {
+    const prevTc = readJson(tcFile);
+    // a later day may only be partly published: never replace a fuller earlier copy with a much thinner one
+    const enough = (n, min, prev) => near(d) ? n >= min : n >= MIN_FUTURE && (!prev || n >= 0.7 * (prev.items || []).length);
+    if (enough(tv.length, MIN_TV, prevTv)) {
       const doc = capSize({ date: d, collectedAt: nowIso(), source: 'hsmoa.com + official (cjmall, immall, lotteimall, nsmall) for missing slots', items: tv }, 200000);
       if (epg[d]) { doc.epg = epg[d]; doc.epgSource = 'search.daum.net'; doc.epgAt = nowIso(); }
       else if (prevTv && prevTv.epg) { doc.epg = prevTv.epg; doc.epgSource = prevTv.epgSource; doc.epgAt = prevTv.epgAt; }
@@ -240,7 +249,7 @@ async function main() {
     } else if (prevTv && epg[d]) {
       prevTv.epg = epg[d]; prevTv.epgSource = 'search.daum.net'; prevTv.epgAt = nowIso(); writeJson(tvFile, prevTv);
     }
-    if (tc.length >= MIN_TC) {
+    if (enough(tc.length, MIN_TC, prevTc)) {
       writeJson(tcFile, capSize({ date: d, collectedAt: nowIso(), source: 'hsmoa.com', set: 'tcommerce', items: tc }, 220000));
       res.tcSaved = true;
     }
