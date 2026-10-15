@@ -421,7 +421,10 @@ const chipsHtml = it => { const c = comp(it.n).chips; return c.length ? `<span c
 const offPct = it => { const b = best(it); return it.p && b && b < it.p ? Math.round((1 - b / it.p) * 100) : 0; };
 const benefits = it => [it.ifm ? `무이자 ${it.ifm}개월` : '', it.cd ? `카드 ${it.cd}` : '', it.lp ? `런칭가 ${won(it.lp)}` : ''].filter(Boolean);
 const opPrice = o => o.sp || o.p || 0;
-const opCount = it => Math.max(it.opn || 0, (it.op || []).length);
+// hsmoa lists products of other broadcast slots alongside; rb tells them apart (older data has no rb)
+const ownOps = it => { const ops = it.op || []; return ops.some(o => o.rb) ? ops.filter(o => o.rb === `${it.d}T${it.s}`) : ops; };
+const otherOps = it => (it.op || []).filter(o => o.rb && o.rb !== `${it.d}T${it.s}`);
+const opCount = it => (it.op || []).some(o => o.rb) ? ownOps(it).length : Math.max(it.opn || 0, (it.op || []).length);
 
 let state = {dates: [], date: null, day: null, docs: {tv: null, tc: null}, items: [], tvItems: [], set: 'tv', view: 'timeline', mode: 'cards', sort: {k: 's', dir: 1}, chOn: new Set()};
 let savedSet = 'tv'; try { savedSet = localStorage.getItem('zap.set') || 'tv'; } catch (e) {}
@@ -523,7 +526,7 @@ $('#lineup').addEventListener('click', e => {
 function renderTimeline(items) {
   const H = 24 * 60;
   const tlEl = $('#tl'); tlEl.style.gridTemplateColumns = '52px ' + CH.map(c => c.own ? 'minmax(240px,1.6fr)' : 'minmax(150px,1fr)').join(' '); tlEl.style.minWidth = `calc(52px + 240px + ${CH.length - 1} * 150px)`;
-  let html = `<div class="tl-head corner">KST</div>` + CH.map(c => `<div class="tl-head ${c.own ? 'own' : ''}">${chDot(c.id)}${esc(c.name)}${c.own ? '<span class="tag">자사</span>' : ''}</div>`).join('');
+  let html = `<div class="tl-head corner">KST</div>` + CH.map(c => `<div class="tl-head ${c.own ? 'own' : ''}">${chDot(c.id)}${esc(c.name)}</div>`).join('');
   let rail = `<div class="rail" style="height:calc(${H} * var(--ppm))">`;
   for (let hr = 0; hr <= 24; hr++) rail += `<span class="h" style="top:calc(${hr * 60} * var(--ppm))">${String(hr).padStart(2, '0')}:00</span>`;
   html += rail + '</div>';
@@ -575,7 +578,7 @@ function renderCompare() {
   renderRows();
 }
 function card(it) {
-  const off = offPct(it); const b = best(it); const ops = it.op || []; const oc = opCount(it);
+  const off = offPct(it); const b = best(it); const ops = ownOps(it); const oc = opCount(it);
   
   const sub = '';
   const price = it.p ? `<div class="pc-price"><div class="row">${off ? `<span class="was">${won(it.p)}</span><span class="off">-${off}%</span>` : ''}</div>
@@ -695,9 +698,11 @@ function openDetail(idx, pool) {
   const steps = [['정상가', it.p]];
   if (it.sp && it.sp !== it.p) steps.push(['판매가', it.sp]);
   const ladder = it.p ? `<div class="ladder">${steps.map(([l, v]) => `<div><span>${esc(l)}</span><span>${won(v)}</span></div>`).join('')}</div>` : `<p class="quiet">가격이 공개되지 않은 방송입니다 (상담·렌탈·여행·보험 등).</p>`;
-  const ops = it.op || []; const oc = opCount(it);
-  const opsHtml = ops.length ? `<div class="section-h"><h2>이 방송 판매 구성</h2><p>본상품 외 함께 판매 ${oc}개</p></div>
-    <ul class="oplist"><li><span><b>${esc(it.n)}</b></span><span><b>${it.p ? won(best(it)) : '—'}</b></span></li>${ops.map(o => `<li><span>${esc(o.n)}</span><span>${won(opPrice(o))}${o.p && opPrice(o) < o.p ? `<br><span class="was">${won(o.p)}</span>` : ''}</span></li>`).join('')}${oc > ops.length ? `<li><span class="quiet">외 ${oc - ops.length}개</span><span></span></li>` : ''}</ul>` : '';
+  const ops = ownOps(it); const oc = opCount(it); const others = otherOps(it);
+  const rbTxt = rb => `${+rb.slice(5, 7)}/${+rb.slice(8, 10)} ${rb.slice(11, 16)}`;
+  const othersHtml = others.length ? `<details class="calm"><summary>다른 시간 방송 상품 ${others.length}개 <span class="quiet">(홈쇼핑모아에 함께 표시됐지만 이 방송 구성 아님)</span></summary><ul class="oplist" style="margin-top:8px">${others.map(o => `<li><span>${esc(o.n)}<br><span class="quiet mono">${esc(rbTxt(o.rb))} 방송</span></span><span>${won(opPrice(o))}</span></li>`).join('')}</ul></details>` : '';
+  const opsHtml = (ops.length ? `<div class="section-h"><h2>이 방송 판매 구성</h2><p>본상품 외 함께 판매 ${oc}개</p></div>
+    <ul class="oplist"><li><span><b>${esc(it.n)}</b></span><span><b>${it.p ? won(best(it)) : '—'}</b></span></li>${ops.map(o => `<li><span>${esc(o.n)}</span><span>${won(opPrice(o))}${o.p && opPrice(o) < o.p ? `<br><span class="was">${won(o.p)}</span>` : ''}</span></li>`).join('')}${oc > ops.length ? `<li><span class="quiet">외 ${oc - ops.length}개</span><span></span></li>` : ''}</ul>` : '') + othersHtml;
   const overlap = pool.filter(o => o.ch !== it.ch && Math.min(o.em, it.em) - Math.max(o.sm, it.sm) > 0).sort((a, b) => ORD[a.ch] - ORD[b.ch]);
   $('#panel').innerHTML = `<button class="x" id="closeSheet">닫기</button>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="chname">${chDot(it.ch)}${esc(ch.name)} · <span class="mono">${esc(it.s)}–${esc(it.e)}</span></span><h3 id="pTitle">${esc(it.n)}</h3>${chipsHtml(it)}</div>

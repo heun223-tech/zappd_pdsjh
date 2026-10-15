@@ -57,7 +57,9 @@ const HSMOA_EXTRACT = (sites) => {
       lp: s.launching_price || 0, cd, ifm,
       pg: (s.show_program_info && s.show_program_info.display_name) || '',
       u: s.url || '', lo: s.live_order || 0,
-      op: (s.same_time_products || []).slice(0, 10).map(x => ({ n: x.name, p: x.price || 0, sp: x.sale_price || 0, cp: (x.promotion_info && x.promotion_info.promotion_price) || 0, mx: (x.price_info && x.price_info.max_discount_price) || 0 })),
+      // rb = the slot hsmoa says this product is (next) broadcast in; products for other slots are listed too, so this broadcast's own ones go first
+      op: (s.same_time_products || []).map(x => ({ n: x.name, p: x.price || 0, sp: x.sale_price || 0, cp: (x.promotion_info && x.promotion_info.promotion_price) || 0, mx: (x.price_info && x.price_info.max_discount_price) || 0, rb: (x.recent_broadcast_start_datetime || '').slice(0, 16) }))
+        .sort((a, b) => (b.rb === (s.start_datetime || '').slice(0, 16)) - (a.rb === (s.start_datetime || '').slice(0, 16))).slice(0, 10),
       opn: s.same_time_products_count || (s.same_time_products || []).length
     };
   });
@@ -230,6 +232,17 @@ async function main() {
   await browser.close();
   const epg = await epgDays(days);
 
+  // once a broadcast has started hsmoa points its products at their next airing, so keep the line-up captured before it aired
+  const nowKst = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 16);
+  const keepAiredLineup = (list, prev) => {
+    if (!prev) return;
+    const old = new Map((prev.items || []).map(i => [i.ch + '|' + i.s + '|' + i.n, i]));
+    for (const i of list) {
+      if (`${i.d}T${i.s}` > nowKst) continue;
+      const o = old.get(i.ch + '|' + i.s + '|' + i.n);
+      if (o && (o.op || []).some(x => x.rb)) { i.op = o.op; i.opn = o.opn; }
+    }
+  };
   for (const d of days) {
     const items = hs[d].sort((a, b) => (a.s + a.ch).localeCompare(b.s + b.ch));
     const tv = items.filter(i => TV.includes(i.ch));
@@ -239,6 +252,7 @@ async function main() {
     const res = { tv: tv.length, tc: tc.length, epg: !!epg[d] };
 
     const prevTc = readJson(tcFile);
+    keepAiredLineup(tv, prevTv); keepAiredLineup(tc, prevTc);
     // a later day may only be partly published: never replace a fuller earlier copy with a much thinner one
     const enough = (n, min, prev) => near(d) ? n >= min : n >= MIN_FUTURE && (!prev || n >= 0.7 * (prev.items || []).length);
     if (enough(tv.length, MIN_TV, prevTv)) {
