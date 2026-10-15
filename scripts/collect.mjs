@@ -138,6 +138,12 @@ const OFFICIAL = {
     const j = await (await req.get(`https://www.lotteimall.com/main/scheduleLive.lotte?bdDate=${ymd(d)}&date=${d}`, { timeout: 20000 })).json();
     return firstPerSlot(((j.body && j.body.prod) || []).map(p => ({ d, s: p.stime || '', e: p.etime || '', n: p.name || '', p: num(p.price_orig) || num(p.price_disc), sp: num(p.price_disc), pg: '' })));
   },
+  kshop: async (req, d) => {
+    const j = await (await req.get(`https://www.kshop.co.kr/display/web/emc/display/broadcast?broadcastType=tv&dateValue=${ymd(d)}`, { timeout: 20000 })).json();
+    const at = v => kstOf(Date.parse(String(v || '').replace(/\+0000$/, 'Z')));
+    return firstPerSlot(((j.data && j.data.tvScheduleList) || []).map(x => { const pr = (x.productList || [])[0] || {}, ps = pr.priceSummary || {}, a = at(x.brdBgnDtm), z = at(x.brdClDtm);
+      return { d: a.slice(0, 10), s: a.slice(11, 16), e: z.slice(11, 16), n: pr.prdNm || x.schdNm || '', p: ps.ecMktSlPc || 0, sp: ps.ecSlPc || 0, pg: x.schdNm || '' }; }));
+  },
   nsmall: async (req, d) => {
     const j = await (await req.get(`https://mapi.nsmall.com/md/api/v1/display/media/schedule/tv/${ymd(d)}?formDate=${ymd(d)}&cnnlCd=TV`, { timeout: 20000 })).json();
     const l = (j.data && j.data.resultData && j.data.resultData.totalOrgan) || [];
