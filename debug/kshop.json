@@ -1,0 +1,76 @@
+{
+ "steps": [
+  [
+   "https://www.kshop.co.kr/?gnbMenuId=G000000004",
+   200,
+   "메인-홈-G000000004 | 일상이 알파가 되다 - KT알파 쇼핑"
+  ],
+  [
+   "https://www.kshop.co.kr/?gnbMenuId=G000000002",
+   200,
+   "메인-편성표-G000000002 | 일상이 알파가 되다 - KT알파 쇼핑"
+  ]
+ ],
+ "reqs": [
+  [
+   "https://www.kshop.co.kr/Im4jS/-cJd/eJ0_/Ps/uadHU/SbYtkVm59O9u4f/CWFtAQ/Hhw5Pll/AESQ",
+   "POST",
+   "{\"sensor_data\":\"3;0;1;0;4337970;Z3UKtto0Afaxn3OGMuE4UQHeUCSut7aO31NSEaKZZMs=;17,0,0,0,2,0;Bq%$\\\"kA/~\\\"zH)]q\\\",p0E\\\";S#L.\\\"{/Y\\\"7\\\"/Ev`9\\\"3?m\\\"C+U\\\"o\\\"[9NO|8$Q5[Le;\\\"J\\\"jm*\\\"_J((f\\\"=*sG\\\"?\\\"6R`>6>zm++GI0?-2%!C^+rzeJZ*~D$z4Y?)&=Fan{0>8\\\"ieI\\\"v]1\\\"OQAO:\\\"kKt.\\\"Bbn\\\"aW(\\\";\\\"N\\\"<nS\\\"r0t\\\"&ooz{\\\"iLGg\\\"MFi",
+   201,
+   18,
+   "{\"success\": true}\n"
+  ],
+  [
+   "https://www.kshop.co.kr/custord/web/api/basket/findBasketCount",
+   "GET",
+   "",
+   200,
+   43,
+   "{\"selling\":0,\"stopSelling\":0,\"endOfSale\":0}"
+  ],
+  [
+   "https://www.kshop.co.kr/display/web/emc/display/broadcast?broadcastType=tv&dateValue=20261015",
+   "GET",
+   "",
+   200,
+   329354,
+   "{\"resultCode\":\"200\",\"resultMessage\":\"정상적으로 처리되었습니다.\",\"data\":{\"tvScheduleList\":[{\"brdSchdId\":\"4000152255\",\"brdPgmId\":\"10000721\",\"brdStdDate\":\"2026-10-13T15:00:00.000+0000\",\"brdBgnDtm\":\"2026-10-14T14:40:31.000+0000\",\"brdClDtm\":\"2026-10-14T15:40:31.000+0000\",\"slClDtm\":\"2026-10-14T16:40:31.000+0000\",\"schdNm\":\"CK_패딩베스트+모크넥\",\"onair\":false,\"brdingSel\":false,\"vodStreamingUrl\":null,\"state\":-1,\"stateSel\":-1,\"prdSlStsCd\":null,\"delegateSlStsCd\":null,\"livetalkMngmYn\":\"Y\",\"productList\":[{\"dpPrdId\":\"10843479\",\"prdLclsId\":\"10\",\"prdNm\":\"CKS 최신상 26FW 모크넥 4종 여성\",\"mobPrdNm\":\"CKS 최신상 26FW 모크넥 4종 여성\",\"allPrdNm\":\"[CKS] 26FW 모크넥  4종 여성\",\"prdImgFlNm\":\"//d2/product/emc/202609/10/84/3479/10843479_550_20260922162222.jpg\",\"prdClsfCd\":\"00\",\"sngOrdYn\":\"N\",\"onAirSlYn\":\"N\",\"slStsCd\":\"00\",\"whlOrdMdaYn\":\"Y\",\"whlSlMdaYn\":\"Y\",\"slQty\":\"0\",\"adltPrdYn\":\"N\",\"vodUrlAddr\":\"202610/A202610130000035_JB20261013000044_PF20200825000001.mp4\",\"itgbPrdTpCd\":\"00\",\"itgbPrdTpCdNm\":\"일반\",\"dlvfTpCd\":\"SUP\",\"dlvfTpCdNm\":\"협력사\",\"dlvf\":0.0,\"ismnDlvf\":0.0,\"dlvfStdAmt\":0,\"rtnDlvf\":0.0,\"exnDlvf\":0.0,\"dlvReqrDd\":\"2\",\"asGrntMmsCunt\":\"12\",\"asAcpPnpTpCd\":\"20\",\"asAcpPnpTpCdNm\":\"협력사안내\",\"cnorId\":\"0084\",\"cnorNm\":\"베트남\",\"mkrId\":\"9999\",\"mkrNm\":\"기타\",\"dlrId\":\"440319\",\"dlrNm\":\"피디스페이스 주식회사\",\"brndNm\":\"캘빈클라인\",\"gdasSumScr\":\"0\",\"gdasCalScr\":\"0\",\"gdasCunt\":\"0\",\"ctgrCdId\":\"70000005\",\"prdInstDtm\":\"2026-08-19T08:32:14.000+0000\",\"slBgnDtm\":\"2026-08-17T15:00:00.000+0000\",\"slClDtm\":\"2999-01-30T15:00:00.000+0000\",\"inslDlvYn\":\"N\",\"whNo\":\"990\",\"srcngMdaTpCd\":\"01\",\"prsClsfCd\":\"20\",\"ordMkgYn\":\"N\",\"txtnClsfCd\":\"1\",\"maxOrdQty\":\"0\",\"mnlClsfCd\":\"01\",\"dlvMtdTpCd\":\"1\",\"all3ImgFlNm\":\"//d2/product/emc/202609/10/84/3479/10843479_550_20260922162222.jpg\",\"all4ImgFlNm\":\"//d2/product/emc/202609/10/84/3479/10843479_199_20260922162222.jpg\",\"rectPrdImgFlNm\":\"//d2/product/emc/202610/10/84/3479/10843479_mob_20261014151051.jpg\",\"pkprdClsfCd\":\"\",\"wishRegistered\":false,\"brdSchdId\":\"4000152255\",\"priceSummary\":{\"dpPrdId\":\"10843479\",\"expoMmrClsfCd\":\"001\",\"ecPrdPcSeq\":\"202610130024098\",\"ecMktSlPc\":69000.0,\"ecPrsPc\":42780.0,\"ecSlPc\":69000.0,\"ecArsDsnPc\":69000.0,\"ecLmsmDsnPc\":69000.0,\"ecPrdDsnApPc\":0.0,\"ecDplcDsnApPc\":0.0,\"ecCpnDsnApPc\":0.0,\"ecLsDsnPc\":69000.0,\"ecDsnRt\":0.0,\"mcPrdPcSeq\":\"202610130024098\",\"mcMktSlPc\":69000.0,\"mcPrsPc\":42780.0,\"mcSlPc\":69000.0,\"mcArsDsnPc\":69000.0,\"mcLmsmDsnPc\":69000.0,\"mcPrdDsnApPc\":0.0,\"mcDplcDsnApPc\":0.0,\"mcCpnDsnApPc\":0.0,\"mcLsDsnPc\":69000.0,\"mcDsnRt\":0.0,\"iosPrdPcSeq\":\"202610130024098\",\"iosPrsPc\":42780.0,\"iosMktSlPc\":69000.0,\"iosSlPc\":69000.0,\"iosArsDsnPc\":69000.0,\"iosLmsmDsnPc\":69000.0,\"iosPrdDsnApPc\":0.0,\"iosDplcDsnApPc\":0.0,\"iosCpnDsnApPc\":0.0,\"iosLsDsnPc\":69000.0,\"iosDsnRt\":0.0,\"andrdPrdPcSeq\":\"202610130024098\",\"andrdPrsPc\":42780.0,\"andrdMktSlPc\":69000.0,\"andrdSlPc\":69000.0,\"andrdArsDsnPc\":69000.0,\"andrdLmsmDsnPc\":69000.0,\"andrdPrdDsnApPc\":0.0,\"andrdDplcDsnApPc\":0.0,\"andrdCpnDsnApPc\":0.0,\"andrdLsDsnPc\":69000.0,\"andrdDsnRt\":0.0},\"promotionSummary\":{\"dpPrdId\":\"10843479\",\"expoMmrClsfCd\":\"001\",\"ecPcDsnFrtRto\":0.0,\"ecPcDsnFamtAmt\":0.0,\"ecPcDsnStdMagnRt\":0.0,\"ecDplcDsnFrtRto\":0.0,\"ecDplcDsnFamtAmt\":0.0,\"ecDplcDsnStdMagnRt\":0.0,\"ecCpnApAmt\":0.0,\"ecCpnMaxDsnAmt\":0.0,\"ecCpnStdMagnRt\":0.0,\"ecCardIntfInttMms\":6,\"ecPnMaxSvngAmt\":0.0,\"ecAllCardEventTpCd\":\"90\",\"ecLngtrIntfInttMms\":0,\"ecCardDsnAmt\":0.0,\"mcPcDsnFrtRto\":0.0,\"mcPcDsnFamtAmt\":0.0,\"mcPcDsnStdMagnRt\":0.0,\"mcDplcDsnFrtRto\":0.0,\"mcDplcDsnFamtAmt\":0.0,\"mcDplcDsnStdMagnRt\":0.0,\"mcCpnId\":\"202610060000002\",\"mcCpnNm\":\"뱅뱅 CK 브랜드위크 30%쿠폰\",\"mcCpnBgnDtm\":\"2026-10-11T15:00:00.000+0000\",\"mcCpnClDtm\":\"2026-10-18T14:59:59.000+0000\",\"mcCpnApAmt\":20000.0,\"mcCpnMaxDsnAmt\":20000.0,\"mcCpnStdMagnRt\":0.0,\"mcCardId\":\"011\",\"mcCardNm\":\"KB국민\",\"mcCardBgnDtm\":\"2026-10-10T15:00:00.000+0000\",\"mcCardClDtm\":\"2026-10-17T14:59:59.000+0000\",\"mcCardIntfInttMms\":6,\"mcPnMaxSvngAmt\":0.0,\"mcAllCardEventTpCd\":\"30\",\"mcLngtrIntfInttMms\":0,\"mcCardDsnAmt\":0.0,\"mcClaimDsnRt\":10.0,\"mcCpnFrtYn\":\"Y\",\"mcCpnFrtRto\":30.0,\"iosPcDsnFrtRto\":0,\"iosPcDsnFamtAmt\":0,\"iosPcDsnStdMagnRt\":0,\"iosDplcDsnFrtRto\":0,\"iosDplcDsnFamtAmt\":0,\"iosDplcDsnStdMagnRt\":0,\"iosCpnId\":\"202610060000002\",\"iosCpnApAmt\":20000.0,\"iosCpnMaxDsnAmt\":0,\"iosCpnStdMagnRt\":0,\"iosCardId\":\"011\",\"iosCardIntfInttMms\":6,\"iosPnId\":\"202609290000026\",\"iosPnMaxSvngAmt\":6900.0,\"iosAllCardEventTpCd\":\"30\",\"iosLngtrIntfInttMms\":0,\"iosCardDsnAmt\":0,\"iosClaimDsnRt\":10.0,\"iosCpnFrtYn\":\"Y\",\"iosCpnFrtRto\":30.0,\"iosPnFrtRto\":10.0,\"andrdPcDsnFrtRto\":0,\"andrdPcDsnFamtAmt\":0,\"andrdPcDsnStdMagnRt\":0,\"andrdDplcDsnFrtRto\":0,\"andrdDplcDsnFamtAmt\":0,\"andrdDplcDsnStdMagnRt\":0,\"andrdCpnId\":\"202610060000002\",\"andrdCpnApAmt\":20000.0,\"andrdCpnMaxDsnAmt\":0,\"andrdCpnStdMagnRt\":0,\"andrdCardId\":\"011\",\"andrdCardIntfInttMms\":6,\"andrdPnId\":\"202609290000026\",\"andrdPnMaxSvngAmt\":6900.0,\"andrdAllCardEventTpCd\":\"30\",\"andrdLngtrIntfInttMms\":0,\"andrdCardDsnAmt\":0,\"andrdClaimDsnRt\":10.0,\"andrdCpnFrtYn\":\"Y\",\"andrdCpnFrtRto\":30.0,\"andrdPnFrtRto\":10.0},\"wishResistered\":false,\"dlgPrdYn\":\"Y\",\"stockQty\":1,\"mobVodUrlAddr\":\"202610/A202610130000035_JB20261013000044_PF20200825000001.mp4\",\"payboocPromoBcYn\":false,\"tomoDlvYn\":\"N\",\"inslPrdAddExTpCd\":\"00\",\"tvPrdYn\":\"Y\",\"freeDlvYn\":\"Y\",\"srprDpdcPrdYn\":\"N\",\"ecpnPrdYn\":\"N\",\"rmQtyChkYn\":false,\"rmQty\":0,\"brndId\":\"000191\"},{\"dpPrdId\":\"11476728\",\"prdLclsId\":\"10\",\"prdNm\":\"(오코텍스 인증)CK 스포츠 남녀공용 패딩베스트\",\"mobPrdNm\":\"(오코텍스 인증)CK 스포츠 남녀공용 패딩베스트\",\"allPrdNm\":\"[CKS] 26FW 패딩베스트 1종 유니\",\"prdImgFlNm\":\"//d2/product/emc/202610/11/47/6728/11476728_550_20261013163343.jpg\",\"prdClsfCd\":\"00\",\"sngOrdYn\":\"N\",\"onAirSlYn\":\"N\",\"slStsCd\":\"00\",\"whlOrdMdaYn\":\"Y\",\"whlSlMdaYn\":\"Y\",\"slQty\":\"0\",\"adltPrdYn\":\"N\",\"vodUrlAddr\":\"202610/A202610130000035_JB20261013000044_PF20200825000001.mp4\",\"itgbPrdTpCd\":\"00\",\"itgbPrdTpCdNm\":\"일반\",\"dlvfTpCd\":\"SUP\",\"dlvfTpCdNm\":\"협력사\",\"dlvf\":0.0,\"ismnDlvf\":0.0,\"dlvfStdAmt\":0,\"rtnDlvf\":0.0,\"exnDlvf\":0.0,\"dlvReqrDd\":\"2\",\"asGrntMmsCunt\":\"12\",\"asAcpPnpTpCd\":\"20\",\"asAcpPnpTpCdNm\":\"협력사안내\",\"cnorId\":\"0084\",\"cnorNm\":\"베트남\",\"mkrId\":\"9999\",\"mkrNm\":\"기타\",\"dlrId\":\"440319\",\"dlrNm\":\"피디스페이스 주식회사\",\"brndNm\":\"캘빈클라인\",\"gdasSumScr\":\"0\",\"gdasCalScr\":\"0\",\"gdasCu"
+  ],
+  [
+   "https://www.kshop.co.kr/display/web/emc/display/gnb?dmTpCd=10",
+   "GET",
+   "",
+   200,
+   2994,
+   "{\"resultCode\":\"200\",\"resultMessage\":\"정상적으로 처리되었습니다.\",\"data\":[{\"gnbMenuId\":\"G000000002\",\"gnbMenuNm\":\"편성표\",\"dmTpCd\":\"10\",\"mvFrameTpCd\":null,\"lnkUrlAddr\":null,\"gnbFlagPhrsVal\":null,\"prntPageClsfCd\":\"30\",\"dpPageId\":null,\"expoTrtTpCd\":null,\"exempExptYn\":null,\"expoTrtTpCdValList\":[],\"isHome\":false,\"gnbFix"
+  ],
+  [
+   "https://www.kshop.co.kr/display/web/emc/display/getCentralButtonBanner",
+   "GET",
+   "",
+   200,
+   462,
+   "{\"resultCode\":\"200\",\"resultMessage\":\"정상적으로 처리되었습니다.\",\"data\":{\"dpCtrBtnBnrId\":\"CB00000061\",\"dpCtrBtnBnrNm\":\"10월엔 텐텐\",\"dpBgnDtm\":\"2026-10-15 10:45:00\",\"dpClDtm\":\"2026-10-16 23:59:59\",\"imgPtNm\":\"/d2/emc/202610/14/\",\"imgFlNm\":\"202610141a13984a5d660.png\",\"imgFlId\":\"1a13984a51a5\",\"imgCmmt\":\"10월엔 텐텐 (10/1~"
+  ],
+  [
+   "https://gse.groobee.io/campaign/",
+   "POST",
+   "{\"cookieId\":\"34acf3ea-00ce-d65f-d07e-32c2ff6664fe\",\"userId\":\"6ec3f241-c73b-bf7a-5185-a6f79859fbbd\",\"pageUrl\":\"https://www.kshop.co.kr/?gnbMenuId=G000000002\",\"queryString\":\"?gnbMenuId=G000000002\",\"referUrl\":\"\",\"deviceCd\":\"PC\",\"browserCd\":\"CH\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_",
+   200,
+   33,
+   "{\"campaignMsg\":{},\"isLand\":false}"
+  ],
+  [
+   "https://www.kshop.co.kr/Im4jS/-cJd/eJ0_/Ps/uadHU/SbYtkVm59O9u4f/CWFtAQ/Hhw5Pll/AESQ",
+   "POST",
+   "{\"sensor_data\":\"3;0;1;0;4337970;Z3UKtto0Afaxn3OGMuE4UQHeUCSut7aO31NSEaKZZMs=;29,19,0,0,14,455;B}[hB8\\\"KJTtK>b(4}]e:d5Xf&=gxb#$4CShMw|3EDW)\\\"1IG\\\"Je\\\"X\\\"ay\\\"Q\\\"ELjB\\\"X\\\".<I$\\\"F\\\"]Tg\\\"].l $qP\\\"iH^I\\\";\\\"MjFYdPG^t[),rvfp[H&i&G5}EL)dG#tS\\\"g\\\";PQ\\\"}\\\"%WYP(-9WWkNs&M|FY4.W57f1K7PrqOp<u.|s-!4,yQF`[yvEqMR>%\\\"",
+   201,
+   18,
+   "{\"success\": true}\n"
+  ]
+ ],
+ "links": [],
+ "text": "검색 장바구니 편성표 셀럽PICK TV쇼핑 강력추천 특가쇼✨ 홈 단 48시간! 타임세일 브랜드위크 뱅뱅/CK 1만원 추첨 숏폼관 랭킹 시크릿혜택 VIP라운지 Check! 혜택/이벤트 목 8 금 9 토 10 일 11 월 12 화 13 수 14 오늘 15 금 16 토 17 일 18 TV TV+ 오늘 방송 시간표 닫기 00:40 01:40 02:41 03:45 04:15 04:35 05:36 06:36 07:36 08:36 09:36 10:37 11:37 12:37 13:37 14:37 15:38 16:38 17:39 18:39 19:39 20:39 ON AIR 21:39 22:40 23:40 10월 14일 23:40 ~ 00:40 CKS 최신상 26FW 모크넥 4종 여성 69,000원 TV상품 무료 배송 무이자 6 바로구매 함께 방송하는 상품 (오코텍스 인증)CK 스포츠 남녀공용 패딩베스트 79,000원 상품 더 보기 오늘 00:40 ~ 01:40 라이나생명 (무)새로담는간편건강보험(가입 시 신세계상품권 3만원) 상담 상품 상담 신청 오늘 01:40 ~ 02:40 이지듀 멜라토닝 스킨핏 톤업크림 30ml*4+무체1+리뷰1 119,000원 TV상품 무료 배송 무이",
+ "around": "검색 장바구니 편성표 셀럽PICK TV쇼핑 강력추천 특가쇼✨ 홈 단 48시간! 타임세일 브랜드위크 뱅뱅/CK 1만원 추첨 숏폼관 랭킹 시크릿혜택 VIP라운지 Check! 혜택/이벤트 목 8 금 9 토 10 일 11 월 12 화 13 수 14 오늘 15 금 16 토 17 일 18 TV TV+ 오늘 방송 시간표 닫기 00:40 01:40 02:41 03:45 04:15 04:35 05:36 06:36 07:36 08:36 09:36 10:37 11:37 12:37 13:37 14:37 15:38 16:38 17:39 18:39 19:39 20:39 ON AIR 21:39 22:40 23:40 10월 14일 23:40 ~ 00:40 CKS 최신상 26FW 모크넥 4종 여성 69,000원 TV상품 무료 배송 무이자 6 바로구매 함께 방송하는 상품 (오코텍스 인증)CK 스포츠 남녀공용 패딩베스트 79,000원 상품 더 보기 오늘 00:40 ~ 01:40 라이나생명 (무)새로담는간편건강보험(가입 시 신세계상품권 3만원) 상담 상품 상담 신청 오늘 01:40 ~ 02:40 이지듀 멜라토닝 스킨핏 톤업크림 30ml*4+무체1+리뷰1 119,000원 TV상품 무료 배송 무이자 8 방송 중 구매 오늘 02:41 ~ 03:41 도티 26FW 레스트 볼륨 데님 여성2종 (D6RDW) 49,900원 TV상품 무료 배송 바로구매 함께 방송하는 상품 도티 26FW 레스트 데님 남성2종(D6RDM) 49,900원 하이라이트 숏폼 도티 레스트 데님 남성2종 도티 26FW 레스트 볼륨 데님 2종 오늘 03:45 ~ 04:15 나인닷 지압 순환 머신 998,000원 TV상품 무료 배송 무이자 6 바로구매 오늘 04:15 ~ 04:35 코지마 매트마사지기 코지플렉스 CMM-701WL 398,000원 TV상품 무료 배송 무이자 6 바로구매 오늘 04:35 ~ 05:35 [방송에서만 4통더] 탈모기능성 ! 알레스버 독일 맥주효모 샴푸 8통찬스 119,000원 TV상품 무료 배송 무이자 6 방송 중 구매 함께 방송하는 상품 방송 중 구매 가능 [방송에서만] 탈모기능성 ! 알레스버 독일 맥주효모 샴푸 매니아 199,000원 상품 더 보기 오늘 05:36 ~ 06:36 이지케이 요실금 치료기 (상담/렌탈) 상담 상품 상담 신청 오늘 06:36 ~ 07:36 [방송중에서만3박스 더]이시형 박사의 인생 마그네슘 9박스 279,000원 TV상품 무료 배송 무이자 12 방송 중 구매 오늘 07:36 ~ 08:36 라끄베르 콜라겐 플러스 기초 완벽 3세트 (스킨3+로션3+크림3) 할인율 1% 68,000원 69,000원 TV상품 무료 배송 무이자 7 방송 중 구매 오늘 08:36 ~ 09:36 [DE kim(드킴바이김서룡)] 26FW 시그니처 플라워 가디건 + 스카프 SET 할인율 5% 94,050원 99,000원 TV상품 무료 배송 무이자 6 바로구매 함께 방송하는 상품 [DE kim(드킴바이김서룡)] 26FW 코듀로이 팬츠 1",
+ "around2": "ICK TV쇼핑 강력추천 특가쇼✨ 홈 단 48시간! 타임세일 브랜드위크 뱅뱅/CK 1만원 추첨 숏폼관 랭킹 시크릿혜택 VIP라운지 Check! 혜택/이벤트 목 8 금 9 토 10 일 11 월 12 화 13 수 14 오늘 15 금 16 토 17 일 18 TV TV+ 오늘 방송 시간표 닫기 00:40 01:40 02:41 03:45 04:15 04:35 05:36 06:36 07:36 08:36 09:36 10:37 11:37 12:37 13:37 14:37 15:38 16:38 17:39 18:39 19:39 20:39 ON AIR 21:39 22:40 23:40 10월 14일 23:40 ~ 00:40 CKS 최신상 26FW 모크넥 4종 여성 69,000원 TV상품 무료 배송 무이자 6 바로구매 함께 방송하는 상품 (오코텍스 인증)CK 스포츠 남녀공용 패딩베스트 79,000원 상품 더 보기 오늘 00:40 ~ 01:40 라이나생명 (무)새로담는간편건강보험(가입 시 신세계상품권 3만원) 상담 상품 상담 신청 오늘 01:40 ~ 02:40 이지듀 멜라토닝 스킨핏 톤업크림 30ml*4+무체1+리뷰1 119,000원 TV상품 무료 배송 무이자 8 방송 중 구매 오늘 02:41 ~ 03:41 도티 26FW 레스트 볼륨 데님 여성2종 (D6RDW) 49,900원 TV상품 무료 배송 바로구매 함께 방송하는 상품 도티 26FW 레스트 데님 남성2종(D6RDM) 49,900원 하이라이트 숏폼 도티 레스트 데님 남성2종 도티 26FW 레스트 볼륨 데님 2종 오늘 03:45 ~ 04:15 나인닷 지압 순환 머신 998,000원 TV상품 무료 배송 무이자 6 바로구매 오늘 04:15 ~ 04:35 코지마 매트마사지기 코지플렉스 CMM-701WL 398,000원 TV상품 무료 배송 무이자 6 바로구매 오늘 04:35 ~ 05:35 [방송에서만 4통더] 탈모기능성 ! 알레스버 독일 맥주효모 샴푸 8통찬스 119,000원 TV상품 무료 배송 무이자 6 방송 중 구매 함께 방송하는 상품 방송 중 구매 가능 [방송에서만] 탈모기능성 ! 알레스버 독일 맥주효모 샴푸 매니아 199,000원 상품 더 보기 오늘 05:36 ~ 06:36 이지케이 요실금 치료기 (상담/렌탈) 상담 상품 상담 신청 오늘 06:36 ~ 07:36 [방송중에서만3박스 더]이시형 박사의 인생 마그네슘 9박스 279,000원 TV상품 무료 배송 무이자 12 방송 중 구매 오늘 07:36 ~ 08:36 라끄베르 콜라겐 플러스 기초 완벽 3세트 (스킨3+로션3+크림3) 할인율 1% 68,000원 69,000원 TV상품 무료 배송 무이자 7 방송 중 구매 오늘 08:36 ~ 09:36 [DE kim(드킴바이김서룡)] 26FW 시그니처 플라워 가디건 + 스카프 SET 할인율 5% 94,050원 99,000원 TV상품 무료 배송 무이자 6 바로구매 함께 방송하는 상품 [DE kim(드킴바이김서룡)] 26FW 코듀로이 팬츠 1종 할인율 5% 75,910원 상품 더 보기 오늘 09:36 ~ 10:36 바스키아 [★"
+}
